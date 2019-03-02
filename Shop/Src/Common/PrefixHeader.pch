@@ -1,0 +1,37 @@
+//
+//  PrefixHeader.pch
+//  Shop
+//
+//  Created by BWJ on 2018/12/28.
+//  Copyright © 2018 SanTie. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#import "UIImage+Extension.h"
+#import "UIView+HUD.h"
+#import "UIBarButtonItem+DCBarButtonItem.h"
+#import "Constants.h"
+#import "Utility.h"
+#import "DCSpeedy.h" //便捷方法
+#import <Masonry/Masonry.h>
+#import "LoginVC.h"
+#import "DCObjManager.h"  //存取
+#import "DCNotificationCenterName.h" //通知
+#import <CDDPagerController/DCPagerController.h>
+#import "UIButton+ImageTitleSpacing.h"
+#import <MJRefresh.h>
+#import "UIView+Extension.h"
+#import "NSString+Extension.h"
+#import "FSPageContentView2.h"
+#import "FSSegmentTitleView2.h"
+#import "YYKit.h"
+#import <SDWebImage/UIButton+WebCache.h>
+#import "CanUsePhoto.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <CoreLocation/CLLocationManager.h>
+#import <Photos/PHPhotoLibrary.h>
+#endif /* PrefixHeader_pch */
