@@ -26,7 +26,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title=@"忘记密码";
-    self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:[UIImage imageNamed:@"back"] WithSelected:nil Target:self action:@selector(leftBarButtonItem)];
+//    self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:[UIImage imageNamed:@"back"] WithSelected:nil Target:self action:@selector(leftBarButtonItem)];
     [self setupViews];
     [self layout];
     // Do any additional setup after loading the view from its nib.

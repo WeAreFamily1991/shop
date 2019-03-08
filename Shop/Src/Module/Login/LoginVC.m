@@ -9,6 +9,9 @@
 #import "LoginVC.h"
 #import "ForgetVC.h"
 #import "RegisteVC.h"
+#import "SNAPI.h"
+#import "SNToken.h"
+#import "SNAccount.h"
 @interface LoginVC ()
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTF;
@@ -76,7 +79,36 @@
 }
 - (IBAction)loginBtnClick:(id)sender
 {
+    if (!self.phoneTF.text.length) {
+        [MBProgressHUD showSuccess:SNStandardString(@"手机号为空") toView:self.view];
+        [self.phoneTF becomeFirstResponder];
+        return;
+    } else if (!self.passwordTF.text.length) {
+        [MBProgressHUD showSuccess:SNStandardString(@"密码为空") toView:self.view];
+        [self.passwordTF becomeFirstResponder];
+        return;
+    }
     
+    [self.view endEditing:YES];
+    [MBProgressHUD showMessage:@"" toView:self.view];
+    
+//    __block NSString *regionCode = [self.accountField.text isEmailAddress] ? nil : @"86";
+//    __block NSString *regionName = [self.accountField.text isEmailAddress] ? nil : self.regionName;
+    
+    __weak typeof(self) weakSelf = self;
+    [SNAPI userLoginWithAccount:self.phoneTF.text password:self.passwordTF.text success:^{
+        [MBProgressHUD hideHUDForView:weakSelf.view];
+        
+//        [SNDatabase setDefaultSSID:[SNTool SSID]];
+        [SNAccount saveAccount:self.phoneTF.text password:self.passwordTF.text];
+        
+//        if (weakSelf.loginSuccess) {
+//            weakSelf.loginSuccess();
+//        }
+        
+    } failure:^(NSError *error) {
+        [MBProgressHUD hideHUDForView:weakSelf.view];
+    }];
 }
 - (IBAction)registBtnClick:(id)sender
 {

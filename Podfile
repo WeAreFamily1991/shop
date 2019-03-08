@@ -35,8 +35,8 @@ target 'Shop' do
   pod 'IQKeyboardManager', '~> 6.2.0'
 
   pod 'YYKit', '~> 1.0.9'
- 
+  pod 'SVProgressHUD'
   pod 'FMDB'
-
+  pod 'KSCrash'
   pod 'CDDPagerController'
 end

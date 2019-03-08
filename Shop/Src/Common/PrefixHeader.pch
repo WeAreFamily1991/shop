@@ -34,4 +34,5 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <CoreLocation/CLLocationManager.h>
 #import <Photos/PHPhotoLibrary.h>
+#import "MBProgressHUD+DR.h"
 #endif /* PrefixHeader_pch */

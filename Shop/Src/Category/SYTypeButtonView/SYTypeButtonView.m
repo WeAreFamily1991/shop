@@ -34,8 +34,8 @@ static NSInteger const tagButton = 1000;
         rect.size.height = heightTypeButtonView;
         self.frame = rect;
         
-        _titleFont = [UIFont systemFontOfSize:12.0];
-        _titleFontSelected = [UIFont systemFontOfSize:12.0];
+        _titleFont = [UIFont systemFontOfSize:13.0];
+        _titleFontSelected = [UIFont systemFontOfSize:13.0];
         _titleColorNormal = [UIColor blackColor];
         _titleColorSelected = [UIColor orangeColor];
         _scrollLineColor = [UIColor redColor];
@@ -58,7 +58,7 @@ static NSInteger const tagButton = 1000;
     
     for (int i = 0; i < count; i++) {
         NSString *title = array[i];
-        CGRect rect = CGRectMake(i * width, 0.0, width, CGRectGetHeight(self.bounds));
+        CGRect rect = CGRectMake(i * width, 0.0, width-1, CGRectGetHeight(self.bounds));
         
         SYButton *button = [SYButton buttonWithType:UIButtonTypeCustom];
         button.backgroundColor = [UIColor clearColor];
@@ -69,10 +69,8 @@ static NSInteger const tagButton = 1000;
         
         button.userInteractionEnabled = YES;
         button.selected = NO;
-        
         button.tag = i + tagButton;
         [button addTarget:self action:@selector(buttonAction:) forControlEvents:UIControlEventTouchUpInside];
-        
         [self addSubview:button];
         [self.buttonArray addObject:button];
     }
