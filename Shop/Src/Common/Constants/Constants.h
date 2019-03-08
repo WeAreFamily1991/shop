@@ -31,7 +31,7 @@ static NSString * const kCurrentUserName = @"kCurrentUserName";
 #else
 #   define DLog(...)
 #endif
-
+#define KEYWINDOW  [UIApplication sharedApplication].keyWindow
 //判断设备是否为iphoneX
 #define DCIsiPhoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
 
