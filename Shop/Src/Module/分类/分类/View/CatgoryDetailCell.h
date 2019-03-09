@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class CarDetailModel;
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -21,15 +21,26 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy,nonatomic) void (^shopCarBlock) (NSInteger shopCartag);
 @end
 
+@protocol CatgoryDetailCellSelectDelegate <NSObject>
+/** 增减数量按钮点击事件 */
+- (void)changeShopCount:(UIButton *)sender;
+/** 手动输入数量 */
+- (void)tableViewScroll:(UITextField *)textField;
 
+@end
 @interface CatgoryDetailCell1 : UITableViewCell
+
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (nonatomic, strong) CarDetailModel *goodsModel;
 @property (weak, nonatomic) IBOutlet UIView *selectView;
 @property (weak, nonatomic) IBOutlet UIButton *danweiBtn;
 @property (weak, nonatomic) IBOutlet UITextField *countTF;
 @property (weak, nonatomic) IBOutlet UILabel *danweiLab;
+@property (weak, nonatomic) IBOutlet UIButton *addCountBtn;
+@property (weak, nonatomic) IBOutlet UITextField *selectCountTF;
+@property (weak, nonatomic) IBOutlet UIButton *cutCountBtn;
 @property (copy,nonatomic) void (^danweiBtnBlock) (NSInteger danweiBtntag);
-
+@property (nonatomic, weak) id<CatgoryDetailCellSelectDelegate>delegate;
 @end
 
 

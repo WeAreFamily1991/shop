@@ -94,8 +94,6 @@
         UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, CGRectGetMaxY(self.selectTableView.frame)+buttonHeight+DRTopHeight+40, SCREEN_WIDTH, SCREEN_HEIGHT-CGRectGetMaxY(self.selectTableView.frame)-buttonHeight-DRTopHeight-40)];
         backView.backgroundColor =[UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
         [self addSubview:backView];
-       
-        
     }
     return self;
 }

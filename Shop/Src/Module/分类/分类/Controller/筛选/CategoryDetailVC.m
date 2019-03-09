@@ -16,6 +16,7 @@
 #import "CGXPickerView.h"
 #import "DCSildeBarView.h"
 #import "LDYSelectivityAlertView.h"
+#import "StoreVC.h"
 #define DIC_EXPANDED @"expanded" //是否是展开 0收缩 1展开
 
 #define DIC_ARARRY @"array" //存放数组
@@ -307,7 +308,7 @@
             break;
             
         case 2:
-            return HScale(50);
+            return 45;
             break;
             
         case 3:
@@ -362,19 +363,7 @@
             
         {
             CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView];
-            
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            GHCountField *countField = [[GHCountField alloc]initWithFrame:cell.selectView.bounds];
-            countField.count = 4;
-            countField.maxCount = 100;
-            countField.countFielddDelegate = self;
-            countField.countBlock = ^(NSInteger count) {
-                NSLog(@"回调 :%ld",(long)count);
-            };
-            //            [countField becomeFirstResponder];
- 
-            [cell.selectView addSubview:countField];
-
+    
             [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
             cell.danweiBtn.tag =indexPath.section;
             
@@ -431,6 +420,59 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self.navigationController pushViewController:[StoreVC new] animated:YES];
+}
+
+#pragma mark -- ShopTableViewCellSelectDelegate
+/**
+ *  cell的选择代理
+ *
+ *  @param sender 选中按钮
+ */
+//- (void)cellSelectBtnClick:(UIButton *)sender{
+//    MyShopCarTableViewCell *cell = (MyShopCarTableViewCell *)[[sender superview] superview];
+//    NSIndexPath *indexPath;
+//    indexPath = [_tableView indexPathForCell:cell];
+//
+//    ShopCarDetailModel *bigModel = self.shopCarGoodsArray[indexPath.section];
+//    CarDetailModel *cellModel = bigModel.goodsDetails[indexPath.row];
+//    cellModel.selectState = sender.selected;
+//    //设置段头的选择按钮选中状态
+//    [self setHeaderViewSelectState:bigModel];
+//    //设置底部选择按钮的选中状态
+//    [self setBottomBtnSelectState];
+//    //计算价格
+//    [self calculateTotalMoney:[NSMutableArray arrayWithObject:cellModel] addOrReduc:sender.selected];
+//
+//    NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:indexPath.section];
+//    [_tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationAutomatic];
+//
+//    //    [_tableView reloadData];
+//
+//}
+///**
+// *  修改商品数量
+// *
+// *  @param sender 1 减少  2 增加
+// */
+//- (void)changeShopCount:(UIButton *)sender{
+//    switch (sender.tag) {
+//        case 1:
+//        {
+//
+//        }
+//            break;
+//        case 2:
+//        {
+//
+//        }
+//            break;
+//        default:
+//            break;
+//    }
+//}
 
 -(void)selectBtnClick:(UIButton *)sender
 {

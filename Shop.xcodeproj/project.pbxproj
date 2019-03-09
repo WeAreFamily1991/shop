@@ -101,6 +101,11 @@
 		E71C305D2232577400521960 /* LDYSelectivityAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = E71C30542232577400521960 /* LDYSelectivityAlertView.m */; };
 		E71C305E2232577400521960 /* SelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E71C30552232577400521960 /* SelectCell.xib */; };
 		E71C305F2232577400521960 /* UIColor+LDY.m in Sources */ = {isa = PBXBuildFile; fileRef = E71C305A2232577400521960 /* UIColor+LDY.m */; };
+		E71C30622233528400521960 /* ShopCarDetailModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E71C30612233528400521960 /* ShopCarDetailModel.m */; };
+		E71C307C223394E700521960 /* ShopHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = E71C307B223394E700521960 /* ShopHeaderView.m */; };
+		E71C307E2233951100521960 /* ShopHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E71C307D2233951100521960 /* ShopHeaderView.xib */; };
+		E71C308322339FA300521960 /* StoreVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E71C308122339FA300521960 /* StoreVC.m */; };
+		E71C308422339FA300521960 /* StoreVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = E71C308222339FA300521960 /* StoreVC.xib */; };
 		E763CE5321D5E9C80012E580 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E763CE5221D5E9C80012E580 /* AppDelegate.m */; };
 		E763CE5621D5E9C80012E580 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E763CE5521D5E9C80012E580 /* ViewController.m */; };
 		E763CE5921D5E9C80012E580 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E763CE5721D5E9C80012E580 /* Main.storyboard */; };
@@ -429,6 +434,14 @@
 		E71C30582232577400521960 /* SelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectCell.h; sourceTree = "<group>"; };
 		E71C30592232577400521960 /* LDYSelectivityAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LDYSelectivityAlertView.h; sourceTree = "<group>"; };
 		E71C305A2232577400521960 /* UIColor+LDY.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+LDY.m"; sourceTree = "<group>"; };
+		E71C30602233528300521960 /* ShopCarDetailModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShopCarDetailModel.h; sourceTree = "<group>"; };
+		E71C30612233528400521960 /* ShopCarDetailModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShopCarDetailModel.m; sourceTree = "<group>"; };
+		E71C307A223394E700521960 /* ShopHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShopHeaderView.h; sourceTree = "<group>"; };
+		E71C307B223394E700521960 /* ShopHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShopHeaderView.m; sourceTree = "<group>"; };
+		E71C307D2233951100521960 /* ShopHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShopHeaderView.xib; sourceTree = "<group>"; };
+		E71C308022339FA300521960 /* StoreVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreVC.h; sourceTree = "<group>"; };
+		E71C308122339FA300521960 /* StoreVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreVC.m; sourceTree = "<group>"; };
+		E71C308222339FA300521960 /* StoreVC.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StoreVC.xib; sourceTree = "<group>"; };
 		E763CE4E21D5E9C80012E580 /* Shop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E763CE5121D5E9C80012E580 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E763CE5221D5E9C80012E580 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -885,6 +898,7 @@
 			children = (
 				E71C2FDB22321B4A00521960 /* CategoryViewController.h */,
 				E71C2FB522321B4A00521960 /* CategoryViewController.m */,
+				E71C307F22339F8800521960 /* 店铺 */,
 				E71C302B2232471100521960 /* 搜索 */,
 				E71C302C2232473000521960 /* 筛选 */,
 			);
@@ -911,6 +925,8 @@
 		E71C2FE022321B4A00521960 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				E71C30602233528300521960 /* ShopCarDetailModel.h */,
+				E71C30612233528400521960 /* ShopCarDetailModel.m */,
 				E71C2FE422321B4A00521960 /* CommodityModel.h */,
 				E71C2FE122321B4A00521960 /* CommodityModel.m */,
 				E71C2FE322321B4A00521960 /* CategoryMeunModel.h */,
@@ -925,21 +941,24 @@
 				E71C30512232577400521960 /* LDYSelectivityAlertView */,
 				E71C2FE622321B4A00521960 /* MultilevelCollectionViewCell.xib */,
 				E71C2FE722321B4A00521960 /* MultilevelTableViewCell.xib */,
-				E71C2FE822321B4A00521960 /* CollectionHeader.h */,
 				E71C2FE922321B4A00521960 /* MultilevelCollectionViewCell.h */,
 				E71C2FEA22321B4A00521960 /* MultilevelTableViewCell.h */,
 				E71C2FEB22321B4A00521960 /* MultilevelMenu.h */,
+				E71C2FF722321B4A00521960 /* MultilevelMenu.m */,
 				E71C2FEC22321B4A00521960 /* CommodityTableViewCell.m */,
 				E71C2FEF22321B4A00521960 /* CommodityTableViewCell.xib */,
 				E71C2FF122321B4A00521960 /* MultilevelTableViewCell.m */,
 				E71C2FF222321B4A00521960 /* MultilevelCollectionViewCell.m */,
+				E71C2FE822321B4A00521960 /* CollectionHeader.h */,
 				E71C2FF322321B4A00521960 /* CollectionHeader.m */,
 				E71C2FF422321B4A00521960 /* CollectionHeader.xib */,
 				E71C2FF522321B4A00521960 /* CatgoryDetailCell.h */,
 				E71C2FEE22321B4A00521960 /* CatgoryDetailCell.m */,
 				E71C2FED22321B4A00521960 /* CatgoryDetailCell.xib */,
 				E71C2FF622321B4A00521960 /* CommodityTableViewCell.h */,
-				E71C2FF722321B4A00521960 /* MultilevelMenu.m */,
+				E71C307A223394E700521960 /* ShopHeaderView.h */,
+				E71C307B223394E700521960 /* ShopHeaderView.m */,
+				E71C307D2233951100521960 /* ShopHeaderView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -1046,6 +1065,16 @@
 				E71C305A2232577400521960 /* UIColor+LDY.m */,
 			);
 			path = LDYSelectivityAlertView;
+			sourceTree = "<group>";
+		};
+		E71C307F22339F8800521960 /* 店铺 */ = {
+			isa = PBXGroup;
+			children = (
+				E71C308022339FA300521960 /* StoreVC.h */,
+				E71C308122339FA300521960 /* StoreVC.m */,
+				E71C308222339FA300521960 /* StoreVC.xib */,
+			);
+			path = "店铺";
 			sourceTree = "<group>";
 		};
 		E763CE4521D5E9C80012E580 = {
@@ -1887,9 +1916,11 @@
 				E704F3D0221A80BE00F25971 /* navigationbarScanBg.png in Resources */,
 				E7D9A2612223F3A5003A820E /* VoucherDetailVC.xib in Resources */,
 				E71C301B22321B4A00521960 /* CatgoryDetailCell.xib in Resources */,
+				E71C307E2233951100521960 /* ShopHeaderView.xib in Resources */,
 				E7A1F88F222CEE83009EA75D /* DRUserInfoVC.xib in Resources */,
 				E710A55C222FB64900848C7B /* ChildAddVC.xib in Resources */,
 				E7A1F880222911F1009EA75D /* BillMessageDetailChildVC.xib in Resources */,
+				E71C308422339FA300521960 /* StoreVC.xib in Resources */,
 				E7F0014A222642ED007CDBD6 /* BillMessageDetailVC.xib in Resources */,
 				E7E1B952221EA24100D791A8 /* README.md in Resources */,
 				E7D9A2592223DF08003A820E /* CollectionCell.xib in Resources */,
@@ -2035,6 +2066,7 @@
 				E7D9A1FB22212AB7003A820E /* OrderDetailVC.m in Sources */,
 				E704F3E3221A8C9A00F25971 /* DCNotificationCenterName.m in Sources */,
 				E7D9A2712224E5FB003A820E /* UIView+Ext.m in Sources */,
+				E71C308322339FA300521960 /* StoreVC.m in Sources */,
 				E7A1F85A22279361009EA75D /* BackVC.m in Sources */,
 				E7CAB493222E5E1A000E3330 /* DCAdressDateBase.m in Sources */,
 				E7744E3221D74D7C004825E6 /* BaseModel.m in Sources */,
@@ -2097,9 +2129,11 @@
 				E763CE5621D5E9C80012E580 /* ViewController.m in Sources */,
 				E71C302022321B4A00521960 /* CollectionHeader.m in Sources */,
 				E7CAB47B222E5AD9000E3330 /* DCNewAdressViewController.m in Sources */,
+				E71C307C223394E700521960 /* ShopHeaderView.m in Sources */,
 				E710A5A22230F9FD00848C7B /* SecondCell.m in Sources */,
 				E704F3F1221BAF9700F25971 /* ZJBLTimerButton.m in Sources */,
 				E768EECE21D60D680047EB6A /* Utility.m in Sources */,
+				E71C30622233528400521960 /* ShopCarDetailModel.m in Sources */,
 				E71C301322321B4A00521960 /* CategoryDetailVC.m in Sources */,
 				E704F3CB221A80BE00F25971 /* CDDTopTip.m in Sources */,
 				E71C30452232474900521960 /* DCAttributeItemCell.m in Sources */,
