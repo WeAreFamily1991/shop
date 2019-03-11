@@ -47,9 +47,9 @@
         _block=selectIndex;
         self.leftSelectColor=[UIColor blackColor];
         self.leftSelectBgColor=[UIColor whiteColor];
-        self.leftBgColor=UIColorFromRGB(0xF3F4F6);
-        self.leftSeparatorColor=UIColorFromRGB(0xE5E5E5);
-        self.leftUnSelectBgColor=UIColorFromRGB(0xF3F4F6);
+        self.leftBgColor=RGBHex(0xF3F4F6);
+        self.leftSeparatorColor=RGBHex(0xE5E5E5);
+        self.leftUnSelectBgColor=RGBHex(0xF3F4F6);
         self.leftUnSelectColor=[UIColor blackColor];
         
         _selectIndex=0;
@@ -350,7 +350,7 @@
 //
 //    UILabel *label = (UILabel *)[view viewWithTag:1];
 ////    label.font=[UIFont systemFontOfSize:14];
-////    label.textColor=UIColorFromRGB(0x686868);
+////    label.textColor=RGBHex(0x686868);
 //    if ([kind isEqualToString:UICollectionElementKindSectionHeader]){
 //
 //        if (title.nextArray.count>0) {

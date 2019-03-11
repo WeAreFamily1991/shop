@@ -38,5 +38,7 @@ target 'Shop' do
   pod 'SVProgressHUD'
   pod 'FMDB'
   pod 'KSCrash'
+  pod 'JSONModel'
+  pod 'LTScrollView', '~> 0.2.0'
   pod 'CDDPagerController'
 end

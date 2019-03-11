@@ -11,7 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface StoreVC : UIViewController
-
+@property(nonatomic,assign)NSInteger num;
+//店铺id
+@property (nonatomic , copy) NSString *GroupID;
 @end
 
 NS_ASSUME_NONNULL_END

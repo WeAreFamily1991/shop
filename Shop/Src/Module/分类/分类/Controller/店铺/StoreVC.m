@@ -9,18 +9,30 @@
 
 #import "StoreVC.h"
 #import "ShopHeaderView.h"
-@interface StoreVC ()
+#import "StoreHomeDetailVC.h"
+#import "ShopEvaluateVC.h"
+#import "TakeawayShopView.h"
+@interface StoreVC ()<FSPageContentViewDelegate,FSSegmentTitleViewDelegate,UIGestureRecognizerDelegate>
+{
+     __block BOOL     isVertical;//是否是垂直
+}
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property(nonatomic,strong)ShopHeaderView *customheadView;
-
+@property (nonatomic, strong) FSPageContentView2 *pageContentView;
+@property (nonatomic, strong) FSSegmentTitleView2 *titleView;
+@property (nonatomic,strong)UIView *backView;
 @end
 
 @implementation StoreVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-   
-    [self settableViewHeaderView];
+    [self initSubView];
+//    UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestureRecognizerAction:)];
+//    pan.delegate = self;
+//    [self.view addGestureRecognizer:pan];
+//    [self settableViewHeaderView];
+//
 //    if (@available(iOS 11.0, *)) {
 //
 //        _tableView.estimatedRowHeight = 0;
@@ -34,25 +46,84 @@
   
     // Do any additional setup after loading the view from its nib.
 }
+- (void)initSubView
+{
+    //在请求中携带店铺ID
+    TakeawayShopView *shopView = [[TakeawayShopView alloc]initWithFrame:self.view.bounds withGroupID:_GroupID];
+    [self.view addSubview:shopView];
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleDefault;
+}
+-(void)settableViewHeaderView
+{
+    self.backView =[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    
+    self.customheadView = [[[NSBundle mainBundle] loadNibNamed:@"ShopHeaderView" owner:self options:nil] lastObject];
+    self.customheadView.height =HScale(200);
+    [self.backView addSubview:self.customheadView];
+    [self addsegentView];
+    self.tableView.tableHeaderView =self.backView;
+    
+}
+-(void)addsegentView
+{//全部", @"已取消", @"待审核", @"待付款", @"待发货", @"待收货",@"已完成",@"退货中",@"已退货"
+//    self.backView =[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 4)
+    self.automaticallyAdjustsScrollViewInsets = NO;//,@"周三",@"周四",@"周五",@"周六",@"周日",
+    NSMutableArray *titleArray = [[NSMutableArray alloc] initWithObjects:@"商品分类", @"店铺评价(10)" ,nil];
+    self.titleView = [[FSSegmentTitleView2 alloc]initWithFrame:CGRectMake(0,self.customheadView.height,SCREEN_WIDTH,40) delegate:self indicatorType:0];
+    self.titleView.backgroundColor = [UIColor whiteColor];
+    self.titleView.button_Width = WScale(60);
+    self.titleView.titlesArr = titleArray;
+    _titleView.titleNormalColor = [UIColor darkGrayColor];
+    _titleView.titleSelectColor = [UIColor redColor];
+    self.titleView.titleFont = DR_FONT(14);
+    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    [self.backView addSubview:_titleView];
+    
+    ///线
+    UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, self.customheadView.height+40-1,SCREEN_WIDTH,0.8)];
+    lineLabel.backgroundColor = BACKGROUNDCOLOR;
+    [self.titleView addSubview:lineLabel];
+    NSMutableArray *childVCs = [[NSMutableArray alloc]init];
+    for (int i = 0; i<titleArray.count; i++)
+    {
+        if (i==1) {
+            ShopEvaluateVC *VC = [[ShopEvaluateVC alloc] init];
+            VC.status = i;
+            [childVCs addObject:VC];
+        }else
+        {
+            StoreHomeDetailVC *VC = [[StoreHomeDetailVC alloc] init];
+            VC.status = i;
+            [childVCs addObject:VC];
+        }
+    }
+    self.pageContentView = [[FSPageContentView2 alloc]initWithFrame:CGRectMake(0,self.customheadView.height+40, SCREEN_WIDTH,SCREEN_HEIGHT-DRTopHeight-40) childVCs:childVCs parentVC:self delegate:self];
+    self.pageContentView.backgroundColor = [UIColor clearColor];
+    [self.backView addSubview:_pageContentView];
+    self.titleView.selectIndex = _num;
+    self.pageContentView.contentViewCurrentIndex = _num;
+}
+//********************************  分段选择  **************************************
+- (void)FSSegmentTitleView:(FSSegmentTitleView2 *)titleView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
+{
+    self.pageContentView.contentViewCurrentIndex = endIndex;
+}
+- (void)FSContenViewDidEndDecelerating:(FSPageContentView2 *)contentView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
+{
+    self.titleView.selectIndex = endIndex;
+}
 - (void)viewWillAppear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:YES animated:animated];
     [super viewWillAppear:animated];
 }
-
 - (void)viewWillDisappear:(BOOL)animated {
     [self.navigationController setNavigationBarHidden:NO animated:animated];
     [super viewWillDisappear:animated];
 }
--(void)settableViewHeaderView
-{
-     self.customheadView = [[[NSBundle mainBundle] loadNibNamed:@"ShopHeaderView" owner:self options:nil] lastObject];
-    self.customheadView.height =HScale(60);
-    self.tableView.tableHeaderView =self.customheadView;
-}
 #pragma mark 表的区数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    return 1;
 }
 #pragma mark 表的行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -96,7 +167,7 @@
 //区尾的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 10;
+    return 0.01;
 }
 //-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
 //
@@ -123,6 +194,8 @@
     return cell;
     
 }
+
+
 /*
 #pragma mark - Navigation
 

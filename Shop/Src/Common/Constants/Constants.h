@@ -63,10 +63,14 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 // Block相关的强/弱引用
 #define DRWeakSelf __weak typeof(self) weakSelf = self
 #define StrongObj(o) __strong typeof(o) o = o##Weak;
-
+#define kDefaultNavBar_SubView_MinY (kIsiPhoneX ? 24.0 : 0.0)//导航条子视图默认最小Y坐标
+// 判断是否为iPhoneX
+#define kIsiPhoneX (kScreenWidth == 375.0 && kScreenHeight == 812.0)
 // 屏幕比例系数
 #define ScreenScale [UIApplication sharedApplication].keyWindow.screen.scale
-
+// 适配 等比放大控件
+#define Size(x)                   ((x)*kScreenWidth*1.0/375.0)
+#define SizeInt(x)                   ((NSInteger)((x)*kScreenWidth/375))
 // 屏幕宽高
 #define SCREEN_WIDTH            [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT           [UIScreen mainScreen].bounds.size.height
@@ -81,6 +85,7 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 #define WidthScale(width) width/750.0*SCREEN_WIDTH
 
 // 字体
+#define kFontNameSize(fontNameSize)            [UIFont fontWithName:@"PingFang-SC-Medium" size:fontNameSize]
 #define DR_FONT(__fontsize__) [UIFont systemFontOfSize:__fontsize__]
 #define DR_BoldFONT(__fontsize__) [UIFont boldSystemFontOfSize:__fontsize__]
 #define BoldFont(size)                  [UIFont boldSystemFontOfSize:FontSize(size)]
@@ -91,7 +96,10 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 
 // 根据 RGB 生成 UIColor 对象
 #define KTextColor              RGB(67, 67, 67)
-
+#define kColor_TitleColor         kColor(@"#666666")//标题颜色
+#define kColor_ButonCornerColor   kColor(@"#D9D9D9")
+#define kColor_bgHeaderViewColor  kColor(@"#E2E2E2")
+#define kColor(hexStr)            [AppMethods colorWithHexString:hexStr]
 #define BACKGROUNDCOLOR         RGBHex(0XF3F5F7)
 #define RGB(R, G, B)            [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:1.0]
 #define RGBA(R, G, B, A)        [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:A]

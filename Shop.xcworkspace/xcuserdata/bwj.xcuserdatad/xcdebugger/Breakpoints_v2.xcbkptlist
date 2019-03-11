@@ -269,5 +269,53 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x5206;&#x7c7b;/&#x5206;&#x7c7b;/Controller/&#x5e97;&#x94fa;/ShopEvaluateVC.m"
+            timestampString = "573997280.583624"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "-tableView:numberOfRowsInSection:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x5206;&#x7c7b;/&#x5206;&#x7c7b;/Controller/&#x5e97;&#x94fa;/&#x5e97;&#x94fa;&#x5b50;&#x9875;&#x9762;/ShopScrollView.m"
+            timestampString = "573997280.583758"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "320"
+            endingLineNumber = "320"
+            landmarkName = "-panGestureRecognizerAction:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x5206;&#x7c7b;/&#x5206;&#x7c7b;/Controller/&#x5e97;&#x94fa;/&#x5e97;&#x94fa;&#x5b50;&#x9875;&#x9762;/ShopScrollView.m"
+            timestampString = "573997280.5838439"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "346"
+            endingLineNumber = "346"
+            landmarkName = "-panGestureRecognizerAction:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
