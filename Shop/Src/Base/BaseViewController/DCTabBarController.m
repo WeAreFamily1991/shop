@@ -77,7 +77,7 @@
 - (void)addDcChildViewContorller
 {
     NSArray *childArray = @[
-                            @{MallClassKey  : @"HomeViewController",
+                            @{MallClassKey  : @"DCHandPickViewController",
                               MallTitleKey  : @"首页",
                               MallImgKey    : @"home",
                               MallSelImgKey : @"home_select"},

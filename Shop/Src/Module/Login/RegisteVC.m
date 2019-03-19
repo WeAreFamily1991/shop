@@ -9,6 +9,7 @@
 #import "RegisteVC.h"
 #import "NNValidationView.h"
 #import "ZJBLTimerButton.h"
+#import "CGXPickerView.h"
 @interface RegisteVC ()
 @property (weak, nonatomic) IBOutlet UITextField *companyTF;
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
@@ -78,7 +79,11 @@
 }
 
 - (IBAction)selectAreaBtnClick:(id)sender {
-    
+    [CGXPickerView showAddressPickerWithTitle:@"请选择你的城市" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
+        
+        NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
+        //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+    }];
     
 }
 - (IBAction)selectBtnClick:(id)sender {
