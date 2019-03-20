@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NumberCalculate.h"
 @class CarDetailModel;
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,20 +29,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)tableViewScroll:(UITextField *)textField;
 
 @end
-@interface CatgoryDetailCell1 : UITableViewCell
+@interface CatgoryDetailCell1 : UITableViewCell<NumberCalculateDelegate>
 
-+(instancetype)cellWithTableView:(UITableView *)tableView;
++(instancetype)cellWithTableView:(UITableView *)tableView withIndexPath:(NSIndexPath *)indexPath;
 @property (nonatomic, strong) CarDetailModel *goodsModel;
-@property (weak, nonatomic) IBOutlet UIView *selectView;
+//@property (weak, nonatomic) IBOutlet UIView *selectView;
 @property (weak, nonatomic) IBOutlet UIButton *danweiBtn;
 @property (weak, nonatomic) IBOutlet UITextField *countTF;
 @property (weak, nonatomic) IBOutlet UILabel *danweiLab;
-@property (weak, nonatomic) IBOutlet UIButton *addCountBtn;
-@property (weak, nonatomic) IBOutlet UITextField *selectCountTF;
-@property (weak, nonatomic) IBOutlet UIButton *cutCountBtn;
+//@property (weak, nonatomic) IBOutlet UIButton *addCountBtn;
+//@property (weak, nonatomic) IBOutlet UITextField *selectCountTF;
+//@property (weak, nonatomic) IBOutlet UIButton *cutCountBtn;
+@property (weak, nonatomic) IBOutlet NumberCalculate *numberCalculate;
 @property (copy,nonatomic) void (^danweiBtnBlock) (NSInteger danweiBtntag);
 @property (nonatomic, weak) id<CatgoryDetailCellSelectDelegate>delegate;
 @end
-
 
 NS_ASSUME_NONNULL_END

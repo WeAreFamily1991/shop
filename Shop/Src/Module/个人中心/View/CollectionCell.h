@@ -43,6 +43,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCell4 : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UIButton *saleOutBtn;
+@property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
+@property (weak, nonatomic) IBOutlet UIButton *againBuyBtn;
+@property (weak, nonatomic) IBOutlet UIButton *detailOrderBtn;
+@property (copy,nonatomic) void (^BtnBlock) (NSInteger btnag);
+@property(nonatomic,assign)NSInteger status;
 @end
 
 @interface CollectionCell5 : UITableViewCell

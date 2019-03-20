@@ -362,7 +362,7 @@
         case 2:
             
         {
-            CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView];
+            CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];
     
             [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
             cell.danweiBtn.tag =indexPath.section;

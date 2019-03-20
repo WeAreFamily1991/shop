@@ -316,19 +316,28 @@ static NSString *const DRTopViewID = @"HQTopStopView";
     if (kind == UICollectionElementKindSectionHeader){
        
 
-            
+        if (indexPath.section ==7){
             HQTopStopView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:DRTopViewID forIndexPath:indexPath];
             headerView.backgroundColor = [UIColor whiteColor];
-            if (indexPath.section==7) {
-                 headerView.selectIndex =indexPath.section;
-            }
-           
-//        for (UIView *view in headerView.subviews) {
-//            [view removeFromSuperview];
-//        }
+            headerView.selectIndex =indexPath.section;
+            return headerView;
+        } else {
+            HQTopStopView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:DCYouLikeHeadViewID forIndexPath:indexPath];
+            return headerView;
+        }
+//
+//            HQTopStopView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:DRTopViewID forIndexPath:indexPath];
+//            headerView.backgroundColor = [UIColor whiteColor];
+//            if (indexPath.section==7) {
+//                 headerView.selectIndex =indexPath.section;
+//            }
+//
+////        for (UIView *view in headerView.subviews) {
+////            [view removeFromSuperview];
+////        }
         
      
-        return headerView;
+//        return headerView;
     
         
     }

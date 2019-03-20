@@ -208,6 +208,27 @@
 {
     
 }
+- (IBAction)btnClick:(id)sender {
+    UIButton *btn =(UIButton *)sender;
+    NSLog(@"btn=%ld",(long)btn.tag);
+    if (_BtnBlock) {
+        _BtnBlock(btn.tag);
+    }
+}
+-(void)setStatus:(NSInteger)status
+{
+    switch (status) {
+        case 0:
+        {
+            
+        }
+            
+            break;
+            
+        default:
+            break;
+    }
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];    
     // Configure the view for the selected state
