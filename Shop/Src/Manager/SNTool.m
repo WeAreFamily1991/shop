@@ -29,7 +29,88 @@
 //    }
     return ssid;
 }
++(NSString *)jsontringData:(id)data{
+    NSError *error = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data options:NSJSONWritingPrettyPrinted error:&error];
+    if (jsonData == nil) {
+#ifdef DEBUG
+        NSLog(@"fail to get JSON from dictionary: %@, error: %@", self, error);
+#endif
+        return nil;
+    }
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    return jsonString;
+}
++(NSString *)convertToJsonData:(NSDictionary *)dict
 
+{
+    
+    NSError *error;
+    
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:&error];
+    
+    NSString *jsonString;
+    
+    if (!jsonData) {
+        
+        NSLog(@"%@",error);
+        
+    }else{
+        
+        jsonString = [[NSString alloc]initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+    }
+    
+    NSMutableString *mutStr = [NSMutableString stringWithString:jsonString];
+    
+    NSRange range = {0,jsonString.length};
+    
+    //去掉字符串中的空格
+    
+    [mutStr replaceOccurrencesOfString:@" " withString:@"" options:NSLiteralSearch range:range];
+    
+    NSRange range2 = {0,mutStr.length};
+    
+    //去掉字符串中的换行符
+    
+    [mutStr replaceOccurrencesOfString:@"\n" withString:@"" options:NSLiteralSearch range:range2];
+    
+    
+    return mutStr;
+    
+}
++ (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString
+{
+    if (jsonString == nil) {
+        return nil;
+    }
+    NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *err;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&err];
+    if(err) {
+        NSLog(@"json解析失败：%@",err);
+        return nil;
+    }
+    return dic;
+}
++ (int)getRandomNumber:(int)from to:(int)to {
+    return (int)(from + (arc4random() % (to - from + 1)));
+}
+//编码问题
++(NSString*)DataTOjsonString:(id)object{
+    
+    NSString *jsonString = nil;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
+                                                       options:NSJSONWritingPrettyPrinted
+                                                         error:&error];
+    if (!jsonData) {
+        NSLog(@"Got an error: %@", error);
+    } else {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    return jsonString;
+}
 + (NSString *)getDeviceModel {
     
     struct utsname systemInfo;
@@ -94,9 +175,14 @@
 }
 
 + (NSString *)getNetWorkStates{
-    
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *children = [[[app valueForKeyPath:@"statusBar"]valueForKeyPath:@"foregroundView"]subviews];
+    UIApplication *application = [UIApplication sharedApplication];
+    NSArray *children;
+    if([[application valueForKeyPath:@"_statusBar"] isKindOfClass:NSClassFromString(@"UIStatusBar_Modern")]) {
+        children = [[[[application valueForKeyPath:@"_statusBar"] valueForKeyPath:@"_statusBar"] valueForKeyPath:@"foregroundView"] subviews];
+    } else{
+        children = [[[application valueForKeyPath:@"_statusBar"] valueForKeyPath:@"foregroundView"] subviews];
+    }
+   
     NSString *state = [[NSString alloc]init];
     int netType = 0;
     //获取到网络返回码
@@ -132,5 +218,81 @@
     //根据状态选择
     return state;
 }
++(NSString *)StringTimeFormat:(NSString *)format
+{
+    NSTimeInterval interval    =[format doubleValue] / 1000.0;
+    NSDate *date               = [NSDate dateWithTimeIntervalSince1970:interval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString       = [formatter stringFromDate: date];
+    NSLog(@"服务器返回的时间戳对应的时间是:%@",dateString);
+    return dateString;
+}
 
+///< 获取当前时间的: 前一周(day:-7)丶前一个月(month:-30)丶前一年(year:-1)的时间戳
++ (NSString *)ddpGetExpectTimestamp:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day {
+    
+    ///< 当前时间
+    NSDate *currentdata = [NSDate date];
+    
+    ///< NSCalendar -- 日历类，它提供了大部分的日期计算接口，并且允许您在NSDate和NSDateComponents之间转换
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    
+    /*
+     ///<  NSDateComponents：时间容器，一个包含了详细的年月日时分秒的容器。
+     ///< 下例：获取指定日期的年，月，日
+     NSDateComponents *comps = nil;
+     comps = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:currentdata];
+     NSLog(@"年 year = %ld",comps.year);
+     NSLog(@"月 month = %ld",comps.month);
+     NSLog(@"日 day = %ld",comps.day);*/
+    
+    
+    NSDateComponents *datecomps = [[NSDateComponents alloc] init];
+    [datecomps setYear:year?:0];
+    [datecomps setMonth:month?:0];
+    [datecomps setDay:day?:0];
+    
+    ///< dateByAddingComponents: 在参数date基础上，增加一个NSDateComponents类型的时间增量
+    NSDate *calculatedate = [calendar dateByAddingComponents:datecomps toDate:currentdata options:0];
+    
+    ///< 打印推算时间
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *calculateStr = [formatter stringFromDate:calculatedate];
+    
+    NSLog(@"calculateStr 推算时间: %@",calculateStr );
+    
+    ///< 预期的推算时间
+//    NSString *result = [NSString stringWithFormat:@"%ld", (long)[calculatedate timeIntervalSince1970]];
+    
+    return calculateStr;
+}
++(NSString *)yearMonthTimeFormat:(NSString *)format
+{
+    NSTimeInterval interval    =[format doubleValue] / 1000.0;
+    NSDate *date               = [NSDate dateWithTimeIntervalSince1970:interval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd"];
+    NSString *dateString       = [formatter stringFromDate: date];
+    NSLog(@"服务器返回的时间戳对应的时间是:%@",dateString);
+    return dateString;
+}
++(NSString *)currenTime
+{
+    NSDate *now = [NSDate date];
+    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
+    fmt.dateFormat = @"yyyy-MM-dd";
+    NSString *nowStr = [fmt stringFromDate:now];
+    return nowStr;
+}
++(void)setTextColor:(UILabel *)label FontNumber:(id)font AndRange:(NSRange)range AndColor:(UIColor *)vaColor
+{
+    NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:label.text];
+    //设置字号
+    [str addAttribute:NSFontAttributeName value:font range:range];
+    //设置文字颜色
+    [str addAttribute:NSForegroundColorAttributeName value:vaColor range:range];
+    label.attributedText = str;
+}
 @end

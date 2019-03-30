@@ -9,8 +9,12 @@
 #import "PasswordChangeVC.h"
 #import "InfoTableViewCell.h"
 #import "CGXPickerView.h"
-
+#import "SNIOTTool.h"
+#import "NSStringSNCategory.h"
 @interface PasswordChangeVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+{
+    NSString *orderPassWord,*newPassword,*surePassword;
+}
 @property (nonatomic,retain)UIButton *selectBtn;
 @property (nonatomic,retain)UIButton *normelBtn;
 @property (nonatomic,retain)UIButton *saveBtn;
@@ -18,50 +22,7 @@
 @end
 
 @implementation PasswordChangeVC
--(void)GetUserInfo
-{
-    //    name =[UserModel sharedManager].username;
-    //    phone =[UserModel sharedManager].mobile;
-    //    identifyID =[UserModel sharedManager].idcard;
-    //    carID =[UserModel sharedManager].car_no;
-    //    [self.dataDic setObject:[UserModel sharedManager].car_brand forKey:@"car_brand"];
-    //    [self.dataDic setObject:[UserModel sharedManager].car_series forKey:@"car_series"];
-    //    NSArray *idArr = [[UserModel sharedManager].idcard_pics componentsSeparatedByString:@","];
-    //    NSArray *jiaArr = [[UserModel sharedManager].drive_card componentsSeparatedByString:@","];
-    //    NSArray *xingArr = [[UserModel sharedManager].driving_card componentsSeparatedByString:@","];
-    //    [self.dataDic setObject:idArr[0] forKey:@"shenfenzheng"];
-    //    [self.dataDic setObject:idArr[1] forKey:@"shenfenfan"];
-    //    [self.dataDic setObject:jiaArr[0] forKey:@"jiazhaozheng"];
-    //    [self.dataDic setObject:jiaArr[1] forKey:@"jiazhaofan"];
-    //    [self.dataDic setObject:xingArr[0] forKey:@"xingshizheng"];
-    //    [self.dataDic setObject:xingArr[1] forKey:@"xingshifan"];
-    //    [self.dataDic setObject:[UserModel sharedManager].man_car_img forKey:@"renche"];
-    //
-    //    jiaImg1 =jiaArr[0];
-    //    jiaImg2 =jiaArr[1];
-    //    identifyImg1 =idArr[0];
-    //    identifyImg2 =idArr[1];
-    //    xingImg1 =xingArr[0];
-    //    xingImg2 =xingArr[1];
-    //    heImg1 =[UserModel sharedManager].man_car_img;
-    //    carType =[UserModel sharedManager].car_brand_desc;
-    //    time =[UserModel sharedManager].car_register_time;
-    //
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
-    
-    
-    //    NSDictionary *dic =[NSDictionary dictionaryWithObjectsAndKeys:[UserModel sharedManager].token,@"token", nil];
-    //
-    //    [Interface_Base Post:@"GetConfig" dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //          data[@"data"][@"car_level"];
-    //
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [MBProgressHUD showError:message];
-    //    }];
-}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 //    self.dataDic =[NSMutableDictionary dictionary];
@@ -74,7 +35,7 @@
     //    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithIcon:@"icon_questions" highlightedIcon:@"" target:self action:@selector(rightBarButtonItem)];
     
     [self.view addSubview:self.tableView];
-    [self GetUserInfo];
+    
    
     [self addTableViewfooterView];
     //    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithIcon:@"icon_questions" highlightedIcon:@"" target:self action:@selector(rightBarButtonItem)];
@@ -100,11 +61,7 @@
     
     
 }
-#pragma mark 按钮点击事件
--(void)saveBtnClick:(UIButton *)sender
-{
-    
-}
+
 -(void)selectBtnClick:(UIButton *)sender
 {
     self.normelBtn.selected =NO;
@@ -166,7 +123,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
-    return 4;
+    return 3;
 }
 #pragma mark 表的行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -193,18 +150,18 @@
     
     NSArray *titleArray =[NSArray array];
     NSArray *placeholdArray=[NSArray array];
-        titleArray = @[@"用户名：",@"旧密码：",@"新密码：",@"确认新密码："];
-        placeholdArray= @[@"请输入用户名",@"请输入旧密码",@"请输入新密码",@"请确认新密码"];
+        titleArray = @[@"旧密码：",@"新密码：",@"确认新密码："];
+        placeholdArray= @[@"请输入旧密码",@"请输入新密码",@"请确认新密码"];
     
     InfoTableViewCell *cell = [InfoTableViewCell cellWithTableView:tableView];
     
-    if (indexPath.row==0) {
-        cell.contentTF.text =@"用户名";
-    }
+   
     cell.titleLabel.text = titleArray[indexPath.row];
     cell.titleLabel.font = DR_FONT(15);
     cell.contentTF.placeholder = placeholdArray[indexPath.row];
-    cell.contentTF.tag = indexPath.row;
+    cell.contentTF.tag = indexPath.row+1;
+    cell.contentTF.keyboardType =UIKeyboardTypeASCIICapable;
+    cell.contentTF.secureTextEntry =YES;
     //            cell.contentTF.text = contentArray[indexPath.row];
     
     [cell.contentTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
@@ -222,21 +179,18 @@
 }
 -(void)textFieldChangeAction:(UITextField *)textField
 {
-//    if (textField.tag == 1) {
-//        name = textField.text;
-//    }
-//    else if (textField.tag == 2)
-//    {
-//        phone = textField.text;
-//    }
-//    else if (textField.tag == 3)
-//    {
-//        identifyID = textField.text;
-//    }
-//    else if (textField.tag == 4)
-//    {
-//        carID = textField.text;
-//    }
+    if (textField.tag == 1)
+    {
+        orderPassWord = textField.text;
+    }
+    else if (textField.tag == 2)
+    {
+        newPassword = textField.text;
+    }
+    else if (textField.tag == 3)
+    {
+        surePassword = textField.text;
+    }
 }
 ///cell的点击事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -291,6 +245,59 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+#pragma mark 按钮点击事件
+-(void)saveBtnClick:(UIButton *)sender
+{
+    
+    if (orderPassWord.length<6) {
+        [MBProgressHUD showError:@"请输入正确的旧密码"];
+        return;
+    }
+    if (newPassword.length<6) {
+        [MBProgressHUD showError:@"请输入正确的新密码"];
+        return;
+    }
+    if (surePassword.length<6) {
+        [MBProgressHUD showError:@"请输入正确的确认密码"];
+        return;
+    }
+    if (![newPassword isEqualToString:surePassword]) {
+        [MBProgressHUD showError:@"两次密码输入不一致"];
+        return;
+    }
+    
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[[orderPassWord MD5],[newPassword MD5]] forKeys:@[@"oldPassword",@"newPassword"]];
+    [SNAPI postWithURL:@"buyer/updatePassword" parameters:dic success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+            [MBProgressHUD showSuccess:@"修改成功"];
+            [self performSelector:@selector(showLogin) withObject:self afterDelay:1];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    
+}
+-(void)showLogin
+{
+    [self logOut];
+}
+-(void)logOut
+{
+    NSMutableDictionary *dic =[NSMutableDictionary dictionary];
+    [SNIOTTool postWithURL:USER_LOGOUT parameters:dic success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+            [[User currentUser] loginOut];
+            LoginVC *dcLoginVc = [LoginVC new];
+            DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
+            [self presentViewController:nav animated:YES completion:nil];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
+    
 }
 
 /*

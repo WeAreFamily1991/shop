@@ -51,8 +51,8 @@
     if (self = [super initWithFrame:frame]) {
         //竖直方向永远有弹簧效果
         self.alwaysBounceVertical = YES;
-        
-        self.font = [UIFont systemFontOfSize:16];
+        self.backgroundColor =BACKGROUNDCOLOR;
+        self.font = DR_FONT(15);
         
         self.placeholderColor = [UIColor lightGrayColor];
         
@@ -67,7 +67,7 @@
         //竖直方向永远有弹簧效果
         self.alwaysBounceVertical = YES;
         
-        self.font = [UIFont systemFontOfSize:16];
+        self.font = DR_FONT(15);
         
         self.placeholderColor = [UIColor lightGrayColor];
         

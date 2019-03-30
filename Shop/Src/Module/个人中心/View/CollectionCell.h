@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class VoucherModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCell : UITableViewCell
@@ -28,6 +28,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+
+@property (nonatomic,retain)VoucherModel *vouchModel;
+@property (weak, nonatomic) IBOutlet UIImageView *iconBackIMG;
+@property (weak, nonatomic) IBOutlet UILabel *moneyCountLab;
+@property (weak, nonatomic) IBOutlet UILabel *manjianLab;
+@property (weak, nonatomic) IBOutlet UILabel *titleLab;
+@property (weak, nonatomic) IBOutlet UILabel *conditionLab;
+@property (weak, nonatomic) IBOutlet UILabel *timeLab;
+@property (weak, nonatomic) IBOutlet UIButton *hidenBtn;
+@property (weak, nonatomic) IBOutlet UIButton *statusBtn;
+@property (nonatomic, copy) dispatch_block_t selectlickBlock;
+
 @end
 
 

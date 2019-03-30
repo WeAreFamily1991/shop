@@ -18,6 +18,9 @@
         cell = [[[NSBundle mainBundle] loadNibNamed:@"MineCell" owner:nil options:nil] firstObject];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    
+    cell.iconBtn.layer.masksToBounds =30;
+    cell.iconBtn.layer.cornerRadius =30;
     cell.groundView.layer.cornerRadius =5;
     cell.groundView.layer.masksToBounds =5;
     [cell.dealOrderBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];

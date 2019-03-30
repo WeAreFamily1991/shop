@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BillMessageDetailVC : UIViewController
 @property(nonatomic,assign)NSInteger status;
+@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @end
 
 NS_ASSUME_NONNULL_END

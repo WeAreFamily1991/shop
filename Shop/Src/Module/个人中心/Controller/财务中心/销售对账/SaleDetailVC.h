@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "SalesOrderModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SaleDetailVC : UIViewController
 @property(nonatomic,assign)NSInteger num;
 @property(nonatomic,assign)NSInteger fatherStatus;
+@property (strong , nonatomic)SalesOrderModel *saleModel;
 @end
 
 NS_ASSUME_NONNULL_END

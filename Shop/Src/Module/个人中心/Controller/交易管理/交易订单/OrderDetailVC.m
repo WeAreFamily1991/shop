@@ -10,6 +10,7 @@
 #import "FirstTableViewCell.h"
 #import "CollectionCell.h"
 #import "DetailOrdervc.h"
+#import "ApplicationSaleAfterVC.h"
 @interface OrderDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
@@ -228,7 +229,17 @@
         {
             CollectionCell4 *cell =[CollectionCell4 cellWithTableView:tableView];
             cell.BtnBlock = ^(NSInteger btnag) {
-                [self.navigationController pushViewController:[DetailOrdervc new] animated:YES];
+                switch (btnag) {
+                    case 3:
+                         [self.navigationController pushViewController:[ApplicationSaleAfterVC new] animated:YES];
+                        
+                        break;
+                        
+                    default:
+                        [self.navigationController pushViewController:[DetailOrdervc new] animated:YES];
+                        break;
+                }
+               
             };
             return cell;
         }

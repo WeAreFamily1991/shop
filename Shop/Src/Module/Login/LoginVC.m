@@ -13,6 +13,8 @@
 #import "SNToken.h"
 #import "SNAccount.h"
 @interface LoginVC ()
+@property (weak, nonatomic) IBOutlet UIView *phoneView;
+@property (weak, nonatomic) IBOutlet UIView *passwordView;
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTF;
 @property (weak, nonatomic) IBOutlet UIButton *remmberBtn;
@@ -29,6 +31,15 @@
     self.title =@"会员登录";
     self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:[UIImage imageNamed:@"close"] WithSelected:nil Target:self action:@selector(leftBarButtonItem)];
     // Do any additional setup after loading the view from its nib.
+    SNAccount *account = [SNAccount loadAccount];
+    if (account.account.length) {
+        self.phoneTF.text = account.account;
+        if ([[DEFAULTS objectForKey:@"selected"] boolValue]) {
+            self.passwordTF.text =account.password;
+        }
+        
+       
+    }
 }
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -48,18 +59,19 @@
 }
 -(void)layout
 {
-    self.phoneTF.backgroundColor =RGBHex(0XF5F5F5);
-    self.phoneTF.layer.cornerRadius =self.phoneTF.dc_size.height/2;
-    self.phoneTF.layer.masksToBounds =self.phoneTF.dc_size.height/2;
-    self.passwordTF.backgroundColor =RGBHex(0XF5F5F5);
-    self.passwordTF.layer.cornerRadius =self.passwordTF.dc_size.height/2;
-    self.passwordTF.layer.masksToBounds =self.passwordTF.dc_size.height/2;
-    self.loginBtn.layer.cornerRadius =25;
-    self.loginBtn.layer.masksToBounds =25;
-    self.registebTN.layer.cornerRadius =25;
-    self.registebTN.layer.masksToBounds =25;
+    
+    self.phoneView.layer.cornerRadius =25;
+    self.phoneView.layer.masksToBounds =25;
+    
+    self.passwordView.layer.cornerRadius =25;
+    self.passwordView.layer.masksToBounds =25;
+    self.loginBtn.layer.cornerRadius =22.5;
+    self.loginBtn.layer.masksToBounds =22.5;
+    self.registebTN.layer.cornerRadius =22.5;
+    self.registebTN.layer.masksToBounds =22.5;
     [self.registebTN.layer setBorderColor:[UIColor lightGrayColor].CGColor];
     [self.registebTN.layer setBorderWidth:1.0];
+    self.remmberBtn.selected =[[DEFAULTS objectForKey:@"selected"] boolValue];
     
     
 }
@@ -72,6 +84,7 @@
 - (IBAction)remmberBtnCLICK:(id)sender
 {
     self.remmberBtn.selected =!self.remmberBtn.selected;
+    [DEFAULTS setObject:[NSString stringWithFormat:@"%d",self.remmberBtn.selected] forKey:@"selected"];
 }
 - (IBAction)forgetBtnCLICK:(id)sender
 {
@@ -105,8 +118,11 @@
 //        if (weakSelf.loginSuccess) {
 //            weakSelf.loginSuccess();
 //        }
+        [MBProgressHUD showSuccess:@"登录成功"];
+        [weakSelf success];
         
     } failure:^(NSError *error) {
+        [MBProgressHUD showError:error.domain];
         [MBProgressHUD hideHUDForView:weakSelf.view];
     }];
 }
@@ -115,7 +131,17 @@
     
     [self.navigationController pushViewController:[RegisteVC new] animated:YES];
 }
-
+- (void)success {
+    
+    [MBProgressHUD hideHUDForView:self.view];
+    [self performSelector:@selector(back) withObject:nil afterDelay:1];
+}
+-(void)back
+{
+    [self.view endEditing:YES];
+    [self.navigationController setNavigationBarHidden:NO animated:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 /*
 #pragma mark - Navigation
 

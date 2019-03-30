@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface SNToken : NSObject
-
+@property (nonatomic,copy) NSString *visit_token;
 @property (nonatomic, copy) NSString *access_token;
 
 @property (nonatomic, copy) NSString *expires_in;
@@ -20,6 +20,19 @@
 @property (nonatomic, strong) NSDate *expiresTime;
 
 @property (nonatomic, copy) NSString *password;
+@property (nonatomic, copy) NSString *mobilePhone;
+
+
+
+/**
+ *  存档Token，把Token存到沙盒
+ */
++ (void)saveVisistToken:(id)token;
+
+/**
+ *  解档Token，从沙盒中获取Token
+ */
++ (id)loadVisistToken;
 
 /**
  *  存档Token，把Token存到沙盒

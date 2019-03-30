@@ -11,15 +11,16 @@
 
 @implementation DRUserInfoModel
 
-//+ (NSDictionary *)mj_objectClassInArray {
-//    return @{
-//             @"id" : @"user_id"
-//             };
-//}
 
 + (NSDictionary *)mj_replacedKeyFromPropertyName {
     return @{
-             @"user_id" : @"id"
+             @"commpany_id" : @"id"
              };
+}
+@end
+@implementation DRBuyerModel
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    
 }
 @end

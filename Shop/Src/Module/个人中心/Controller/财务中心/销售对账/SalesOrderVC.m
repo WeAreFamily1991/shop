@@ -10,7 +10,7 @@
 #import "SegmentViewController.h"
 #import "SalesOrderDetailVC.h"
 #import "SYTypeButtonView.h"
-#import "CGXPickerView.h"
+#import "CHDatePickerMenu.h"
 static CGFloat const ButtonHeight = 38;
 @interface SalesOrderVC ()<UITextFieldDelegate,FSPageContentViewDelegate,FSSegmentTitleViewDelegate>
 
@@ -19,6 +19,8 @@ static CGFloat const ButtonHeight = 38;
 @property (nonatomic,strong)SalesOrderDetailVC *detailVC;
 @property (nonatomic,strong)SYTypeButtonView *buttonView;
 @property (nonatomic,strong)UITextField *orderTF;
+@property (nonatomic,strong)SalesOrderDetailVC  *VC;
+@property (nonatomic,strong)NSMutableArray *childVCs;
 @end
 
 @implementation SalesOrderVC
@@ -51,7 +53,7 @@ static CGFloat const ButtonHeight = 38;
 
     self.buttonView.imageTypeArray = @[dict01];
     self.buttonView.selectedIndex = -1;
-    
+
     UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(SCREEN_WIDTH/4, 40, SCREEN_WIDTH-SCREEN_WIDTH/4, 40)];
     backView.backgroundColor =[UIColor whiteColor];
     [self.view addSubview:backView];
@@ -78,20 +80,33 @@ static CGFloat const ButtonHeight = 38;
 -(void)searchBtnClick:(UIButton *)sender
 {
     NSLog(@"textField==%@",self.orderTF.text);
+    
+//    [self.VC.sourceDic setValue:self.orderTF.text forKey:@"dzNo"];
+    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
+    [mudic setValue:self.orderTF.text forKey:@"dzNo"];
+    [mudic setValue:@"2" forKey:@"index"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:mudic];
+//    [self.VC setSourceWithDic:mudic withIndex:2];
 }
 -(void)selectDatePickViewWithIndex:(NSInteger)selectIndex
 {
     DRWeakSelf;
-    NSDate *now = [NSDate date];
-    NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-    fmt.dateFormat = @"yyyy-MM-dd HH:mm:ss";
-    NSString *nowStr = [fmt stringFromDate:now];
-    //    NSString *titleStr ;
-    
-    [CGXPickerView showDatePickerWithTitle:@"对账时间" DateType:UIDatePickerModeDate DefaultSelValue:nil MinDateStr:@"1900-01-01 00:00:00" MaxDateStr:nowStr IsAutoSelect:YES Manager:nil ResultBlock:^(NSString *selectValue) {
-        NSLog(@"%@",selectValue);
-        [weakSelf.buttonView setTitleButton:selectValue index:selectIndex];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM";
+    __auto_type datePicker = [CHDatePickerMenu menuWithMode:CHDatePickerModeDateYM onSelectDate:^(NSDate * _Nonnull date) {
+//        self.selectedDateLabel.text = [formatter stringFromDate:date];
+        [weakSelf.buttonView setTitleButton:[formatter stringFromDate:date] index:selectIndex];
+
+        NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
+        [mudic setValue:[formatter stringFromDate:date] forKey:@"time"];
+        [mudic setValue:@"1" forKey:@"index"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:mudic];
+//        [self.VC setSourceWithDic:mudic withIndex:1];
+//        [weakSelf.VC.sourceDic setValue:[formatter stringFromDate:date] forKey:@"time"];
     }];
+    datePicker.datePickerView.maximumDate = NSDate.date;
+    
+    [datePicker show];
 }
 -(void)addsegentView
 {
@@ -110,14 +125,14 @@ static CGFloat const ButtonHeight = 38;
     UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40-1,SCREEN_WIDTH,0.8)];
     lineLabel.backgroundColor = BACKGROUNDCOLOR;
     [self.titleView addSubview:lineLabel];
-    NSMutableArray *childVCs = [[NSMutableArray alloc]init];
+    self.childVCs = [[NSMutableArray alloc]init];
     for (int i = 0; i<titleArray.count; i++)
     {
-        SalesOrderDetailVC  *VC = [[SalesOrderDetailVC alloc] init];
-        VC.status = i;
-        [childVCs addObject:VC];
+        self.VC= [[SalesOrderDetailVC alloc] init];
+        self.VC.status = i;
+        [self.childVCs addObject:self.VC];
     }
-    self.pageContentView = [[FSPageContentView2 alloc]initWithFrame:CGRectMake(0,80, SCREEN_WIDTH,SCREEN_HEIGHT-80-DRTopHeight) childVCs:childVCs parentVC:self delegate:self];
+    self.pageContentView = [[FSPageContentView2 alloc]initWithFrame:CGRectMake(0,80, SCREEN_WIDTH,SCREEN_HEIGHT-80-DRTopHeight) childVCs:self.childVCs parentVC:self delegate:self];
     self.pageContentView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_pageContentView];
     self.titleView.selectIndex = _num;
@@ -126,6 +141,7 @@ static CGFloat const ButtonHeight = 38;
 //********************************  分段选择  **************************************
 - (void)FSSegmentTitleView:(FSSegmentTitleView2 *)titleView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
 {
+    SalesOrderDetailVC *detailVC= self.childVCs[endIndex];
     self.pageContentView.contentViewCurrentIndex = endIndex;
 }
 - (void)FSContenViewDidEndDecelerating:(FSPageContentView2 *)contentView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex

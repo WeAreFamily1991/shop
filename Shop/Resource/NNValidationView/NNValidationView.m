@@ -7,7 +7,7 @@
 //
 
 #import "NNValidationView.h"
-
+#import "SNAPIManager.h"
 #define NNRandomColor [UIColor colorWithRed:arc4random() % 100 / 100.0 green:arc4random() % 100 / 100.0 blue:arc4random() % 100 / 100.0 alpha: 0.5]
 
 @interface NNValidationView ()
@@ -45,12 +45,12 @@
     NSMutableString *getStr = [[NSMutableString alloc] initWithCapacity:self.charCount];
     self.charString = [[NSMutableString alloc] initWithCapacity:self.charCount];
     
-    for(NSInteger i = 0; i < self.charCount; i++) {
-        NSInteger index = arc4random() % ([self.charArray count]);
-        getStr = [self.charArray objectAtIndex:index];
-        self.charString = (NSMutableString *)[self.charString stringByAppendingString:getStr];
-    }
-    
+//    for(NSInteger i = 0; i < self.charCount; i++) {
+//        
+//    }
+    NSInteger index = arc4random() % ([self.charArray count]);
+    getStr = [self.charArray objectAtIndex:index];
+    self.charString = (NSMutableString *)[self.charString stringByAppendingString:getStr];
     if (self.changeValidationCodeBlock) {
         self.changeValidationCodeBlock();
     }
@@ -106,7 +106,7 @@
 - (NSArray *)charArray {
     if (!_charArray) {
         //,@"A",@"B",@"C",@"D",@"E",@"F",@"G",@"H",@"I",@"J",@"K",@"L",@"M",@"N",@"O",@"P",@"Q",@"R",@"S",@"T",@"U",@"V",@"W",@"X",@"Y",@"Z"
-        _charArray = [[NSArray alloc] initWithObjects:@"0",@"1",@"2",@"3",@"4",@"5",@"6",@"7",@"8",@"9",nil];
+        _charArray = [[NSArray alloc] initWithObjects:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@?santieJwt=%@",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"token"]]],nil];
     }
     return _charArray;
 }

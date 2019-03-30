@@ -8,17 +8,18 @@
 
 #import "MessageVC.h"
 #import "CartTableViewCell.h"
-
+#import "DCUpDownButton.h"
+#import "MessageDetailVC.h"
 #define  TAG_BACKGROUNDVIEW 100
 
 
 @interface MessageVC ()<UITableViewDataSource,UITableViewDelegate>
 {
-    UITableView *myTableView;
+    
     //全选按钮
     UIButton *selectAll;
     //展示数据源数组
-    NSMutableArray *dataArray;
+//    NSMutableArray *self.dataArray;
     //是否全选
     BOOL isSelect;
     
@@ -27,8 +28,11 @@
     
     UILabel *priceLabel;
 }
-
-
+@property (strong,nonatomic)NSMutableArray *dataArray;
+@property (strong,nonatomic)CartModel *model;
+@property (retain,nonatomic)UITableView *tableView;
+/* 暂无站内短信提示 */
+@property (strong , nonatomic)DCUpDownButton *bgTipButton;
 @end
 
 @implementation MessageVC
@@ -40,8 +44,8 @@
     isSelect = NO;
     //    [self networkRequest];
     selectAll.selected = NO;
+    [self creatData];
     
-    priceLabel.text = [NSString stringWithFormat:@"￥0.00"];
 }
 
 /**
@@ -49,18 +53,18 @@
  *
  *  计算已选中商品金额
  */
--(void)countPrice
-{
-    double totlePrice = 0.0;
-    
-    for (CartModel *model in selectGoods) {
-        
-        double price = [model.price doubleValue];
-        
-        totlePrice += price*model.number;
-    }
-    priceLabel.text = [NSString stringWithFormat:@"￥%.2f",totlePrice];
-}
+//-(void)countPrice
+//{
+//    double totlePrice = 0.0;
+//
+//    for (CartModel *model in selectGoods) {
+//
+//        double price = [model.price doubleValue];
+//
+//        totlePrice += price*model.number;
+//    }
+//    priceLabel.text = [NSString stringWithFormat:@"￥%.2f",totlePrice];
+//}
 
 /**
  *  @author LQQ, 16-02-18 11:02:32
@@ -69,26 +73,39 @@
  */
 -(void)creatData
 {
-    for (int i = 0; i < 10; i++) {
-        CartModel *model = [[CartModel alloc]init];
+    DRWeakSelf;
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[@"1",@"1000000"] forKeys:@[@"page",@"pageSize"]];
+    [SNIOTTool getWithURL:@"buyer/buyerMessageList" parameters:dic success:^(SNResult *result) {
         
-        model.nameStr = @"测试数据";
-        model.price = @"100.00";
-        model.number = 1;
-        model.image = [UIImage imageNamed:@"aaa.jpg"];
-        model.dateStr = @"2016.02.18";
-        model.sizeStr = @"18*20cm";
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+            weakSelf.dataArray =[NSMutableArray array];
+            NSArray *sourArr =result.data[@"list"];
+            if (sourArr.count!=0) {
+                for (NSDictionary *dic in sourArr) {
+                    weakSelf.model =[CartModel mj_objectWithKeyValues:dic];
+                    [weakSelf.dataArray addObject:weakSelf.model];
+                }
+            }
+            [weakSelf.tableView reloadData];
+        }
         
-        [dataArray addObject:model];
-    }
-    
-    if (myTableView) {
-        [myTableView reloadData];
-    }
-    else
-    {
-        [self setupMainView];
-    }
+    } failure:^(NSError *error) {
+        
+    }];
+//    for (int i = 0; i < 10; i++) {
+//        CartModel *model = [[CartModel alloc]init];
+//
+//        model.nameStr = @"测试数据";
+//        model.price = @"100.00";
+//        model.number = 1;
+//        model.image = [UIImage imageNamed:@"aaa.jpg"];
+//        model.dateStr = @"2016.02.18";
+//        model.sizeStr = @"18*20cm";
+//
+//        [self.dataArray addObject:model];
+//    }
+   
+   
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -96,10 +113,11 @@
     
     self.view.backgroundColor = RGBCOLOR(245, 246, 248);
     
-    dataArray = [[NSMutableArray alloc]init];
+   
     selectGoods = [[NSMutableArray alloc]init];
-    [self setupMainView];
-    [self creatData];
+    [self.view addSubview:self.tableView];
+    [self.view addSubview:self.bgTipButton];
+    [self setupBottomView];
     self.title = @"站内短信";
 }
 
@@ -112,7 +130,7 @@
     isSelect = button.selected;
     if (isSelect) {
         
-        for (CartModel *model in dataArray) {
+        for (CartModel *model in self.self.dataArray) {
             [selectGoods addObject:model];
         }
     }
@@ -121,14 +139,47 @@
         [selectGoods removeAllObjects];
     }
     
-    [myTableView reloadData];
-    [self countPrice];
+    [self.tableView reloadData];
+//    [self countPrice];
 }
 
 //提交订单
 -(void)goPayBtnClick
 {
-    NSLog(@"去结算");
+    
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                             message:@"此操作将永久删除该账户, 是否继续?"
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action)
+                              {
+                                  NSString *idStr ;
+                                  
+                                  for (CartModel *carmodel in selectGoods) {
+                                      idStr=[NSString stringWithFormat:@"%@,%@",carmodel.message_id,idStr];
+                                  }
+//
+                                  NSDictionary *dic =@{@"id":idStr};
+                                  
+                                  [SNIOTTool deleteWithURL:@"buyer/deleteMessage" parameters:[dic mutableCopy] success:^(SNResult *result) {
+                                      [self creatData];
+                                  } failure:^(NSError *error) {
+                                      
+                                  }];
+                              }];
+    [alertController addAction:action1];
+    
+    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil];
+    //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
+    [alertController addAction:action2];
+    
+    dispatch_async(dispatch_get_main_queue(),^{
+        [self presentViewController:alertController animated:YES completion:nil];
+    });
 }
 
 #pragma mark - 设置底部视图
@@ -192,79 +243,35 @@
         make.width.equalTo(@100);
         
     }];
-    
-//    //价格显示
-//    [priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.right.equalTo(btn.mas_left).offset(-10);
-//        make.top.equalTo(bgView).offset(10);
-//        make.bottom.equalTo(bgView).offset(-10);
-//        make.left.equalTo(label.mas_right);
-//    }];
-//
-//    //合计
-//    [label mas_makeConstraints:^(MASConstraintMaker *make) {
-//        make.top.equalTo(bgView).offset(10);
-//        make.bottom.equalTo(bgView).offset(-10);
-//        make.right.equalTo(priceLabel.mas_left);
-//        make.width.equalTo(@60);
-//    }];
 }
 
 #pragma mark - 设置主视图
--(void)setupMainView
+
+
+
+-(UITableView *)tableView
 {
-    //当购物车为空时,显示默认视图
-    if (dataArray.count == 0) {
-        [self cartEmptyShow];
-    }
-    //当购物车不为空时,tableView展示
-    else
+    if (_tableView == nil)
     {
-        UIView *vi = [self.view viewWithTag:TAG_BACKGROUNDVIEW];
-        [vi removeFromSuperview];
-        myTableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50-DRTopHeight) style:UITableViewStylePlain];
-        myTableView.delegate = self;
-        myTableView.dataSource = self;
-        myTableView.rowHeight = 100;
-        myTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-        myTableView.backgroundColor = RGBCOLOR(245, 246, 248);
-        [self.view addSubview:myTableView];
-        [self setupBottomView];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT - 50-DRTopHeight) style:UITableViewStylePlain];
+        _tableView.delegate = self;
+        _tableView.dataSource = self;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        self.tableView.tableFooterView.hidden = YES;
+        self.tableView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+        self.tableView.tableFooterView = [[UIView alloc] init];
+        if (@available(iOS 11.0, *)) {
+            
+            _tableView.estimatedRowHeight = 0;
+            
+            _tableView.estimatedSectionHeaderHeight = 0;
+            
+            _tableView.estimatedSectionFooterHeight = 0;
+            self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
+        [self.view addSubview:_tableView];
     }
-}
-//购物车为空时的默认视图
--(void)cartEmptyShow
-{
-    //默认视图背景
-    UIView *backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT - 64)];
-    backgroundView.tag = TAG_BACKGROUNDVIEW;
-    backgroundView.backgroundColor=BACKGROUNDCOLOR;
-    [self.view addSubview:backgroundView];
-    
-    //默认图片
-    UIImageView *img = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"cart_default_bg"]];
-    img.center = CGPointMake(SCREEN_WIDTH/2.0, SCREEN_HEIGHT/2.0 - 120);
-    img.bounds = CGRectMake(0, 0, 247.0/187 * 100, 100);
-    [backgroundView addSubview:img];
-    
-    UILabel *warnLabel = [[UILabel alloc]init];
-    warnLabel.center = CGPointMake(SCREEN_WIDTH/2.0, SCREEN_HEIGHT/2.0 - 10);
-    warnLabel.bounds = CGRectMake(0, 0, SCREEN_WIDTH, 30);
-    warnLabel.textAlignment = NSTextAlignmentCenter;
-    warnLabel.text = @"购物车好空,买点什么呗!";
-    warnLabel.font = [UIFont systemFontOfSize:15];
-    warnLabel.textColor = kUIColorFromRGB(0x706F6F);
-    [backgroundView addSubview:warnLabel];
-    
-    //默认视图按钮
-    UIButton *btn = [UIButton buttonWithType:UIButtonTypeCustom];
-    btn.center = CGPointMake(SCREEN_WIDTH/2.0, SCREEN_HEIGHT/2.0 + 40);
-    btn.bounds = CGRectMake(0, 0, SCREEN_WIDTH - 40, 40);
-    [btn setBackgroundImage:[UIImage imageNamed:@"btn_background_red"] forState:UIControlStateNormal];
-    [btn setTitle:@"去定制" forState:UIControlStateNormal];
-    [btn addTarget:self action:@selector(goToMainmenuView) forControlEvents:UIControlEventTouchUpInside];
-    [backgroundView addSubview:btn];
-    
+    return _tableView;
 }
 -(void)goToMainmenuView
 {
@@ -273,10 +280,18 @@
 #pragma mark - tableView 数据源方法
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return dataArray.count;
+     self.bgTipButton.hidden = (_dataArray.count > 0) ? YES : NO;
+    return self.self.dataArray.count;
     
 }
-
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+     return UITableViewAutomaticDimension;
+}
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewAutomaticDimension;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CartTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cellID"];
@@ -285,9 +300,9 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     cell.isSelected = isSelect;
-    
+     [cell reloadDataWith:[self.dataArray objectAtIndex:indexPath.row]];
     //是否被选中
-    if ([selectGoods containsObject:[dataArray objectAtIndex:indexPath.row]]) {
+    if ([selectGoods containsObject:[self.self.dataArray objectAtIndex:indexPath.row]]) {
         cell.isSelected = YES;
     }
     
@@ -295,14 +310,14 @@
     cell.cartBlock = ^(BOOL isSelec){
         
         if (isSelec) {
-            [selectGoods addObject:[dataArray objectAtIndex:indexPath.row]];
+            [selectGoods addObject:[self.dataArray objectAtIndex:indexPath.row]];
         }
         else
         {
-            [selectGoods removeObject:[dataArray objectAtIndex:indexPath.row]];
+            [selectGoods removeObject:[self.dataArray objectAtIndex:indexPath.row]];
         }
         
-        if (selectGoods.count == dataArray.count) {
+        if (selectGoods.count == self.dataArray.count) {
             selectAll.selected = YES;
         }
         else
@@ -310,61 +325,25 @@
             selectAll.selected = NO;
         }
         
-        [self countPrice];
+//        [self countPrice];
     };
-    __block CartTableViewCell *weakCell = cell;
-    cell.numAddBlock =^(){
-        
-        NSInteger count = [weakCell.numberLabel.text integerValue];
-        count++;
-        NSString *numStr = [NSString stringWithFormat:@"%ld",(long)count];
-        
-        CartModel *model = [dataArray objectAtIndex:indexPath.row];
-        
-        weakCell.numberLabel.text = numStr;
-        model.number = count;
-        
-        [dataArray replaceObjectAtIndex:indexPath.row withObject:model];
-        if ([selectGoods containsObject:model]) {
-            [selectGoods removeObject:model];
-            [selectGoods addObject:model];
-            [self countPrice];
-        }
-    };
+  
     
-    cell.numCutBlock =^(){
-        
-        NSInteger count = [weakCell.numberLabel.text integerValue];
-        count--;
-        if(count <= 0){
-            return ;
-        }
-        NSString *numStr = [NSString stringWithFormat:@"%ld",(long)count];
-        
-        CartModel *model = [dataArray objectAtIndex:indexPath.row];
-        
-        weakCell.numberLabel.text = numStr;
-        
-        model.number = count;
-        [dataArray replaceObjectAtIndex:indexPath.row withObject:model];
-        
-        //判断已选择数组里有无该对象,有就删除  重新添加
-        if ([selectGoods containsObject:model]) {
-            [selectGoods removeObject:model];
-            [selectGoods addObject:model];
-            [self countPrice];
-        }
-    };
-    
-    [cell reloadDataWith:[dataArray objectAtIndex:indexPath.row]];
+   
     return cell;
 }
 
 -(void)reloadTable
 {
-    [myTableView reloadData];
+    [self.tableView reloadData];
 }
-
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    self.model =self.dataArray[indexPath.row];
+    MessageDetailVC *detailVC =[[MessageDetailVC alloc]init];
+    detailVC.model =self.model;
+    [self.navigationController pushViewController:detailVC animated:YES];
+}
 -(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return @"删除";
@@ -373,23 +352,12 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"提示" message:@"确定要删除该商品?删除后无法恢复!" preferredStyle:1];
-        UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
-            
-            [dataArray removeObjectAtIndex:indexPath.row];
-            //    删除
-            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            //延迟0.5s刷新一下,否则数据会乱
-            [self performSelector:@selector(reloadTable) withObject:nil afterDelay:0.5];
-            
-        }];
         
-        UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:nil];
-        
-        [alert addAction:okAction];
-        [alert addAction:cancel];
-        [self presentViewController:alert animated:YES completion:nil];
+        [self.dataArray removeObjectAtIndex:indexPath.row];
+        //    删除
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        //延迟0.5s刷新一下,否则数据会乱
+        [self performSelector:@selector(reloadTable) withObject:nil afterDelay:0.5];
     }
 }
 
@@ -397,7 +365,20 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无消息" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
+}
 /*
  #pragma mark - Navigation
  

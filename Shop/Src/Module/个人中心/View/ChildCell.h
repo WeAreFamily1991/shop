@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+@class DRChildCountModel;
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -20,6 +20,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *editBtn;
 @property (weak, nonatomic) IBOutlet UIButton *startBtn;
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
-
+/* 模型数据 */
+@property (strong , nonatomic)DRChildCountModel *adItem;
+/** 选择编辑回调 */
+@property (nonatomic, copy) dispatch_block_t isEditBlock;
+/** 选择启用回调 */
+@property (nonatomic, copy) dispatch_block_t isStartBlock;
+/** 选择删除回调 */
+@property (nonatomic, copy) dispatch_block_t isCancelBlock;
 @end
 NS_ASSUME_NONNULL_END

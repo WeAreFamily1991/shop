@@ -9,5 +9,13 @@
 #import "CartModel.h"
 
 @implementation CartModel
-
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    return @{
+             @"message_id" : @"id"
+             };
+}
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    
+}
 @end

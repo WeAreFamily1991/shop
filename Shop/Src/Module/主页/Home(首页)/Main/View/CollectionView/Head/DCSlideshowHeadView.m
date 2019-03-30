@@ -47,6 +47,7 @@
     _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenW, self.dc_height) delegate:self placeholderImage:nil];
     _cycleScrollView.bannerImageViewContentMode = UIViewContentModeScaleAspectFill;
     _cycleScrollView.autoScrollTimeInterval = 5.0;
+    
     [self addSubview:_cycleScrollView];
 }
 
@@ -62,6 +63,9 @@
 #pragma mark - 点击图片Bannar跳转
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
     NSLog(@"点击了%zd轮播图",index);
+    if (_ManageIndexBlock) {
+        _ManageIndexBlock (index);
+    }
 }
 
 #pragma mark - 布局

@@ -12,7 +12,7 @@
 // Controllers
 
 // Models
-#import "DCAdressItem.h"
+#import "DRAdressListModel.h"
 // Views
 
 // Vendors
@@ -38,15 +38,15 @@
 }
 
 #pragma mark - Setter Getter Methods
-- (void)setAdItem:(DCAdressItem *)adItem
+- (void)setAdItem:(DRAdressListModel *)adItem
 {
     _adItem = adItem;
     
-    self.perNameLabel.text = adItem.userName;
-    self.perPhoneLabel.text = [DCSpeedy dc_encryptionDisplayMessageWith:adItem.userPhone WithFirstIndex:3];
-    self.perDetailLabel.text = [NSString stringWithFormat:@"%@ %@",adItem.chooseAdress,adItem.userAdress];
+    self.perNameLabel.text = adItem.receiver;
+    self.perPhoneLabel.text = [DCSpeedy dc_encryptionDisplayMessageWith:adItem.mobile WithFirstIndex:3];
+    self.perDetailLabel.text =adItem.address;
     
-    if ([adItem.isDefault isEqualToString:@"2"]) {//判断是否是默认选择
+    if ([[NSString stringWithFormat:@"%@",adItem.isdefault] isEqualToString:@"1"]) {//判断是否是默认选择
         self.chooseButton.selected = YES;
     } else {
         self.chooseButton.selected = NO;

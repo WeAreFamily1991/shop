@@ -44,9 +44,11 @@
 
 
 #pragma mark - 选择地址
-- (IBAction)addressButtonClick {
-    
+- (IBAction)addressButtonClick {    
     !_selectAdBlock ? : _selectAdBlock();
+}
+- (IBAction)isDefautsBtnClick:(id)sender {
+    !_isDefautsBlock ? : _isDefautsBlock();
 }
 #pragma mark - Setter Getter Methods
 

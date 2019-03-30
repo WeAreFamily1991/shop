@@ -20,14 +20,13 @@
 #define NetworkConstants_h
 
 #pragma mark - ServerRoot
-#ifdef DEBUG        // 开发环境
-    #define SERVER_ROOT             @"192.168.31.133:8081"
-    #define API_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", SERVER_ROOT]
-#else               // 线上环境
-    #define SERVER_ROOT             @""
-    #define API_ROOT                [NSString stringWithFormat:@"http://%@/api/", SERVER_ROOT]
-#endif
+// 开发环境
+#define DEBUGSERVER_ROOT             @"192.168.31.133:8081"
+#define DEBUGAPI_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", DEBUGSERVER_ROOT]
 
+ // 线上环境
+#define SERVER_ROOT             @"192.168.31.133:8081"
+#define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/api/", SERVER_ROOT]
 #pragma mark - 状态码
 typedef NS_ENUM(NSUInteger, NetWorkStatus) {
     NetWorkStatusSuccess = 200, // 请求成功
@@ -47,5 +46,5 @@ static NSString * const API_NewRecommend                        = @"mainPage/new
 static NSString * const API_SellerRecommend                     = @"mainPage/sellerRecommend";
 // 商品分类
 static NSString * const API_ItemCagetory                        = @"mainPage/itemCagetory";
-
+static NSString * const DRLogoutNotification                    = @"DRLogoutNotification";
 #endif /* NetworkConstants_h */

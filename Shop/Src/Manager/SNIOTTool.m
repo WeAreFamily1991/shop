@@ -23,26 +23,144 @@
 @end
 
 @implementation SNIOTTool
-
-// 异步POST
-+ (void)postWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
-    
-    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
-    
-    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
-    if (!paraDict) {
-        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
-        [self handleFailureError:error failure:failure];
-        return;
-    }
-    
+//获取游客token
++ (void)postvisiteTokenWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+    //
+    //    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
+    //
+    //    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
+    //    if (!paraDict) {
+    //        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
+    //        [self handleFailureError:error failure:failure];
+    //        return;
+    //    }
+    //    if ([User currentUser].isLogin) {
+    //
+    //    }
+   
     NSRange range = [url rangeOfString:@"http"];
     if (!range.length) {
         url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
     }
-    
+    NSLog(@"baseUrl=%@url=%@ paramers==%@",[SNAPIManager shareAPIManager].baseURL,url,paramers);
     __weak typeof(self) weakSelf = self;
-    [SNNetworking postURL:url parameters:paraDict success:^(id response) {
+    [SNNetworking postURL:url parameters:paramers success:^(id response) {
+        
+        [weakSelf handleSuccessResponse:response success:success failure:failure];
+        
+    } failure:^(NSError *error) {
+        
+        [weakSelf handleFailureError:error failure:failure];
+    }];
+}
+// DELETE
++ (void)deleteWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+    //
+    //    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
+    //
+    //    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
+    //    if (!paraDict) {
+    //        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
+    //        [self handleFailureError:error failure:failure];
+    //        return;
+    //    }
+    if ([User currentUser].isLogin)
+    {
+        [paramers setObject:[User currentUser].token forKey:@"santieJwt"];
+    }
+    else
+    {
+        [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+    }
+    NSRange range = [url rangeOfString:@"http"];
+    if (!range.length) {
+        url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
+    }
+    NSLog(@"baseUrl=%@url=%@ paramers==%@",[SNAPIManager shareAPIManager].baseURL,url,paramers);
+    __weak typeof(self) weakSelf = self;
+    [SNNetworking deleteURL:url parameters:paramers success:^(id response) {
+        
+        [weakSelf handleSuccessResponse:response success:success failure:failure];
+        
+    } failure:^(NSError *error) {
+        [MBProgressHUD showError:error.domain];
+        [weakSelf handleFailureError:error failure:failure];
+    }];
+}
+// 异步POST
++ (void)postWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+//
+//    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
+//
+//    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
+//    if (!paraDict) {
+//        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
+//        [self handleFailureError:error failure:failure];
+//        return;
+//    }
+    if ([User currentUser].isLogin)
+    {
+        if ([User currentUser].token) {
+            
+            [paramers setObject:[User currentUser].token forKey:@"santieJwt"];
+        }
+    }
+    else
+    {
+        if ([User currentUser].visitetoken) {
+            
+            [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+        }
+    }
+   
+    NSRange range = [url rangeOfString:@"http"];
+    if (!range.length) {
+        url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
+    }
+    NSLog(@"baseUrl=%@url=%@ paramers==%@",[SNAPIManager shareAPIManager].baseURL,url,paramers);
+    __weak typeof(self) weakSelf = self;
+    [SNNetworking postURL:url parameters:paramers success:^(id response) {
+        
+        [weakSelf handleSuccessResponse:response success:success failure:failure];
+        
+    } failure:^(NSError *error) {
+        [MBProgressHUD showError:error.domain];
+        [weakSelf handleFailureError:error failure:failure];
+    }];
+}
+// GET
++ (void)getWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+    
+//    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
+//
+//    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
+//    if (!paraDict) {
+//        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
+//        [self handleFailureError:error failure:failure];
+//        return;
+//    }
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithDictionary:paramers];
+    NSRange range = [url rangeOfString:@"http"];
+    if (!range.length) {
+        url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
+    }
+    if ([User currentUser].isLogin)
+    {
+        if ([User currentUser].token) {
+            
+            [dic setObject:[User currentUser].token forKey:@"santieJwt"];
+        }
+    }
+    else
+    {
+        if ([User currentUser].visitetoken) {
+            
+            [dic setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+        }
+    }
+    NSLog(@"baseUrl==%@url==%@===dic===%@",[SNAPIManager shareAPIManager].baseURL,url,dic);
+    __weak typeof(self) weakSelf = self;
+    [SNNetworking getURL:url parameters:dic success:^(id response) {
         
         [weakSelf handleSuccessResponse:response success:success failure:failure];
         
@@ -55,22 +173,34 @@
 // 上传
 + (void)postWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers formDataArray:(NSArray<SNFormData *> *)formDataArray success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
     
-    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
-    
-    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
-    if (!paraDict) {
-        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
-        [self handleFailureError:error failure:failure];
-        return;
-    }
-    
+//    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
+//
+//    NSDictionary *paraDict = [SNIOTTool processParamers:paramers checkToken:isCheckToken];
+//    if (!paraDict) {
+//        NSError *error = [NSError errorWithDomain:@"need token" code:10002 userInfo:nil];
+//        [self handleFailureError:error failure:failure];
+//        return;
+//    }
     NSRange range = [url rangeOfString:@"http"];
     if (!range.length) {
         url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
     }
+    NSString*tokenStr;
+    if ([User currentUser].isLogin)
+    {
+       
+        tokenStr=[User currentUser].token;
+//        [paramers setObject:[User currentUser].token forKey:@"santieJwt"];
+    }
+    else
+    {
+        tokenStr = [User currentUser].visitetoken;
+//        [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+    }
+    url =[NSString stringWithFormat:@"%@?santieJwt=%@",url,tokenStr];
     
     __weak typeof(self) weakSelf = self;
-    [SNNetworking postURL:url parameters:paraDict formDataArray:formDataArray success:^(id response) {
+    [SNNetworking postURL:url parameters:paramers formDataArray:formDataArray success:^(id response) {
         
         [weakSelf handleSuccessResponse:response success:success failure:failure];
         
@@ -97,6 +227,7 @@
         return mutable;
     }
     return inputStr;
+    
 }
 
 + (void)handleSuccessResponse:(id)response success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
@@ -107,10 +238,9 @@
         NSString *str = [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
         NSString *newStr = [self removeUnescapedCharacter:str];
         result = [SNResult mj_objectWithKeyValues:newStr];
-    }
-    
+    }    
     // 30017：第三方登录，用户未绑定;30018：第三方登录，用户已绑定
-    if (result.result_code == 0 || result.result_code == 30053 || result.result_code == 30117 || result.result_code == 30118) {
+    if (result.state == 200 || result.state == 30053 || result.state == 30117 || result.state == 30118) {
         
         if ([SNAPIManager shareAPIManager].successHanlder) {
             [SNAPIManager shareAPIManager].successHanlder(result);
@@ -121,11 +251,11 @@
         
     } else {
         
-        NSString *domain = result.result_message;
+        NSString *domain = result.msg;
         if (!domain) {
             domain = @"";
         }
-        NSError *error = [[NSError alloc] initWithDomain:domain code:result.result_code userInfo:result.result_data];
+        NSError *error = [[NSError alloc] initWithDomain:domain code:result.state userInfo:result.data];
         
         if ([SNAPIManager shareAPIManager].failureHanlder) {
             [SNAPIManager shareAPIManager].failureHanlder(error);

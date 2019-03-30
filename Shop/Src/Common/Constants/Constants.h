@@ -22,6 +22,7 @@
 
 #pragma mark - Key
 static NSString * const kUserIsLogin = @"kUserIsLogin";
+static NSString * const kCurrentVisiteToken = @"kCurrentvisiteToken";
 static NSString * const kCurrentUserToken = @"kCurrentUserToken";
 static NSString * const kCurrentUserName = @"kCurrentUserName";
 

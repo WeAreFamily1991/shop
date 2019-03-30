@@ -15,12 +15,19 @@
 #import <UIKit/UIKit.h>
 @interface CartModel : NSObject
 
-@property (nonatomic,copy) NSString *sizeStr;
-@property (nonatomic,copy) NSString *nameStr;
-@property (nonatomic,copy) NSString *dateStr;
-@property (nonatomic,assign) NSInteger number;
-@property (nonatomic,copy) NSString *price;
-@property (nonatomic,retain)UIImage *image;
-@property (nonatomic,assign) BOOL isSelect;
+//@property (nonatomic,copy) NSString *sizeStr;
+//@property (nonatomic,copy) NSString *nameStr;
+//@property (nonatomic,copy) NSString *dateStr;
+//@property (nonatomic,assign) NSInteger number;
+//@property (nonatomic,copy) NSString *price;
+//@property (nonatomic,retain)UIImage *image;
+//@property (nonatomic,assign) BOOL isSelect;
+@property (nonatomic , assign) BOOL              isRead;
+@property (nonatomic , copy) NSString              * content;
+@property (nonatomic , copy) NSString              * message_id;
+@property (nonatomic , copy) NSString              * buyerId;
+@property (nonatomic , copy) NSString              * title;
+@property (nonatomic , assign) NSInteger              addTime;
+@property (nonatomic , copy) NSString              * readTime;
 
 @end

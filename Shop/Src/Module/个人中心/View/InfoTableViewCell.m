@@ -121,3 +121,26 @@
 }
 
 @end
+
+
+@implementation InfoTableViewCell6
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+}
++(instancetype)cellWithTableView:(UITableView *)tableView
+{
+    static NSString *identify = @"InfoTableViewCell6";
+    
+    InfoTableViewCell6 *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    
+    if (cell == nil)
+    {
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"InfoTableViewCell" owner:nil options:nil] objectAtIndex:5];
+    }
+    cell.photoBtn.layer.cornerRadius =30;
+    cell.photoBtn.layer.masksToBounds =30;
+    return cell;
+}
+
+@end

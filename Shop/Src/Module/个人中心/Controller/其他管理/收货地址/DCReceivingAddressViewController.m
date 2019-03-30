@@ -7,7 +7,7 @@
 //
 
 #import "DCReceivingAddressViewController.h"
-
+#import "SNIOTTool.h"
 // Controllers
 #import "DCNewAdressViewController.h" //新增地址
 // Models
@@ -19,6 +19,7 @@
 // Vendors
 #import <SVProgressHUD.h>
 #import "UIView+Toast.h"
+#import "DRAdressListModel.h"
 // Categories
 
 // Others
@@ -31,8 +32,8 @@
 @property (strong , nonatomic)UITableView *tableView;
 
 /* 地址信息 */
-@property (strong , nonatomic)NSMutableArray<DCAdressItem *> *adItem;
-
+@property (strong , nonatomic)DRAdressListModel *addressListModel;
+@property (strong,nonatomic)NSMutableArray *dataArray;
 
 @end
 
@@ -71,20 +72,14 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
         _bgTipButton.titleLabel.font = DR_FONT(13);
         [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
         [_bgTipButton setTitle:@"您还没有收货地址" forState:UIControlStateNormal];
-        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2 , 150, 150);
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight , 150, 150);
         _bgTipButton.adjustsImageWhenHighlighted = false;
     }
     return _bgTipButton;
 }
 
 
-- (NSMutableArray<DCAdressItem *> *)adItem
-{
-    if (!_adItem) {
-        _adItem = [NSMutableArray array];
-    }
-    return _adItem;
-}
+
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -105,10 +100,29 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
 - (void)setUpAccNote
 {
     DRWeakSelf;
-    [[NSNotificationCenter defaultCenter] addObserverForName:@"UpDateUI" object:nil queue:[NSOperationQueue mainQueue] usingBlock:^(NSNotification * _Nonnull note) {
-        weakSelf.adItem = [[DCAdressDateBase sharedDataBase] getAllAdressItem]; //本地数据库
-        [weakSelf.tableView reloadData];
+   
+//    NSMutableDictionary *paramers =[NSMutableDictionary dictionary];
+   
+    [SNIOTTool getWithURL:@"buyer/addressList" parameters:nil success:^(SNResult *result) {
+        
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+            self.dataArray =[NSMutableArray array];
+            NSArray *sourArr =result.data;
+            if (sourArr.count!=0) {
+                for (NSDictionary *dic in sourArr) {
+                    weakSelf.addressListModel =[DRAdressListModel mj_objectWithKeyValues:dic];
+                    [weakSelf.dataArray addObject:weakSelf.addressListModel];
+                }
+            }
+           
+            [self.tableView reloadData];
+        }
+        
+    } failure:^(NSError *error) {
+        
     }];
+    
+  
 }
 
 #pragma mark - initialize
@@ -120,7 +134,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
     [self.view addSubview:self.bgTipButton];
     self.tableView.backgroundColor = [UIColor clearColor];
     self.tableView.tableFooterView = [UIView new];
-    self.adItem = [[DCAdressDateBase sharedDataBase] getAllAdressItem]; //本地数据库
+    
     [self addTableViewfooterView];
 //    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
 //    negativeSpacer.width = -15;
@@ -139,53 +153,56 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
 #pragma mark - <UITableViewDataSource>
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    self.bgTipButton.hidden = (_adItem.count > 0) ? YES : NO;
-    return self.adItem.count;
+    self.bgTipButton.hidden = (_dataArray.count > 0) ? YES : NO;
+    return self.dataArray.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     DRWeakSelf;
+    self.addressListModel =self.dataArray[indexPath.row];
     DCUserAdressCell *cell = [tableView dequeueReusableCellWithIdentifier:DCUserAdressCellID forIndexPath:indexPath];
-    cell.adItem = _adItem[indexPath.row];
+    cell.adItem = self.addressListModel;
     
     cell.deleteClickBlock = ^{  //删除地址
         
-        [SVProgressHUD show];
-        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [SVProgressHUD dismiss];
-            [weakSelf.view makeToast:@"删除成功" duration:0.5 position:CSToastPositionCenter];
-            [[DCAdressDateBase sharedDataBase] deleteAdress:weakSelf.adItem[indexPath.row]];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.75 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                //处理数据
-                [weakSelf.adItem removeObjectAtIndex:indexPath.row];
-                [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationNone];
-                
-            });
-        });
+       
+        NSDictionary *dic =@{@"id":self.addressListModel.address_id};
+//        [SNAPI postWithURL:@"buyer/deleteAddress" parameters:dic success:^(SNResult *result) {
+//           
+//        } failure:^(NSError *error) {
+//            
+//        }];
+        [SNIOTTool deleteWithURL:@"buyer/deleteAddress" parameters:[dic mutableCopy] success:^(SNResult *result) {
+             [self setUpAccNote];
+        } failure:^(NSError *error) {
+            
+        }];
         
     };
     cell.editClickBlock = ^{ //编辑地址
     
         DCNewAdressViewController *dcNewVc = [DCNewAdressViewController new];
-        dcNewVc.adressItem = weakSelf.adItem[indexPath.row];
+        dcNewVc.adressItem = weakSelf.dataArray[indexPath.row];
+    
+        dcNewVc.addressBlock = ^{
+            [weakSelf setUpAccNote];
+        };
+        dcNewVc.userModel =self.userModel;
         dcNewVc.saveType = DCSaveAdressChangeType;
         [weakSelf.navigationController pushViewController:dcNewVc animated:YES];
         
     };
     
     cell.selectBtnClickBlock = ^(BOOL isSelected) { //默认选择点击
-        
-        NSInteger index = indexPath.row;
-        for (NSInteger i = 0; i < weakSelf.adItem.count; i++) {
-            DCAdressItem *adressItem = weakSelf.adItem[i];
-            adressItem.isDefault = (i == index && isSelected) ? @"2" : @"1";
-            [[DCAdressDateBase sharedDataBase]updateAdress:adressItem];
-        }
-        
-        weakSelf.adItem = [[DCAdressDateBase sharedDataBase] getAllAdressItem];
-        [weakSelf.tableView reloadData];
+       
+        NSDictionary *dic =@{@"id":self.addressListModel.address_id};
+        [SNAPI postWithURL:@"buyer/setAddressDefault" parameters:dic success:^(SNResult *result) {
+            [self setUpAccNote];
+        } failure:^(NSError *error) {
+            
+        }];
+    
     };
     
     return cell;
@@ -200,13 +217,18 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return _adItem[indexPath.row].cellHeight;
+    return self.addressListModel.cellHeight;
 }
 
 #pragma mark - 添加地址点击
 - (void)addBtnClick
 {
+    DRWeakSelf;
     DCNewAdressViewController *dcNewVc = [DCNewAdressViewController new];
+    dcNewVc.userModel =self.userModel;
+    dcNewVc.addressBlock = ^{
+        [weakSelf setUpAccNote];
+    };
     dcNewVc.saveType = DCSaveAdressNewType;
     [self.navigationController pushViewController:dcNewVc animated:YES];
 }

@@ -45,7 +45,29 @@
         }
     }];
 }
+#pragma mark - delete请求方法
 
++ (void)deleteURL:(NSString *)url parameters:(NSDictionary *)paramers success:(void (^)(id))success failure:(void (^)(NSError *))failure {
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    
+    __weak typeof(self) weakSelf = self;
+    [manager DELETE:url parameters:paramers success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        [weakSelf printResponse:responseObject url:url parameters:paramers];
+        [weakSelf cheakTokenWithResponse:responseObject];
+        
+        if (success) {
+            success(responseObject);
+        }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [weakSelf printError:error url:url parameters:paramers];
+        
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
 + (void)postURL:(NSString *)url parameters:(NSDictionary *)paramers formDataArray:(NSArray *)formDataArray success:(void (^)(id))success failure:(void (^)(NSError *))failure{
     
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -88,10 +110,8 @@
     [manager GET:url parameters:paramers progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
         [weakSelf printResponse:responseObject url:url parameters:paramers];
-        [weakSelf cheakTokenWithResponse:responseObject];
-        
+        [weakSelf cheakTokenWithResponse:responseObject];        
         if (success) {
             success(responseObject);
         }
@@ -157,7 +177,7 @@
     
     if ([dict isKindOfClass:[NSDictionary class]]) {
 
-        if ([dict[@"result_code"] isEqualToString:@"10003"]) {
+        if ([[NSString stringWithFormat:@"%@",dict[@"state"]] isEqualToString:@"10003"]) {
             [SNAPI userRefreshTokenSuccess:^{
                 
             } failure:^(NSError *error) {

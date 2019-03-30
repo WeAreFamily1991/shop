@@ -34,6 +34,8 @@
     self.parameterLabel.text = @"包装参数：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
     self.cellLabel.text = @"最小销售单位：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
     self.countLabel.text = @"库存数：72.0000支 华东仓";
+    self.allCountLabel.text =@"小计:0.00";
+     [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
 }
 -(UIImageView *)productImg
 {
@@ -150,50 +152,53 @@
             make.left.mas_equalTo(self.productName.mas_left);
             make.top.mas_equalTo(self.cellLabel.mas_bottom).mas_equalTo(WScale(7));
             make.right.mas_equalTo(WScale(-5));
-            make.bottom.mas_equalTo(WScale(-10));
+//            make.bottom.mas_equalTo(WScale(-10));
         }];
     }
     return _countLabel;
 }
 
-//-(UILabel *)allCountLabel
-//{
-//    if (!_allCountLabel) {
-//        _allCountLabel = [[UILabel alloc] init];
-//        _allCountLabel.textColor = [UIColor redColor];
-//        _allCountLabel.font = ZF_FONT(12);
-////        _allCountLabel.numberOfLines = 0;
-//        [self addSubview:_allCountLabel];
-//        [_allCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.left.mas_equalTo(self.productImg.mas_left);
-//            make.top.mas_equalTo(self.countLabel.mas_bottom).mas_equalTo(WScale(7));
-//            make.width.mas_offset(100);
-//            make.height.mas_offset(HScale(30));
-////            make.bottom.mas_equalTo(WScale(-10));
-//        }];
-//    }
-//    return _allCountLabel;
-//}
-//-(UIButton *)saleOutBtn
-//{
-//    if (!_saleOutBtn) {
-//        _saleOutBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-//        [self addSubview:_saleOutBtn];
+-(UILabel *)allCountLabel
+{
+    if (!_allCountLabel) {
+        _allCountLabel = [[UILabel alloc] init];
+        _allCountLabel.textColor = [UIColor redColor];
+        _allCountLabel.font = ZF_FONT(12);
+//        _allCountLabel.numberOfLines = 0;
+        [self addSubview:_allCountLabel];
+        [_allCountLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_offset(WScale(15));
+            make.top.mas_equalTo(self.countLabel.mas_bottom).mas_equalTo(WScale(7));
+            make.width.mas_offset(100);
+            make.height.mas_offset(HScale(20));
+            make.bottom.mas_equalTo(WScale(-10));
+        }];
+    }
+    return _allCountLabel;
+}
+-(UIButton *)saleOutBtn
+{
+    if (!_saleOutBtn) {
+        _saleOutBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+        [self addSubview:_saleOutBtn];
+        _saleOutBtn.layer.cornerRadius =10;
+        _saleOutBtn.layer.masksToBounds =10;
 //        [_saleOutBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
-//        [_saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
-//        [_saleOutBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-//        _saleOutBtn.titleLabel.font =DR_FONT(14);
-//        [_saleOutBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-//            make.centerX.mas_equalTo(self.allCountLabel.centerX);
-//            make.right.mas_equalTo(-15);
-//            make.height.mas_offset(HScale(30));
-//            make.width.mas_offset(WScale(80));
-////            make.bottom.mas_equalTo(WScale(-10));
-//        }];
-//        
-//    }
-//    return _saleOutBtn;
-//}
+        _saleOutBtn.backgroundColor =[UIColor redColor];
+        [_saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+        [_saleOutBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _saleOutBtn.titleLabel.font =DR_FONT(14);
+        [_saleOutBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.mas_equalTo(self.allCountLabel.mas_top);
+            make.right.mas_equalTo(-15);
+            make.height.mas_offset(HScale(20));
+            make.width.mas_offset(WScale(80));
+//            make.bottom.mas_equalTo(WScale(-10));
+        }];
+        
+    }
+    return _saleOutBtn;
+}
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
 

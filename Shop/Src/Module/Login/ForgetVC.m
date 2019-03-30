@@ -9,6 +9,9 @@
 #import "ForgetVC.h"
 #import "NNValidationView.h"
 #import "ZJBLTimerButton.h"
+#import "SNAPIManager.h"
+#import "SNIOTTool.h"
+#import "NSStringSNCategory.h"
 @interface ForgetVC ()
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
 @property (weak, nonatomic) IBOutlet UITextField *imgCodeTF;
@@ -18,6 +21,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordTF;
 @property (weak, nonatomic) IBOutlet UITextField *surePasswordTF;
 @property (weak, nonatomic) IBOutlet UIButton *submitBtn;
+@property (weak, nonatomic) IBOutlet UIButton *imgCodeBtn;
 @property (nonatomic, strong) NNValidationView *testView;
 @end
 
@@ -39,6 +43,9 @@
 {
     self.submitBtn.layer.cornerRadius =25;
     self.submitBtn.layer.masksToBounds =25;
+    [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    [self.codeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     //时间按钮
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
@@ -50,26 +57,143 @@
 }
 //发生网络请求 --> 获取验证码
 - (void)qurestCode {
-    
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    //    DRWeakSelf;
+    [SNAPI commonMessageValidWithMobile:self.phoneTF.text validCode:self.imgCodeTF.text success:^(NSString *response) {
+        if ([response isEqualToString:@"200"]) {
+            [MBProgressHUD showError:@"验证码已发送"];
+        }
+    } failure:^(NSError *error) {
+        
+    }] ;
     NSLog(@"发生网络请求 --> 获取验证码");
     
+}
+-(NSString *)acdomURLStr
+{
+    NSString *tokenStr;
+    if ([User currentUser].isLogin) {
+        tokenStr =[User currentUser].token;
+    }
+    else{
+        tokenStr =[User currentUser].visitetoken;
+    }
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",tokenStr,[SNTool getRandomNumber:1000 to:9999]];
+    return urlStr;
     
+}
+- (IBAction)imgCodeBtnClick:(id)sender {
+    [self.imgCodeBtn sd_setImageWithURL:[NSURL URLWithString:[self acdomURLStr]] forState:UIControlStateNormal];
 }
 - (void)setupViews {
-    _testView = [[NNValidationView alloc] initWithFrame:self.imgCodeView.bounds andCharCount:4 andLineCount:4];
-    [self.imgCodeView addSubview:_testView];
     
-    __weak typeof(self) weakSelf = self;
-    /// 返回验证码数字
-    _testView.changeValidationCodeBlock = ^(void){
-        NSLog(@"验证码被点击了：%@", weakSelf.testView.charString);
-    };
-    NSLog(@"第一次打印：%@", self.testView.charString);
+    [self.imgCodeBtn sd_setImageWithURL:[NSURL URLWithString:[self acdomURLStr]] forState:UIControlStateNormal];
+    
 }
-- (IBAction)submitBtnClick:(id)sender {
-    
+-(void)textFieldChangeAction:(UITextField *)textField
+{
+    switch (textField.tag) {
+        case 1:
+        {
+            if (textField.text.length>11) {
+                self.phoneTF.text = [self.phoneTF.text substringToIndex:11];
+            }
+        }
+            break;
+        case 2:
+        {
+            if (textField.text.length>4) {
+                self.imgCodeTF.text = [self.imgCodeTF.text substringToIndex:4];
+            }
+        }
+            break;
+        case 3:
+        {
+            if (textField.text.length>4) {
+                self.codeTF.text = [self.codeTF.text substringToIndex:4];
+            }
+        }
+            
+            break;
+            
+        default:
+            break;
+    }
+}
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if (textField==self.phoneTF) {
+        return NO;
+    }
+    return YES;
 }
 
+
+
+- (IBAction)submitBtnClick:(id)sender {
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    if (self.codeTF.text.length==0||self.codeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的验证码"];
+        return;
+    }
+    if (self.passwordTF.text.length<6) {
+        [MBProgressHUD showError:@"请输入正确的新密码"];
+        return;
+    }
+    if (self.surePasswordTF.text.length<6) {
+        [MBProgressHUD showError:@"请输入正确的确认密码"];
+        return;
+    } 
+    if (![self.passwordTF.text isEqualToString:self.surePasswordTF.text]) {
+        [MBProgressHUD showError:@"两次密码输入不一致"];
+        return;
+    }
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.phoneTF.text,self.codeTF.text,[self.passwordTF.text MD5]] forKeys:@[@"phone",@"validCode",@"password"]];
+    
+    [SNAPI postWithURL:@"mainPage/forgetPassword" parameters:dic success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+            [MBProgressHUD showSuccess:@"修改成功"];
+            [self performSelector:@selector(showLogin) withObject:self afterDelay:1];
+        }
+    } failure:^(NSError *error) {
+       
+    }];
+}
+-(void)showLogin
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+//-(void)logOut
+//{
+//
+//    [[User currentUser] loginOut];
+//    LoginVC *dcLoginVc = [LoginVC new];
+//    DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
+//    [self presentViewController:nav animated:YES completion:nil];
+//    NSMutableDictionary *dic =[NSMutableDictionary dictionary];
+//    [SNIOTTool postWithURL:USER_LOGOUT parameters:dic success:^(SNResult *result) {
+//        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+//
+//
+//        }
+//    } failure:^(NSError *error) {
+//    }];
+//}
 /*
 #pragma mark - Navigation
 

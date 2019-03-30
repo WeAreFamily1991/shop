@@ -19,36 +19,43 @@
                 <rect key="frame" x="0.0" y="0.0" width="400" height="249.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IPR-Ca-POA">
-                        <rect key="frame" x="0.0" y="0.0" width="400" height="147"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IPR-Ca-POA">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="150"/>
                         <subviews>
-                            <button opaque="NO" tag="99" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="87b-94-o4j">
-                                <rect key="frame" x="10" y="38" width="60" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" tag="99" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="87b-94-o4j">
+                                <rect key="frame" x="10" y="40" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="AAL-Mf-GGS"/>
+                                    <constraint firstAttribute="width" secondItem="87b-94-o4j" secondAttribute="height" id="goC-3r-ftW"/>
+                                </constraints>
                                 <state key="normal" image="icon_morentouxiang_big"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="姓名" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ZB-Mb-Dda">
-                                <rect key="frame" x="84" y="36" width="219" height="34"/>
+                                <rect key="frame" x="84" y="40" width="219" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="手机号" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="phR-9e-Rb3">
-                                <rect key="frame" x="84" y="67" width="201" height="17"/>
+                                <rect key="frame" x="84" y="72" width="201" height="17"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" red="1" green="0.75686274509999996" blue="0.75686274509999996" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" tag="100" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wmK-1g-wx3">
-                                <rect key="frame" x="355" y="45" width="22" height="21"/>
+                                <rect key="frame" x="355" y="45" width="22" height="22"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <state key="normal" image="icon_shezhi"/>
+                                <state key="normal" image="set_up"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="150" id="8y4-iU-sCn"/>
+                            <constraint firstItem="87b-94-o4j" firstAttribute="leading" secondItem="IPR-Ca-POA" secondAttribute="leading" constant="10" id="l39-K0-GwI"/>
+                            <constraint firstItem="87b-94-o4j" firstAttribute="centerY" secondItem="IPR-Ca-POA" secondAttribute="centerY" constant="-5" id="m34-ht-9YW"/>
+                        </constraints>
                     </view>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o8U-c9-cBO">
                         <rect key="frame" x="10" y="105" width="380" height="140"/>
@@ -65,7 +72,7 @@
                                 <rect key="frame" x="14" y="58" width="60" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="交易订单" image="icon_cemuyi">
+                                <state key="normal" title="交易订单" image="trading_order">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -73,7 +80,7 @@
                                 <rect key="frame" x="162" y="58" width="58" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="售后列表" image="icon_cemuyi">
+                                <state key="normal" title="售后列表" image="after_sale">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -81,7 +88,7 @@
                                 <rect key="frame" x="88" y="58" width="58" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="到货通知" image="icon_cemuyi">
+                                <state key="normal" title="到货通知" image="arrival_notice">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -89,7 +96,7 @@
                                 <rect key="frame" x="235" y="58" width="60" height="64"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="我的收藏" image="icon_cemuyi">
+                                <state key="normal" title="我的收藏" image="my_collection">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -97,7 +104,7 @@
                                 <rect key="frame" x="308" y="57" width="59" height="65"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                <state key="normal" title="抵用券" image="icon_cemuyi">
+                                <state key="normal" title="抵用券" image="voucher">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -106,6 +113,11 @@
                     </view>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <constraints>
+                    <constraint firstItem="IPR-Ca-POA" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="8YP-ej-b8P"/>
+                    <constraint firstAttribute="trailing" secondItem="IPR-Ca-POA" secondAttribute="trailing" id="lXj-dE-QqZ"/>
+                    <constraint firstItem="IPR-Ca-POA" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="qNk-es-1ty"/>
+                </constraints>
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="aW0-zy-SZf"/>
@@ -131,14 +143,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vki-FA-Tlk">
-                        <rect key="frame" x="10" y="3" width="378" height="140"/>
+                        <rect key="frame" x="10" y="4" width="378" height="140"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" tag="10" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZTv-zm-vHS">
                                 <rect key="frame" x="14" y="51" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="销售对账" image="icon_cemuyi">
+                                <state key="normal" title="销售对账" image="sales_reconcili">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -146,7 +158,7 @@
                                 <rect key="frame" x="199" y="52" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="开票申请" image="icon_cemuyi">
+                                <state key="normal" title="开票申请" image="apply_invoice">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -154,7 +166,7 @@
                                 <rect key="frame" x="106" y="52" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="开票资料" image="icon_cemuyi">
+                                <state key="normal" title="开票资料" image="make_invoice">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -162,7 +174,7 @@
                                 <rect key="frame" x="291" y="52" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="开票记录" image="icon_cemuyi">
+                                <state key="normal" title="开票记录" image="invoice_recording">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -198,77 +210,77 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rdY-T8-rp3">
-                        <rect key="frame" x="10" y="4" width="378" height="236"/>
+                        <rect key="frame" x="10" y="4" width="378" height="235"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="其他管理" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="trB-ao-4RX">
-                                <rect key="frame" x="13" y="11" width="178" height="40"/>
+                                <rect key="frame" x="13" y="10" width="178" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" tag="20" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eXW-ll-GMG">
-                                <rect key="frame" x="13" y="66" width="73" height="70"/>
+                                <rect key="frame" x="13" y="65" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="专属客服" image="icon_cemuyi">
-                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" tag="22" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HrW-J9-JNj">
-                                <rect key="frame" x="198" y="67" width="73" height="70"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="个人资料" image="icon_cemuyi">
+                                <state key="normal" title="专属客服" image="ex_service">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="21" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZYH-Pc-4nH">
-                                <rect key="frame" x="105" y="67" width="73" height="70"/>
+                                <rect key="frame" x="105" y="66" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="站内短信" image="icon_cemuyi">
+                                <state key="normal" title="站内短信" image="instation_Mess">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="23" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mjf-yq-fdl">
-                                <rect key="frame" x="290" y="67" width="73" height="70"/>
+                                <rect key="frame" x="290" y="66" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="修改密码" image="icon_cemuyi">
+                                <state key="normal" title="修改密码" image="change_password">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="24" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zGg-vv-cE3">
-                                <rect key="frame" x="13" y="153" width="73" height="70"/>
+                                <rect key="frame" x="13" y="152" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="收货地址" image="icon_cemuyi">
+                                <state key="normal" title="收货地址" image="del_address">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="26" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DCD-vI-dRU">
-                                <rect key="frame" x="198" y="154" width="73" height="70"/>
+                                <rect key="frame" x="198" y="153" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="关联账户" image="icon_cemuyi">
+                                <state key="normal" title="关联账户" image="associate_act">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="25" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NHL-Si-whQ">
-                                <rect key="frame" x="105" y="154" width="73" height="70"/>
+                                <rect key="frame" x="105" y="153" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="子账号" image="icon_cemuyi">
+                                <state key="normal" title="子账号" image="sub_account ">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="27" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XFe-d0-bmK">
-                                <rect key="frame" x="290" y="154" width="73" height="70"/>
+                                <rect key="frame" x="290" y="153" width="73" height="70"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <state key="normal" title="退出登录" image="icon_cemuyi">
+                                <state key="normal" title="退出登录" image="log_off">
+                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" tag="22" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HrW-J9-JNj">
+                                <rect key="frame" x="198" y="66" width="73" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <state key="normal" title="个人资料" image="personal_profile">
                                     <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                 </state>
                             </button>
@@ -295,8 +307,24 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="icon_cemuyi" width="40" height="40"/>
+        <image name="after_sale" width="35.5" height="30.5"/>
+        <image name="apply_invoice" width="35.5" height="30"/>
+        <image name="arrival_notice" width="35.5" height="30.5"/>
+        <image name="associate_act" width="35.5" height="30.5"/>
+        <image name="change_password" width="35.5" height="30"/>
+        <image name="del_address" width="35.5" height="30.5"/>
+        <image name="ex_service" width="35.5" height="30.5"/>
         <image name="icon_morentouxiang_big" width="60" height="60"/>
-        <image name="icon_shezhi" width="22" height="22"/>
+        <image name="instation_Mess" width="35.5" height="30.5"/>
+        <image name="invoice_recording" width="35.5" height="30.5"/>
+        <image name="log_off" width="35.5" height="30.5"/>
+        <image name="make_invoice" width="35.5" height="30.5"/>
+        <image name="my_collection" width="35.5" height="30.5"/>
+        <image name="personal_profile" width="35.5" height="30"/>
+        <image name="sales_reconcili" width="35.5" height="30"/>
+        <image name="set_up" width="22.5" height="23"/>
+        <image name="sub_account " width="35.5" height="30.5"/>
+        <image name="trading_order" width="35.5" height="30"/>
+        <image name="voucher" width="35.5" height="30.5"/>
     </resources>
 </document>

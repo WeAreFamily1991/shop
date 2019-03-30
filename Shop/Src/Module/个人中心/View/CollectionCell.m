@@ -7,7 +7,7 @@
 //
 
 #import "CollectionCell.h"
-
+#import "VoucherModel.h"
 @implementation CollectionCell
 
 +(instancetype)cellWithTableView:(UITableView *)tableView
@@ -59,27 +59,36 @@
         cell = [[[NSBundle mainBundle] loadNibNamed:@"CollectionCell" owner:nil options:nil] objectAtIndex:1];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-//    cell.groundView.layer.cornerRadius =5;
-//    cell.groundView.layer.masksToBounds =5;
-//    [cell.shopOrderBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-//    [cell.kaipiaoBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-//    [cell.shenqingBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-//    [cell.jiluBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-//    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [cell.kaipiaoBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [cell.shenqingBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [cell.jiluBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-//    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    
-    
+    }  
     return cell;
+}
+-(void)setVouchModel:(VoucherModel *)vouchModel
+{
+    _vouchModel =vouchModel;
+    
+    self.moneyCountLab.text =[NSString stringWithFormat:@"￥%.0f",vouchModel.voucherSum];
+    self.manjianLab.text =[NSString stringWithFormat:@"满%.0f可用",vouchModel.voucherCond];
+    self.titleLab.text =vouchModel.topicType?@"店铺抵用券":@"平台抵用券";
+    self.titleLab.textColor =vouchModel.topicType?RGBHex(0x0094ec):[UIColor redColor];
+    
+    self.conditionLab.text =[NSString stringWithFormat:@"￥%@",vouchModel.descriptionStr];
+    if (vouchModel.endtime==4102329600000) {
+        self.timeLab.text =@"无门槛、无时间限制、无产品限制";
+    }
+    else
+    {
+        self.timeLab.text =[NSString stringWithFormat:@"%@-%@",[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.starttime]],[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.endtime]]];
+    }
+    self.hidenBtn.hidden =!vouchModel.valid;
+    self.moneyCountLab.text =[NSString stringWithFormat:@"￥%.0f",vouchModel.voucherSum];
+    
 }
 -(void)BtnClick:(UIButton *)sender
 {
    
+}
+- (IBAction)statusBtnClick:(id)sender {
+    !_selectlickBlock?:_selectlickBlock();
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

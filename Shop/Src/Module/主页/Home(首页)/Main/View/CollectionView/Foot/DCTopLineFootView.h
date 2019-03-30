@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface DCTopLineFootView : UICollectionReusableView
-
+/* 轮播图数组 */
+@property (copy , nonatomic)NSArray *titleGroupArray;
+@property (copy,nonatomic) void (^ManageIndexBlock) (NSInteger ManageIndexBlock);
 @end

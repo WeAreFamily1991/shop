@@ -37,10 +37,10 @@
             _token = [Utility getFromUserDefaultsForKey:kCurrentUserToken];
         } else {
             // 如果没有登录，就是游客模式，尝试从本地获取 token，因为如果是第一次打开 App，本地是没有游客 token 的
-//            NSString *token = [Utility getFromUserDefaultsForKey:kCurrentUserToken];
-//            if (token && token.length > 0) {
-//                _token = token;
-//            }
+            NSString *token = [Utility getFromUserDefaultsForKey:kCurrentVisiteToken];
+            if (token && token.length > 0) {
+                _visitetoken = token;
+            }
         }
     }
     
@@ -60,6 +60,24 @@
     if (token != nil) {
         _token = [token copy];
         [Utility saveToUserDefaults:_token forKey:kCurrentUserToken];
+    }
+}
+-(void)setVisitetoken:(NSString *)visitetoken
+{
+    if (visitetoken != nil) {
+        _visitetoken = [visitetoken copy];
+        [Utility saveToUserDefaults:_visitetoken forKey:kCurrentVisiteToken];
+    }
+}
+-(void)loginOut
+{
+    self.isLogin =NO;
+    [self removeToken];
+}
+-(void)removeToken
+{
+    if (_token) {
+        [Utility removeFromUserDefaultsForKey:kCurrentUserToken];
     }
 }
 

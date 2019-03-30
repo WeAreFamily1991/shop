@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface DCReceivingAddressViewController : UIViewController
+@property (nonatomic, strong) DRUserInfoModel *userModel;
 
 @end

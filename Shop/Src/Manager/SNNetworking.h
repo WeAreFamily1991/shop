@@ -25,7 +25,13 @@
  *  @param paramers 参数
  */
 + (void)getURL:(NSString *)url parameters:(NSDictionary *)paramers success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
-
+/**
+ *  DELETE请求
+ *
+ *  @param url      URL
+ *  @param paramers 参数
+ */
++ (void)deleteURL:(NSString *)url parameters:(NSDictionary *)paramers success:(void (^)(id))success failure:(void (^)(NSError *))failure;
 /**
  *  Post上传文件
  *

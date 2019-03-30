@@ -14,12 +14,17 @@
 /** 选择地址回调 */
 @property (nonatomic, copy) dispatch_block_t selectAdBlock;
 
+/** 选择默认回调 */
+@property (nonatomic, copy) dispatch_block_t isDefautsBlock;
+
 @property (weak, nonatomic) IBOutlet DCPlaceholderTextView *detailTextView;
 @property (weak, nonatomic) IBOutlet UITextField *rePersonField;
 @property (weak, nonatomic) IBOutlet UITextField *rePhoneField;
 
 @property (weak, nonatomic) IBOutlet UIButton *selectBtn;
 @property (weak, nonatomic) IBOutlet UILabel *addressLabel;
-@property (weak, nonatomic) IBOutlet UITextField *provinceField;
+@property (weak, nonatomic) IBOutlet UIButton *selectAddressBtn;
+@property (weak, nonatomic) IBOutlet UIButton *isDefautsBtn;
+
 
 @end

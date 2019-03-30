@@ -9,72 +9,49 @@
 #import "BillingInformationDetailVC.h"
 #import "InfoTableViewCell.h"
 #import "CGXPickerView.h"
-
+#import "BillInfoModel.h"
 @interface BillingInformationDetailVC ()<UITableViewDelegate,UITableViewDataSource,UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate>
 @property (nonatomic,retain)UIButton *selectBtn;
 @property (nonatomic,retain)UIButton *normelBtn;
 @property (nonatomic,retain)UIButton *saveBtn;
-@property(nonatomic,strong)UITableView *tableView;
+@property (nonatomic,strong)UITableView *tableView;
+@property (nonatomic,retain)BillInfoModel *infoModel;
+@property (nonatomic,retain)InvoiceReceiverModel *receiverModel;
 @end
 
 @implementation BillingInformationDetailVC
--(void)GetUserInfo
+-(void)GetInfo
 {
-//    name =[UserModel sharedManager].username;
-//    phone =[UserModel sharedManager].mobile;
-//    identifyID =[UserModel sharedManager].idcard;
-//    carID =[UserModel sharedManager].car_no;
-//    [self.dataDic setObject:[UserModel sharedManager].car_brand forKey:@"car_brand"];
-//    [self.dataDic setObject:[UserModel sharedManager].car_series forKey:@"car_series"];
-//    NSArray *idArr = [[UserModel sharedManager].idcard_pics componentsSeparatedByString:@","];
-//    NSArray *jiaArr = [[UserModel sharedManager].drive_card componentsSeparatedByString:@","];
-//    NSArray *xingArr = [[UserModel sharedManager].driving_card componentsSeparatedByString:@","];
-//    [self.dataDic setObject:idArr[0] forKey:@"shenfenzheng"];
-//    [self.dataDic setObject:idArr[1] forKey:@"shenfenfan"];
-//    [self.dataDic setObject:jiaArr[0] forKey:@"jiazhaozheng"];
-//    [self.dataDic setObject:jiaArr[1] forKey:@"jiazhaofan"];
-//    [self.dataDic setObject:xingArr[0] forKey:@"xingshizheng"];
-//    [self.dataDic setObject:xingArr[1] forKey:@"xingshifan"];
-//    [self.dataDic setObject:[UserModel sharedManager].man_car_img forKey:@"renche"];
-//
-//    jiaImg1 =jiaArr[0];
-//    jiaImg2 =jiaArr[1];
-//    identifyImg1 =idArr[0];
-//    identifyImg2 =idArr[1];
-//    xingImg1 =xingArr[0];
-//    xingImg2 =xingArr[1];
-//    heImg1 =[UserModel sharedManager].man_car_img;
-//    carType =[UserModel sharedManager].car_brand_desc;
-//    time =[UserModel sharedManager].car_register_time;
-//
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
-    //    name =[UserModel sharedManager].username;
+    DRWeakSelf;
     
+    NSString *urlStr =self.status?@"buyer/invoiceInfo":@"buyer/ticketInfo";
     
-    //    NSDictionary *dic =[NSDictionary dictionaryWithObjectsAndKeys:[UserModel sharedManager].token,@"token", nil];
-    //
-    //    [Interface_Base Post:@"GetConfig" dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //          data[@"data"][@"car_level"];
-    //
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [MBProgressHUD showError:message];
-    //    }];
+    [SNIOTTool getWithURL:urlStr parameters:nil success:^(SNResult *result) {
+        
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+            if (weakSelf.status==0) {
+                
+                weakSelf.infoModel =[BillInfoModel mj_objectWithKeyValues:result.data];
+                 self.selectBtn.selected =[self.infoModel.ticketType boolValue];
+                self.normelBtn.selected =![self.infoModel.ticketType boolValue];
+            }else
+            {
+                weakSelf.receiverModel =[InvoiceReceiverModel mj_objectWithKeyValues:result.data];
+            }
+        }
+        [self.tableView reloadData];
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.dataDic =[NSMutableDictionary dictionary];
     self.title = @"开票资料";
-    ///左侧返回按钮
-    //    [self setLeftImageNamed:@"back" action:@selector(back)];
-    //
-    //    ///右侧按钮
-    //    [self setRightImageNamed:@"" action:@selector(info)];
-    //    self.navigationItem.rightBarButtonItem = [UIBarButtonItem itemWithIcon:@"icon_questions" highlightedIcon:@"" target:self action:@selector(rightBarButtonItem)];
-    
     [self.view addSubview:self.tableView];
-    [self GetUserInfo];
+    [self GetInfo];
     if (self.status==0) {
         
         [self addTableViewHeaderView];
@@ -99,32 +76,31 @@
     
     self.selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.selectBtn.frame = CGRectMake(headLab.width+30, 0,SCREEN_WIDTH/3, HScale(55));
-    [self.selectBtn setImage:[UIImage imageNamed:@"check_n"] forState:UIControlStateNormal];
-    [self.selectBtn setImage:[UIImage imageNamed:@"check_p"] forState:UIControlStateSelected];
+    [self.selectBtn setImage:[UIImage imageNamed:@"Unchecked"] forState:UIControlStateNormal];
+    [self.selectBtn setImage:[UIImage imageNamed:@"checked"] forState:UIControlStateSelected];
     [self.selectBtn setTitle:@"增值税专用发票" forState:UIControlStateNormal];
     [self.selectBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.selectBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
     self.selectBtn.titleLabel.font =DR_FONT(13);
-    self.selectBtn.selected =YES;
+   
     [self.selectBtn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.selectBtn];
     
     self.normelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.normelBtn.frame = CGRectMake(headLab.width+40+self.selectBtn.width, 0,SCREEN_WIDTH/3, HScale(55));
-    [self.normelBtn setImage:[UIImage imageNamed:@"check_n"] forState:UIControlStateNormal];
-    [self.normelBtn setImage:[UIImage imageNamed:@"check_p"] forState:UIControlStateSelected];
+    [self.normelBtn setImage:[UIImage imageNamed:@"Unchecked"] forState:UIControlStateNormal];
+    [self.normelBtn setImage:[UIImage imageNamed:@"checked"] forState:UIControlStateSelected];
     [self.normelBtn setTitle:@"增值税普通发票" forState:UIControlStateNormal];
     
     [self.normelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.normelBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
     self.normelBtn.titleLabel.font = DR_FONT(13);
-    self.normelBtn.selected =NO;
+    
     [self.normelBtn addTarget:self action:@selector(normelBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.normelBtn];
     UIView *lineView =[[UIView alloc]initWithFrame:CGRectMake(0, HScale(55)-1, SCREEN_WIDTH, 1)];
     lineView.backgroundColor =BACKGROUNDCOLOR;
-    [headView addSubview:lineView];
-    
+    [headView addSubview:lineView];    
 }
 #pragma mark 添加表尾
 -(void)addTableViewfooterView
@@ -157,11 +133,7 @@
    
     
 }
-#pragma mark 按钮点击事件
--(void)saveBtnClick:(UIButton *)sender
-{
-    
-}
+
 -(void)selectBtnClick:(UIButton *)sender
 {
     self.normelBtn.selected =NO;
@@ -247,7 +219,7 @@
 
     if (self.selectBtn.selected==YES) {
         if (indexPath.row==6) {
-            return HScale(100);
+            return HScale(60);
         }
         return HScale(50);
     }
@@ -280,16 +252,15 @@
             titleArray = @[@"单位名称：",@"税号：",@"注册地址：",@"注册电话：",@"开户行：",@"银行账号："];
             placeholdArray= @[@"请输入发票抬头",@"请输入税号",@"请输入注册地址",@"请输入注册电话",@"请输入人开户行名称",@"请输入银行账号"];
              if (indexPath.row <6) {
-                 NSArray *contentArray = @[@" ",name?:@"",phone?:@""];
+                 NSArray *contentArray = @[self.infoModel.ticketCompany?:@"",self.infoModel.taxNumber?:@"",self.infoModel.regAddress?:@"",self.infoModel.regPhone?:@"",self.infoModel.bank?:@"",self.infoModel.bankNo?:@""];
                  
                  
                  InfoTableViewCell *cell = [InfoTableViewCell cellWithTableView:tableView];
-                 
                  cell.titleLabel.text = titleArray[indexPath.row];
                  cell.titleLabel.font = DR_FONT(15);
                  cell.contentTF.placeholder = placeholdArray[indexPath.row];
                  cell.contentTF.tag = indexPath.row;
-                 //            cell.contentTF.text = contentArray[indexPath.row];
+                 cell.contentTF.text = contentArray[indexPath.row];
                  
                  [cell.contentTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
                  
@@ -306,23 +277,20 @@
             ///身份证号码,上传照片
              else
              {
-                 InfoTableViewCell4 *cell = [InfoTableViewCell4 cellWithTableView:tableView];
+                 InfoTableViewCell6 *cell = [InfoTableViewCell6 cellWithTableView:tableView];
                  NSString *tagStr = [NSString stringWithFormat:@"%ld%@",indexPath.row-3,@"1"];
                  cell.photoBtn.tag = [tagStr intValue];
                  [cell.photoBtn addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
-                 id imgStr1 = heImg1?:@"1";
-                 
-                 if ([imgStr1 isKindOfClass:[NSString class]]) {
-                     
-                     [cell.photoBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr1] forState:UIControlStateNormal];
-                 }
+                 id imgStr1 = self.infoModel.imgUrl?:@"default_head";
+//                 cell.photoBtn sd_ba
+                 [cell.photoBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr1] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_head"] options:0];
                  cell.selectionStyle = UITableViewCellSelectionStyleNone;
                  return cell;
              }
         }
         else
         {
-            NSArray *contentArray = @[name?:@"",name?:@"",phone?:@"",name?:@""];
+            NSArray *contentArray = @[self.receiverModel.invoiceReceiverlocationArea?:@"",self.receiverModel.invoiceReceiverAddress?:@"",self.receiverModel.invoiceReceiverName?:@"",self.receiverModel.invoiceReceiverMobile?:@""];
             
             titleArray= @[@"所在地区：",@"详细地址：",@"收票人：",@"联系电话："];
             placeholdArray = @[@"请选择所在地区",@"请输入详细地址",@"请输入收票人",@"请输入联系电话"];
@@ -335,123 +303,59 @@
             cell.titleLabel.font = DR_FONT(15);
             cell.contentTF.placeholder = placeholdArray[indexPath.row];
             cell.contentTF.tag = indexPath.row;
-            //            cell.contentTF.text = contentArray[indexPath.row];
-            
-            [cell.contentTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
-            
-            //            if (indexPath.row == 0) {
-            //                cell.contentTF.hidden = YES;
-            //                cell.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:WScale(15)];
-            //            }
-            //            if (indexPath.row == 2) {
-            //                cell.contentTF.keyboardType = UIKeyboardTypePhonePad;
-            //            }
+            cell.contentTF.text = contentArray[indexPath.row];
+//            if (indexPath.row==3) {
+//                cell.contentTF.keyboardType =UIKeyboardTypeNumberPad;
+//            }
+            [cell.contentTF addTarget:self action:@selector(textFieldfirstChangeAction:) forControlEvents:UIControlEventEditingChanged];
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             return cell;
           
         }
-        
-//        NSArray *titleArray = @[@"单位名称：",@"税号：",@"注册地址：",@"注册电话：",@"开户行：",@"银行账号："];
-//        NSArray *placeholdArray = @[@"请输入发票抬头",@"请输入税号",@"请输入注册地址",@"请输入注册电话",@"请输入人开户行名称",@"请输入银行账号"];
-      
-    
-//    else
-//    {
-//        ///车辆信息
-//        NSArray *titleArray = @[@"車輛信息",@"車牌號",@"車型",@"車輛註冊時間"];
-//        NSArray *placeholdArray = @[@" ",@"請輸入車牌號",@"請選擇車型",@"請選擇車輛註冊時間"];
-//        NSArray *contentArray = @[@" ",carID?:@"",carType?:@"",time?:@""];
-//        if (indexPath.row <4)
-//        {
-//            InfoTableViewCell *cell = [InfoTableViewCell cellWithTableView:tableView];
-//            cell.titleLabel.text = titleArray[indexPath.row];
-//            cell.contentTF.placeholder = placeholdArray[indexPath.row];
-//            cell.contentTF.tag = indexPath.row+3;
-//            cell.contentTF.text = contentArray[indexPath.row];
-//            cell.titleLabel.font = DR_FONT(14);
-//            [cell.contentTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
-//            if (indexPath.row == 0) {
-//                cell.contentTF.hidden = YES;
-//                cell.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:WScale(15)];
-//            }
-//            if (indexPath.row == 2 || indexPath.row == 3) {
-//                cell.contentTF.enabled = NO;
-//            }
-//            else
-//            {
-//                cell.contentTF.enabled = YES;
-//            }
-//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//            return cell;
-//        }
-//        ///上传照片
-//        else if (indexPath.row < 6)
-//        {
-//            InfoTableViewCell2 *cell = [InfoTableViewCell2 cellWithTableView:tableView];
-//            NSArray *titleArray = @[@"駕駛證",@"行駛證",@"人車合影(45度拍攝,勿遮擋車牌)"];
-//            cell.contentTF2.hidden = YES;
-//            cell.titleLabel2.text = titleArray[indexPath.row-4];
-//            NSString *tagStr = [NSString stringWithFormat:@"%ld%@",indexPath.row-3,@"1"];
-//            NSString *tagStr2 = [NSString stringWithFormat:@"%ld%@",indexPath.row-3,@"2"];
-//            cell.photoButton1.tag = [tagStr intValue];
-//            cell.photoButton2.tag = [tagStr2 intValue];
-//            [cell.photoButton1 addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
-//            [cell.photoButton2 addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
-//            NSArray *imgArray1 = @[jiaImg1?:@"pic_jiashizhengzuoce",xingImg1?:@"pic_xingshizhengzuoce",heImg1?:@"pic_rencheheying"];
-//            NSArray *imgArray2 = @[jiaImg2?:@"pic_jiashizhengyouce",xingImg2?:@"pic_xingshizhengyouce",heImg2?:@"pic_rencheheying"];
-//            id imgStr1 = imgArray1[indexPath.row-4];
-//            id imgStr2 = imgArray2[indexPath.row-4];
-//            if ([imgStr1 isKindOfClass:[NSString class]]) {
-//                NSLog(@"YYYYYYYYYY == %@",imgStr1);
-//                [cell.photoButton1 sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr1] forState:UIControlStateNormal];
-//            }
-//            if ([imgStr2 isKindOfClass:[NSString class]]) {
-//                [cell.photoButton2 sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr2] forState:UIControlStateNormal];
-//            }
-//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//            return cell;
-//        }
-//        else if (indexPath.row == 6)
-//        {
-//            InfoTableViewCell4 *cell = [InfoTableViewCell4 cellWithTableView:tableView];
-//
-//            cell.titleLabel.text = @"人車合影(45度拍攝,勿遮擋車牌)";
-//            NSString *tagStr = [NSString stringWithFormat:@"%ld%@",indexPath.row-3,@"1"];
-//            cell.photoBtn.tag = [tagStr intValue];
-//            [cell.photoBtn addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
-//            id imgStr1 = heImg1?:@"pic_rencheheying";
-//
-//            if ([imgStr1 isKindOfClass:[NSString class]]) {
-//
-//                [cell.photoBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr1] forState:UIControlStateNormal];
-//            }
-//            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//            return cell;
-//        }
-//        ///下一步
-//        InfoTableViewCell3 *cell = [InfoTableViewCell3 cellWithTableView:tableView];
-//        [cell.nextButton setTitle:@"完成" forState:UIControlStateNormal];
-//        [cell.nextButton addTarget:self action:@selector(nextButton:) forControlEvents:UIControlEventTouchUpInside];
-//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-//        return cell;
-//    }
 }
--(void)textFieldChangeAction:(UITextField *)textField
+-(void)textFieldfirstChangeAction:(UITextField *)textField
 {
-    if (textField.tag == 1) {
-        name = textField.text;
+    
+    if (textField.tag==0) {
+        self.receiverModel.invoiceReceiverlocationArea = textField.text;
+    }
+    else if (textField.tag == 1) {
+        self.receiverModel.invoiceReceiverAddress = textField.text;
     }
     else if (textField.tag == 2)
     {
-        phone = textField.text;
+        self.receiverModel.invoiceReceiverName = textField.text;
     }
     else if (textField.tag == 3)
     {
-        identifyID = textField.text;
+        self.receiverModel.invoiceReceiverMobile = textField.text;
+    }
+}
+-(void)textFieldChangeAction:(UITextField *)textField
+{
+  
+    if (textField.tag==0) {
+        
+        self.infoModel.ticketCompany = textField.text;
+    }
+    else if (textField.tag == 1) {
+        self.infoModel.taxNumber = textField.text;
+    }
+    else if (textField.tag == 2)
+    {
+        self.infoModel.regAddress = textField.text;
+    }
+    else if (textField.tag == 3)
+    {
+        self.infoModel.regPhone = textField.text;
     }
     else if (textField.tag == 4)
     {
-        carID = textField.text;
+        self.infoModel.bank = textField.text;
+    }
+    else if (textField.tag==5)
+    {
+        self.infoModel.bankNo =textField.text;
     }
 }
 ///cell的点击事件
@@ -463,6 +367,9 @@
         [CGXPickerView showAddressPickerWithTitle:@"请选择你的城市" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
             
             NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
+            self.receiverModel.invoiceReceiverlocationArea =[NSString stringWithFormat:@"%@/%@/%@",selectAddressArr[0],selectAddressArr[1],selectAddressArr[2]];
+            self.receiverModel.invoiceReceiverlocation =[NSString stringWithFormat:@"%@/%@/%@",selectAddressArr[3],selectAddressArr[4],selectAddressArr[5]];
+            [self.tableView reloadData];
 //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
         }];
     }
@@ -577,101 +484,63 @@
 {
     //照片
     //定义一个newPhoto，用来存放我们选择的图片。
+    UIImage *image = [info objectForKey:UIImagePickerControllerEditedImage];
+    if (image == nil) {
+        image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    }
+    //    [self.avatarBtn setImage:image forState:UIControlStateNormal];
+    DRWeakSelf;
     
-    UIImage *newPhoto = info[UIImagePickerControllerEditedImage];
-    NSData *imgData = UIImageJPEGRepresentation(newPhoto, 0.2f);
-     NSString*imgStr = [imgData base64EncodedStringWithOptions:0];
-    heImg1 = imgStr;
-    [self.tableView reloadData];
-//    [Interface_UploadPhoto UploadPhoto:newPhoto
-//                           sccessBlock:^(NSDictionary *data, NSString *message)
-//     {
-//         [self.tableView reloadData];
-//         [self dismissViewControllerAnimated:YES completion:nil];
-//     } FailBlock:^() {
-//         [MBProgressHUD showError:@"上传图片失败,请重试"];
-//     }];
-    NSLog(@"TTTTTTTT == %ld",Tag);
-    //    switch (Tag) {
-    //        case 1:
-    //            identifyImg1 = newPhoto;
-    //            break;
-    //        case 2:
-    //            identifyImg2 = newPhoto;
-    //            break;
-    //        case 11:
-    //            jiaImg1 = newPhoto;
-    //            break;
-    //        case 12:
-    //            jiaImg2 = newPhoto;
-    //            break;
-    //        case 21:
-    //            xingImg1 = newPhoto;
-    //            break;
-    //        case 22:
-    //            xingImg2 = newPhoto;
-    //            break;
-    //        case 31:
-    //            heImg1 = newPhoto;
-    //            break;
-    //        case 32:
-    //            heImg2 = newPhoto;
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //    [self.tableView reloadData];
-    //    [self dismissViewControllerAnimated:YES completion:nil];
-//    [Interface_UploadPhoto UploadPhoto:newPhoto
-//                           sccessBlock:^(NSDictionary *data, NSString *message)
-//     {
-//         switch (Tag) {
-//             case 1:
-//                 identifyImg1 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].identifyImg1 =identifyImg1;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"shenfenzheng"];
-//                 break;
-//             case 2:
-//                 identifyImg2 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].identifyImg2 =identifyImg2;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"shenfenfan"];
-//                 break;
-//             case 11:
-//                 jiaImg1 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].jiaImg1 =jiaImg1;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"jiazhaozheng"];
-//                 break;
-//             case 12:
-//                 jiaImg2 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].jiaImg2 =jiaImg2;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"jiazhaofan"];
-//                 break;
-//             case 21:
-//                 xingImg1 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].xingImg1 =xingImg1;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"xingshizheng"];
-//                 break;
-//             case 22:
-//                 xingImg2 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].xingImg2 =xingImg2;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"xingshifan"];
-//                 break;
-//             case 31:
-//                 heImg1 = data[@"data"][@"pic"] ;
-//                 //                 [UserModel sharedManager].heImg1 =heImg1;
-//                 [self.dataDic setObject:data[@"data"][@"pic"] forKey:@"renche"];
-//                 break;
-//             case 32:
-//                 heImg2 = data[@"data"][@"pic"] ;
-//                 break;
-//             default:
-//                 break;
-//         }
-//         [self.tableView reloadData];
-//         [self dismissViewControllerAnimated:YES completion:nil];
-//     } FailBlock:^() {
-//         [MBProgressHUD showError:@"上传图片失败,请重试"];
-//     }];
+    [SNAPI userAvatar:image nickName:nil success:^(SNResult *result){
+        [MBProgressHUD showSuccess:SNStandardString(@"上传成功")];
+        weakSelf.infoModel.imgUrl =result.data[@"src"];
+        [weakSelf.tableView reloadData];
+    } failure:^(NSError *error) {
+        
+    }];
+    
+    [picker dismissViewControllerAnimated:YES completion:nil];
+}
+#pragma mark 按钮点击事件
+-(void)saveBtnClick:(UIButton *)sender
+{
+    
+    if (self.status==0) {
+    
+        NSDictionary *dic =[NSDictionary dictionary];
+        NSMutableDictionary *muDic  =[NSMutableDictionary dictionary];
+        NSString *  urlStr;
+        if (self.selectBtn.selected)
+        {
+            dic=@{@"ticketCompany":self.infoModel.ticketCompany?:@"",@"taxNumber":self.infoModel.taxNumber?:@"",@"regAddress":self.infoModel.regAddress?:@"",@"regPhone":self.infoModel.regPhone?:@"",@"bank":self.infoModel.bank?:@"",@"bankNo":self.infoModel.bankNo?:@"",@"ticketType":@"1",@"imgUrl":self.infoModel.imgUrl?:@""};
+            urlStr=@"buyer/updateIncrementTickert";
+            muDic=[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"ticket"];
+        }
+        else
+        {
+            dic=@{@"ticketCompany":self.infoModel.ticketCompany?:@"",@"taxNumber":self.infoModel.taxNumber?:@"",@"regAddress":self.infoModel.regAddress?:@"",@"regPhone":self.infoModel.regPhone?:@"",@"ticketType":@"0"};
+            urlStr=@"buyer/updateTicket";
+            muDic=[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"ticket"];
+        }
+        
+        [SNAPI postWithURL:urlStr parameters:muDic success:^(SNResult *result) {
+            if (result.state==200) {
+                [MBProgressHUD showSuccess:result.data];
+            }
+        } failure:^(NSError *error) {
+        }];
+    }
+    else
+    {
+       
+        NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObjects:@[self.receiverModel.invoiceReceiverlocation?:@"",self.receiverModel.invoiceReceiverAddress?:@"",self.receiverModel.invoiceReceiverName?:@"",self.receiverModel.invoiceReceiverMobile?:@""] forKeys:@[@"invoiceReceiverlocation",@"invoiceReceiverAddress",@"invoiceReceiverName",@"invoiceReceiverMobile"]];
+        [SNAPI postWithURL:@"buyer/updateInvoice" parameters:mudic success:^(SNResult *result) {
+            if (result.state==200) {
+                [MBProgressHUD showSuccess:result.data];
+            }
+        } failure:^(NSError *error) {
+        }];
+    }
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

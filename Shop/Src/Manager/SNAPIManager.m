@@ -65,7 +65,7 @@
 #pragma mark - 
 
 - (NSString *)baseURL {
-    return _isConnectFormalServer ? @"https://api.scinan.com/v2.0" : @"https://testapi.scinan.com/v2.0";
+    return _isConnectFormalServer ? RELEASEAPI_ROOT: DEBUGAPI_ROOT;
 }
 
 - (NSString *)appKey {

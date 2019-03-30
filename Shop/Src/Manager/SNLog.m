@@ -60,7 +60,7 @@
     
     [SNIOTTool postWithURL:APPNODE_SWITCH parameters:dict success:^(SNResult *result) {
         
-        if (result.result_code == 0) {
+        if (result.state == 0) {
             [SNAPIManager shareAPIManager].isNode = YES;
             if (logSwitch) {
                 logSwitch(YES);

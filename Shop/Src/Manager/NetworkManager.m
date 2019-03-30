@@ -52,13 +52,13 @@
         // 默认情况下，
         // requestSerializer 是 AFHTTPRequestSerializer 对象，请求时数据是以 formdata 形式传送的，
         // responseSerializer 是 AFJSONResponseSerializer 对象，返回的数据都格式化成 JSON 的格式
-        _manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:API_ROOT]];
+        _manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:DEBUGAPI_ROOT]];
         // 设置请求超时时间
         _manager.requestSerializer.timeoutInterval = 30.0;
         
         
         // 初始化以 JSON 格式发起请求的 AFHTTPSessionManager
-        _jsonManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:API_ROOT]];
+        _jsonManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:DEBUGAPI_ROOT]];
         _jsonManager.requestSerializer = [AFJSONRequestSerializer serializerWithWritingOptions:0];
         // 设置请求超时时间
         _jsonManager.requestSerializer.timeoutInterval = 30.0;
@@ -141,7 +141,6 @@
 - (void)POST:(NSString *)url parameters:(id)parameters success:(SuccessBlock)success fail:(FailBlock)fail {
     DRWeakSelf;
     [_manager POST:url parameters:parameters progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        
         [weakSelf resultHandler:responseObject success:success fail:fail];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

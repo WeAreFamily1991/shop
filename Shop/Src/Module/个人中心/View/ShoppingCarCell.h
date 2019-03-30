@@ -37,7 +37,8 @@
 
 @property (nonatomic,strong) ShoppingModel *shoppingModel;
 
-
+/** detail点击回调 */
+@property (nonatomic, copy) dispatch_block_t selectClickBlock;
 @property (assign,nonatomic) BOOL selectState;//选中状态
 
 @property (nonatomic,assign) id<ShoppingCarCellDelegate>delegate;

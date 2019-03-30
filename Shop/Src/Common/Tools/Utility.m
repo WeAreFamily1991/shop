@@ -9,7 +9,7 @@
 #import "Utility.h"
 
 #import "NetworkManager.h"
-#import "User.h"
+
 
 @implementation Utility
 // 固定高度，计算字符串宽度

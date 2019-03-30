@@ -16,8 +16,11 @@
 
 @property (nonatomic, strong) FSPageContentView2 *pageContentView;
 @property (nonatomic, strong) FSSegmentTitleView2 *titleView;
+
 @property (nonatomic,strong)SYTypeButtonView *buttonView;
 @property (nonatomic,strong)UITextField *orderTF;
+@property (nonatomic,retain)NSMutableDictionary *mudic;
+@property (nonatomic,strong)NSMutableArray *childVCs;
 @end
 
 @implementation BillMessageVC
@@ -25,9 +28,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title =@"开票记录";
+    self.view.backgroundColor =[UIColor whiteColor];
+    self.mudic=[NSMutableDictionary dictionary];
+    self.childVCs =[NSMutableArray array];
     [self addsegentView];
     [self setUI];
-    
+    //
     // Do any additional setup after loading the view from its nib.
 }
 -(void)setUI
@@ -41,9 +47,7 @@
         switch (index) {
             case 0:
             {
-                
                 [weakSelf selectDatePickViewWithIndex:0];
-                
             }
                 break;
             case 1:
@@ -55,7 +59,44 @@
                 [CGXPickerView showStringPickerWithTitle:@"全部订单" DataSource:@[ @"全部订单",@"近一个月订单", @"近两个月订单", @"一年内订单"] DefaultSelValue:@"全部订单" IsAutoSelect:NO Manager:nil ResultBlock:^(id selectValue, id selectRow) {
                     NSLog(@"%@",selectValue);
                     [weakSelf.buttonView setTitleButton:selectValue index:2];
+                    
+                    [self.mudic  setValue:[SNTool currenTime] forKey:@"endTime"];
+                    if ([selectRow intValue]!=0) {
+                        
+                        [self.buttonView setTitleButton:[SNTool currenTime] index:1];
+                        
+                        [self.buttonView setTypeButton:YES index:0];
+                        [self.buttonView setTypeButton:YES index:1];
+                        [self.buttonView setTypeButton:YES index:2];
+                    }
+                    NSLog(@"%@",selectValue);
+                    if ([selectRow intValue]==0) {
+                        [self.mudic  setValue:@"" forKey:@"startTime"];
+                        
+                        [self.mudic  setValue:@"" forKey:@"endTime"];
+                        
+                    }
+                    else if ([selectRow intValue]==1)
+                    {
+                        [self.mudic setValue:[SNTool ddpGetExpectTimestamp:0 month:-1 day:0]  forKey:@"startTime"];
+                        [self.buttonView setTitleButton:[SNTool ddpGetExpectTimestamp:0 month:-1 day:0] index:0];
+                    }
+                    else if ([selectRow intValue]==2)
+                    {
+                        [self.mudic setValue:[SNTool ddpGetExpectTimestamp:0 month:-2 day:0] forKey:@"startTime"];
+                        [self.buttonView setTitleButton:[SNTool ddpGetExpectTimestamp:0 month:-2 day:0] index:0];
+                        
+                    }
+                    else if ([selectRow intValue]==3)
+                    {
+                        [self.mudic setValue:[SNTool ddpGetExpectTimestamp:-1 month:0 day:0] forKey:@"startTime"];
+                        [self.buttonView setTitleButton:[SNTool ddpGetExpectTimestamp:-1 month:0 day:0] index:0];
+                        
+                        
+                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"record" object:nil userInfo:self.mudic ];
                 }];
+                
             }
                 //                [buttonView setTitleButton:@"2019-02-27" index:2];
                 break;
@@ -65,12 +106,12 @@
         }
     };
     self.buttonView.titleColorNormal = [UIColor blackColor];
-    self.buttonView.titleColorSelected = [UIColor redColor];
+    self.buttonView.titleColorSelected = [UIColor blackColor];
     self.buttonView.titles = @[@"起始时间", @"截止时间", @"全部订单"];
     self.buttonView.enableTitles =  @[@"起始时间", @"截止时间", @"全部订单"];
-    NSDictionary *dict01 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
-    NSDictionary *dict02 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
-    NSDictionary *dict03 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
+    NSDictionary *dict01 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_down"], keyImageSelected, nil];
+    NSDictionary *dict02 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_down"], keyImageSelected, nil];
+    NSDictionary *dict03 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_down"], keyImageSelected, nil];
     self.buttonView.imageTypeArray = @[dict01, dict02, dict03];
     self.buttonView.selectedIndex = -1;
     
@@ -83,7 +124,7 @@
     backIMG.userInteractionEnabled =YES;
     [backView addSubview:backIMG];
     self.orderTF =[[UITextField alloc]initWithFrame:CGRectMake(10, 0, 3*SCREEN_WIDTH/5-20, 30)];
-    self.orderTF.placeholder =@"输入发票号码、发票抬头";
+    self.orderTF.placeholder =@"单据编号/店铺名称";
     self.orderTF.font =DR_FONT(14);
     self.orderTF.delegate =self;
     [backIMG addSubview:self.orderTF];
@@ -100,32 +141,52 @@
 -(void)searchBtnClick:(UIButton *)sender
 {
     NSLog(@"textField==%@",self.orderTF.text);
+    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
+    [mudic setValue:self.orderTF.text forKey:@"dzNo"];
+    [mudic setValue:@"3" forKey:@"index"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"message" object:nil userInfo:mudic];
 }
 -(void)selectDatePickViewWithIndex:(NSInteger)selectIndex
 {
     DRWeakSelf;
     NSDate *now = [NSDate date];
     NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
-    fmt.dateFormat = @"yyyy-MM-dd HH:mm:ss";
+    fmt.dateFormat = @"yyyy-MM-dd";
     NSString *nowStr = [fmt stringFromDate:now];
-    //    NSString *titleStr ;
     
-    [CGXPickerView showDatePickerWithTitle:selectIndex?@"截止时间":@"起始时间" DateType:UIDatePickerModeDate DefaultSelValue:nil MinDateStr:@"1900-01-01 00:00:00" MaxDateStr:nowStr IsAutoSelect:YES Manager:nil ResultBlock:^(NSString *selectValue) {
+    
+    [CGXPickerView showDatePickerWithTitle:selectIndex?@"截止时间":@"起始时间" DateType:UIDatePickerModeDate DefaultSelValue:nowStr MinDateStr:@"1900-01-01 00:00:00" MaxDateStr:nowStr IsAutoSelect:NO Manager:nil ResultBlock:^(NSString *selectValue) {
+        if (selectIndex==0) {
+            [self.mudic setValue:selectValue forKey:@"startTime"];
+            
+        }else
+        {
+            [self.mudic setValue:selectValue forKey:@"endTime"];
+            
+        }
+        
+        NSArray *allKeyArr =[self.mudic allKeys];
+        if (allKeyArr.count==2) {
+            [self.buttonView setTypeButton:YES index:0];
+            [self.buttonView setTypeButton:YES index:1];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"message" object:nil userInfo:self.mudic ];
+        }
         NSLog(@"%@",selectValue);
         [weakSelf.buttonView setTitleButton:selectValue index:selectIndex];
     }];
 }
 -(void)addsegentView
-{//全部", @"已取消", @"待审核", @"待付款", @"待发货", @"待收货",@"已完成",@"退货中",@"已退货"
+{
     self.automaticallyAdjustsScrollViewInsets = NO;//,@"周三",@"周四",@"周五",@"周六",@"周日",
-    NSMutableArray *titleArray = [[NSMutableArray alloc] initWithObjects:@"全部", @"待审核", @"已通过", @"未通过" ,@"已作废",nil];
+    NSMutableArray *titleArray = [[NSMutableArray alloc] initWithObjects:@"全部", @"待审核", @"已通过", @"未通过" ,@"已开票",@"已作废",@"已撤回",nil];
     self.titleView = [[FSSegmentTitleView2 alloc]initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,40) delegate:self indicatorType:0];
     self.titleView.backgroundColor = [UIColor whiteColor];
     self.titleView.button_Width = WScale(45);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
     _titleView.titleSelectColor = [UIColor redColor];
-    self.titleView.titleFont = [UIFont systemFontOfSize:15];
+    self.titleView.titleFont = DR_FONT(14);
     self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
     [self.view addSubview:_titleView];
     
@@ -134,15 +195,15 @@
     lineLabel.backgroundColor = BACKGROUNDCOLOR;
     [self.titleView addSubview:lineLabel];
     
-    NSMutableArray *childVCs = [[NSMutableArray alloc]init];
+//    NSMutableArray *childVCs = [[NSMutableArray alloc]init];
     
     for (int i = 0; i<titleArray.count; i++)
     {
         BillMessageDetailVC *VC = [[BillMessageDetailVC alloc] init];
         VC.status = i;
-        [childVCs addObject:VC];
+        [self.childVCs addObject:VC];
     }
-    self.pageContentView = [[FSPageContentView2 alloc]initWithFrame:CGRectMake(0,120, SCREEN_WIDTH,SCREEN_HEIGHT-DRTopHeight-120) childVCs:childVCs parentVC:self delegate:self];
+    self.pageContentView = [[FSPageContentView2 alloc]initWithFrame:CGRectMake(0,120, SCREEN_WIDTH,SCREEN_HEIGHT-DRTopHeight-120) childVCs:self.childVCs parentVC:self delegate:self];
     self.pageContentView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:_pageContentView];
     
@@ -152,6 +213,8 @@
 //********************************  分段选择  **************************************
 - (void)FSSegmentTitleView:(FSSegmentTitleView2 *)titleView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
 {
+     BillMessageDetailVC *VC = self.childVCs[endIndex];
+    VC.sendDataDictionary =self.mudic;
     self.pageContentView.contentViewCurrentIndex = endIndex;
 }
 - (void)FSContenViewDidEndDecelerating:(FSPageContentView2 *)contentView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex

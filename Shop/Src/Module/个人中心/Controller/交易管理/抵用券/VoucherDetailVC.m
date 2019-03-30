@@ -8,7 +8,7 @@
 
 #import "VoucherDetailVC.h"
 #import "CollectionCell.h"
-
+#import "VoucherModel.h"
 @interface VoucherDetailVC ()
 {
     int pageCount;
@@ -18,10 +18,17 @@
 @property (nonatomic,strong)NSMutableArray *MsgListArr;
 @property (nonatomic, copy) NSString *titleStr;
 @property (nonatomic,assign)NSInteger selectIndex;
+@property (nonatomic,retain)VoucherModel *VouchModel;
 @end
 
 @implementation VoucherDetailVC
-
+-(NSMutableArray *)MsgListArr
+{
+    if ((!_MsgListArr)) {
+        _MsgListArr=[NSMutableArray array];
+    }
+    return _MsgListArr;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor =BACKGROUNDCOLOR;
@@ -59,79 +66,47 @@
 -(void)getMsgList
 {
     if (!_sendDataDictionary) {
-        _sendDataDictionary = [[NSMutableDictionary alloc] init];
+        _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[[NSString stringWithFormat:@"%ld",self.status+1]] forKeys:@[@"status"]];
     }
     //    [MBProgressHUD showMessage:@""];
     [self loadDataSource:_sendDataDictionary withpagecount:[NSString stringWithFormat:@"%d",pageCount]];
 }
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
-//    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[[UserModel sharedManager].token,] forKeys:@[@"token"]];
-//    NSString *urlStr = @"/ZcApi/CollectInfoList";
-//    if (self.statusStr == nil || [self.statusStr isEqualToString:@"2"]) {
-//        urlStr = @"/ZcApi/CollectInfoList";
-//        if ([self.title isEqualToString:SNStandardString(@"我的采集")]) {
-//            [dic setValue:@"2" forKey:@"s_type"];
-//        }
-//    }
-//    else if ([self.statusStr isEqualToString:@"1"]) {
-//        urlStr = @"/ZcApi/MyAssignList";
-//    }
-//    if (page) {
-//        [dic setObject:page forKey:@"page"];
-//        [dic setObject:@"10" forKey:@"limit"];
-//    }
-//    if (dictionary) {
-//        [dic addEntriesFromDictionary:dictionary];
-//    }
-//    if (self.status) {
-//        [dic setValue:self.status forKey:@"status"];
-//    }
-//
-//    [Interface_Base Post:urlStr dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-//        NSLog(@"data=%@",data[@"data"]);
-//        if ([data[@"data"] isKindOfClass:[NSNull class]]||data[@"data"]==nil) {
-//            //            [MBProgressHUD showError:@"暂无新数据"];
-//            if (self.MsgListArr.count==0) {
-//                self.zeroView.hidden =NO;
-//            }else
-//            {
-//                self.zeroView.hidden =YES;
-//            }
-//            //             self.tableView.mj_footer.hidden =YES;
-//            [self.tableView reloadData];
-//
-//            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-//
-//            //            [MBProgressHUD showError:@"暂无新数据"];
-//        }else
-//        {
-//            [self.MsgListArr addObjectsFromArray:data[@"data"]];
-//            if (self.MsgListArr.count==0) {
-//                self.zeroView.hidden =NO;
-//            }else
-//            {
-//                self.zeroView.hidden =YES;
-//            }
-//            [self.tableView reloadData];
-//            if (self.MsgListArr.count<10) {
-//                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-//                //                self.tableView.mj_footer.hidden =YES;
-//            }
-//            else
-//            {
-//                //                self.tableView.mj_footer.hidden =NO;
-//                [self.tableView.mj_footer endRefreshing];
-//            }
-//            [self.tableView.mj_header endRefreshing];
-//            [MBProgressHUD hideHUD];
-//        }
-//    } failBlock:^(NSDictionary *data, NSString *message) {
-//        [self.tableView.mj_header endRefreshing];
-//        [self.tableView.mj_footer endRefreshing];
-//        [MBProgressHUD hideHUD];
-//    }];
-}-(void)addCustomView
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    NSString *urlStr =@"buyer/myVoucher";
+    if (page) {
+        [dic setObject:page forKey:@"pageNum"];
+        [dic setObject:@"10" forKey:@"pageSize"];
+    }
+    if (dictionary) {
+        [dic addEntriesFromDictionary:dictionary];
+    }
+    if (self.status==0) {
+        [dic setObject:@"" forKey:@"status"];
+    }
+    DRWeakSelf;
+    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+        NSLog(@"data=%@",result.data[@"list"]);
+        NSMutableArray*addArr=result.data[@"list"];
+        NSMutableArray *modelArray =[VoucherModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
+        [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+        [self.tableView reloadData];
+        if (addArr.count<10){
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        else{
+            [self.tableView.mj_footer endRefreshing];
+        }
+        [self.tableView.mj_header endRefreshing];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        [MBProgressHUD hideHUD];
+    }];
+}
+-(void)addCustomView
 {
     UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, 2, SCREEN_WIDTH, 36)];
     backView.backgroundColor =[UIColor whiteColor];
@@ -156,18 +131,61 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
    
-    return SCREEN_HEIGHT/7;   
+    return SCREEN_HEIGHT/9;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 10;
+    return self.MsgListArr.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+   
     CollectionCell1 *cell =[CollectionCell1 cellWithTableView:tableView];
+    if (self.MsgListArr.count!=0) {
+        self.VouchModel =self.MsgListArr[indexPath.row];
+        cell.vouchModel =self.VouchModel;
+        if (self.status==0) {
+            if (self.VouchModel.topicType==0) {
+                cell.iconBackIMG.image =[UIImage imageNamed:@"平台抵用券"];
+               
+                cell.statusBtn.selected =NO;
+                
+            }else
+            {
+                cell.iconBackIMG.image =[UIImage imageNamed:@"店铺券"];
+                
+                cell.statusBtn.selected =YES;
+            }
+            [cell.statusBtn setTitle:@"去使用" forState:UIControlStateNormal];
+            cell.selectlickBlock = ^{
+                
+            };
+            cell.hidenBtn.hidden =YES;
+        }
+        else if (self.status==1)
+        {
+            cell.iconBackIMG.image =[UIImage imageNamed:@"我的抵用券_06"];
+            [cell.statusBtn setBackgroundImage:[UIImage imageNamed:@"bg-over"] forState:UIControlStateNormal];
+            [cell.statusBtn setTitle:@"已使用" forState:UIControlStateNormal];
+            cell.hidenBtn.selected =NO;
+            cell.hidenBtn.hidden =NO;
+        }
+        else
+        {
+            cell.iconBackIMG.image =[UIImage imageNamed:@"我的抵用券_06"];
+            [cell.statusBtn setBackgroundImage:[UIImage imageNamed:@"bg-over"] forState:UIControlStateNormal];
+            [cell.statusBtn setTitle:@"已过期" forState:UIControlStateNormal];
+            cell.hidenBtn.selected =YES;
+            cell.hidenBtn.hidden =NO;
+        }
+    }
+    if (self.status!=0) {
+        cell.titleLab.textColor =[UIColor lightGrayColor];
+        cell.timeLab.textColor =[UIColor lightGrayColor];
+        cell.conditionLab.textColor =[UIColor lightGrayColor];
+    }
     return cell;
     
     

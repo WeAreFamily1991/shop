@@ -18,7 +18,7 @@ static NSInteger const tagButton = 1000;
 
 @property (nonatomic, assign) NSInteger previousTag;
 @property (nonatomic, strong) NSString *previousTitle;
-@property (nonatomic, assign) BOOL isDescending; // 默认升序，即NO
+
 
 @property (nonatomic, strong) UIView *lineView;  // 滚动条
 
@@ -54,11 +54,11 @@ static NSInteger const tagButton = 1000;
 - (void)setUIWithTitles:(NSArray *)array
 {
     NSInteger count = array.count;
-    CGFloat width = CGRectGetWidth(self.bounds) / count;
+    CGFloat width = (CGRectGetWidth(self.bounds)-10 )/ count;
     
     for (int i = 0; i < count; i++) {
         NSString *title = array[i];
-        CGRect rect = CGRectMake(i * width, 0.0, width-1, CGRectGetHeight(self.bounds));
+        CGRect rect = CGRectMake(i *width, 0.0, width, CGRectGetHeight(self.bounds));
         
         SYButton *button = [SYButton buttonWithType:UIButtonTypeCustom];
         button.backgroundColor = [UIColor clearColor];
@@ -104,7 +104,15 @@ static NSInteger const tagButton = 1000;
         }
     }
 }
-
+//- (void)setseletedImg
+//{
+//
+//    for (SYButton *button in self.buttonArray) {
+//        [button set:_titleColorSelected forState:UIControlStateHighlighted];
+//        [button setTitleColor:_titleColorSelected forState:UIControlStateSelected];
+//    }
+//
+//}
 #pragma mark - 响应
 
 - (void)buttonAction:(UIButton *)button
@@ -152,12 +160,13 @@ static NSInteger const tagButton = 1000;
 
 - (void)buttonActionStatus:(UIButton *)button
 {
-    button.userInteractionEnabled = !button.userInteractionEnabled;
-    button.selected = !button.selected;
+    button.userInteractionEnabled =YES;
+    button.selected = YES;
     button.titleLabel.font = (button.selected ? _titleFontSelected : _titleFont);
     
     SYButton *previousButton = self.buttonArray[self.previousTag - tagButton];
     previousButton.userInteractionEnabled = YES;
+    //
     previousButton.selected = ([previousButton isEqual:button] ? button.selected : NO);
     previousButton.titleLabel.font = (previousButton.selected ? _titleFontSelected : _titleFont);
     self.previousTag = button.tag;
@@ -234,7 +243,11 @@ static NSInteger const tagButton = 1000;
     _titleColorNormal = titleColorNormal;
     [self setButtonColor];
 }
-
+//-(void)setBtnIMGSelected:(UIImage *)btnIMGSelected
+//{
+//    _btnIMGSelected =btnIMGSelected
+//    [self setButtonColor];
+//}
 - (void)setTitleColorSelected:(UIColor *)titleColorSelected
 {
     _titleColorSelected = titleColorSelected;
@@ -314,18 +327,19 @@ static NSInteger const tagButton = 1000;
     }
     
     // 取消已选
-    for (SYButton *button in self.buttonArray) {
-        if (button.isSelected) {
-            button.selected = NO;
-            button.userInteractionEnabled = YES;
-        }
-    }
+//    for (SYButton *button in self.buttonArray) {
+//        if (button.isSelected) {
+//            button.selected = NO;
+//            button.userInteractionEnabled = YES;
+//        }
+//    }
     
     //
     SYButton *button = self.buttonArray[index];
+    
     if (button && [button isKindOfClass:[SYButton class]]) {
         NSString *title = button.titleLabel.text;
-        if ([self.enableTitles containsObject:title]) {
+       
             button.userInteractionEnabled = YES;
             button.selected = YES;
             self.isDescending = isDescending;
@@ -335,7 +349,7 @@ static NSInteger const tagButton = 1000;
             UIImage *imageSelectedDouble = dict[keyImageSelectedDouble];
             [button setImage:(self.isDescending ? imageSelected : imageSelectedDouble) forState:UIControlStateSelected];
             self.previousTitle = title;
-        }
+       
     }
     //
     [self buttonActionLine:button];

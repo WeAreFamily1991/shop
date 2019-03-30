@@ -7,9 +7,11 @@
 //
 
 #import "SNAPI.h"
+#import "DRUserInfoModel.h"
 #import "MJExtension.h"
 #import "NSStringSNCategory.h"
 #import "SNIOTTool.h"
+#import "SNTool.h"
 #import "SNURL.h"
 #import "SNLog.h"
 //#import "NSMutableDictionaryAddition.h"
@@ -19,6 +21,7 @@
 #import "SNAccount.h"
 //#import "SNMqtt.h"
 #import "SNCrash.h"
+#import "NSObject+MJKeyValue.h"
 
 @implementation SNAPI
 
@@ -95,6 +98,29 @@
 
 #pragma mark - 用户管理
 
+//获取游客token
++(void)getToken
+{
+    
+     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"ios", @"dGVzdA=="] forKeys:@[@"username", @"secret"]];
+    
+    //    if (areaCode) [dict setObject:areaCode forKey:@"area_code"];
+    
+    [SNIOTTool postvisiteTokenWithURL:GET_TOKEN parameters:dict success:^(SNResult *result) {
+        NSString *visiteStr =result.data;
+        [User currentUser].visitetoken =visiteStr;
+//        SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
+////        token.visit_token =
+//        [token setVisit_token:result.data];
+//           [DEFAULTS setObject:result.data forKey:@"token"];
+        
+        
+    
+        
+    } failure:^(NSError *error) {
+        
+    }];
+}
 // 登录
 + (void)userLoginWithAccount:(NSString *)account password:(NSString *)password success:(void (^)())success failure:(void (^)(NSError *))failure {
     
@@ -112,13 +138,17 @@
         
         if (success) {
             
-            SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+            SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
             token.password = password;
-            [SNToken saveToken:token];
-            
-            SNAPIManager *manager = [SNAPIManager shareAPIManager];
-            manager.token = token.access_token;
-            manager.expiresTime = token.expiresTime;
+            token.mobilePhone =account;
+            [User currentUser].token =result.token;
+            [User currentUser].isLogin =YES;
+            DRUserInfoModel *model =[DRUserInfoModel mj_objectWithKeyValues:result.data];
+           
+//            DRUserInfoModel *userModel =[DRUserInfoModel mj_objectWithKeyValues:model.buyer];
+//            SNAPIManager *manager = [SNAPIManager shareAPIManager];
+//            manager.token = token.access_token;
+//            manager.expiresTime = token.expiresTime;
             
             success();
         }
@@ -129,7 +159,6 @@
         }
     }];
 }
-
 // 快速登录
 + (void)userLoginFastWithMobile:(NSString *)moblile validCode:(NSString *)validCode areaCode:(NSString *)areaCode ticket:(NSString *)ticket success:(void (^)())success failure:(void (^)(NSError *))failure {
     
@@ -147,7 +176,7 @@
         
         if (success) {
             
-            SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+            SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
             token.password = nil;
             [SNToken saveToken:token];
             
@@ -184,7 +213,7 @@
     [SNIOTTool postWithURL:USER_REGISTER_EMAIL parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data[@"user_digit"]);
+            success(result.data[@"user_digit"]);
         }
         
     } failure:^(NSError *error) {
@@ -195,25 +224,26 @@
 }
 
 // 手机注册
-+ (void)userRegisterMobileWithEmail:(NSString *)email password:(NSString *)password type:(int)type ticket:(NSString *)ticket validCode:(NSString *)validCode success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
-    
-    if (!(password && ticket && validCode)) {
++ (void)userRegisterMobileWithCompany:(NSString *)company mobile:(NSString *)mobile valid_code:(NSString *)valid_code location:(NSString *)location locationCode:(NSString *)locationCode success:(void (^)(NSString*))success failure:(void (^)(NSError *))failure {
+    if (!(company&&mobile&&valid_code&&location&&locationCode)) {
         if (failure) {
             failure([self missRequiredParameter]);
         }
         return;
     }
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[[password MD5], ticket, validCode] forKeys:@[@"password", @"ticket", @"valid_code"]];
+
+
+    NSDictionary *dic =@{@"name":company,@"mobile":mobile, @"validCode":valid_code,@"location":location,@"locationCode":locationCode,@"source":@"1"};
     
-    if (email)  [dict setObject:email forKey:@"email"];
-    if (type)   [dict setObject:[NSString stringWithFormat:@"%d", type] forKey:@"type"];
-    
-    [SNIOTTool postWithURL:USER_REGISTER_MOBILE parameters:dict success:^(SNResult *result) {
-        
+    NSMutableDictionary *muDic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"buyerRegister"];
+//    [muDic setObject:[DEFAULTS objectForKey:@"token"] forKey:@"santieJwt"];
+
+    [SNIOTTool postWithURL:USER_REGISTER_MOBILE parameters:muDic success:^(SNResult *result) {
+
         if (success) {
-            success(result.result_data[@"user_digit"]);
+            success([NSString stringWithFormat:@"%ld",(long)result.state]);
         }
-        
+
     } failure:^(NSError *error) {
         if (failure) {
             failure(error);
@@ -271,12 +301,13 @@
 // 获取用户基本信息
 + (void)userInfoSuccess:(void (^)(DRUserInfoModel *))success failure:(void (^)(NSError *))failure {
     
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@""] forKeys:@[@"token"]];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
     [SNIOTTool postWithURL:USER_INFO parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            DRUserInfoModel *user = [DRUserInfoModel mj_objectWithKeyValues:result.result_data];
+            DRUserInfoModel *user = [DRUserInfoModel mj_objectWithKeyValues:result.data];
+           
             success(user);
         }
         
@@ -325,7 +356,7 @@
 
     [SNAPI postWithURL:USER_BUY_MODEL_LIST parameters:paramers success:^(SNResult *result) {
         if (success) {
-            NSMutableArray *array = [NSMutableArray arrayWithArray:result.result_data];
+            NSMutableArray *array = [NSMutableArray arrayWithArray:result.data];
             success([NSMutableArray arrayWithArray:array]);
         }
     } failure:^(NSError *error) {
@@ -474,7 +505,7 @@
 }
 
 // 设置用户头像
-+ (void)userAvatar:(UIImage *)image nickName:(NSString *)nickName success:(void (^)())success failure:(void (^)(NSError *))failure {
++ (void)userAvatar:(UIImage *)image nickName:(NSString *)nickName success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
     
     if (!image) {
         if (failure) {
@@ -491,18 +522,16 @@
     
     SNFormData *formData = [[SNFormData alloc] init];
     formData.fileData = UIImageJPEGRepresentation(image, 0.5);
-    formData.name = @"avatar";
+    formData.name = @"file";
     formData.fileName = @"";
-    formData.mimeType = @"image/jpeg";
+    formData.mimeType = @"";//"image/jpeg
     
-    NSMutableDictionary *paramers = [NSMutableDictionary dictionaryWithObjects:@[@""] forKeys:@[@"token"]];
-    
-    if (nickName) [paramers setObject:nickName forKey:@"user_nickname"];
+    NSMutableDictionary *paramers = [NSMutableDictionary dictionary];
     
     [SNIOTTool postWithURL:USER_AVATAR parameters:paramers formDataArray:@[formData] success:^(SNResult *result) {
         
         if (success) {
-            success();
+            success(result);
         }
         
     } failure:^(NSError *error) {
@@ -567,7 +596,7 @@
     
     [SNIOTTool postWithURL:USER_REFRESH_TOKEN parameters:dict success:^(SNResult *result) {
         
-        SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+        SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
         token.password = [SNToken loadToken].password;
         [SNToken saveToken:token];
         
@@ -596,7 +625,7 @@
     [SNIOTTool postWithURL:MESSAGE_PUSH_LIST parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            NSArray *arr = [SNMessage mj_objectArrayWithKeyValuesArray:result.result_data];
+            NSArray *arr = [SNMessage mj_objectArrayWithKeyValuesArray:result.data];
             success(arr);
         }
         
@@ -812,8 +841,8 @@
     [SNIOTTool postWithURL:SENSOR_DATA parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            if ([result.result_data isKindOfClass:[NSDictionary class]]) {
-                NSDictionary *dict =result.result_data;
+            if ([result.data isKindOfClass:[NSDictionary class]]) {
+                NSDictionary *dict =result.data;
                 success(dict[@"value"]);
             }
             
@@ -828,21 +857,39 @@
 }
 
 #pragma mark - 公共接口
++ (void)GetvalidCodesuccess:(void (^)(NSString *))success failure:(void (^)(NSError *))failure
+{
+    NSLog(@"token=%@",[SNToken loadToken]);
+//    NSString *tokenStr =[DEFAULTS objectForKey:@"token"];
+    NSMutableDictionary *paramers =[NSMutableDictionary dictionary];
+//    [NSMutableDictionary dictionaryWithObject: forKey:];
 
-// 请求发送短信验证
-+ (void)commonMessageValidWithMobile:(NSString *)mobile type:(NSInteger)type areaCode:(NSString *)areaCode success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
     
-    if (!(mobile && areaCode)) {
+    [SNIOTTool getWithURL:COMMON_VALID parameters:paramers success:^(SNResult *result) {
+        if (success) {
+            success(result.data);
+        }
+    } failure:^(NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+    
+}
+// 请求发送短信验证
++ (void)commonMessageValidWithMobile:(NSString *)mobile validCode:(NSString *)validCode success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure {
+    
+    if (!(mobile && validCode)) {
         if (failure) {
             failure([self missRequiredParameter]);
         }
         return;
     }
-    NSMutableDictionary *paramers = [NSMutableDictionary dictionaryWithObjects:@[mobile, [NSString stringWithFormat:@"%ld", (long)type], areaCode] forKeys:@[@"mobile", @"type", @"area_code"]];
-    
+    NSMutableDictionary *paramers = [NSMutableDictionary dictionaryWithObjects:@[mobile, validCode] forKeys:@[@"mobile", @"validCode"]];
+//    [paramers setObject:[DEFAULTS objectForKey:@"token"] forKey:@"santieJwt"];
     [SNIOTTool postWithURL:COMMON_MESSAGE_VALID parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data[@"ticket"]);
+            success([NSString stringWithFormat:@"%@",result.data[@"state"]]);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -905,9 +952,9 @@
             
             BOOL isBind = NO;
             
-            if (result.result_code == 30118) {
+            if (result.state == 30118) {
                 
-                SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+                SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
                 token.password = nil;
                 [SNToken saveToken:token];
                 
@@ -947,7 +994,7 @@
         
         if (success) {
             
-            SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+            SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
             token.password = password;
             [SNToken saveToken:token];
             
@@ -980,7 +1027,7 @@
         
         if (success) {
             
-            SNToken *token = [SNToken mj_objectWithKeyValues:result.result_data];
+            SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
             token.password = password;
             [SNToken saveToken:token];
             
@@ -1006,7 +1053,7 @@
     [SNIOTTool postWithURL:THIRDPARTY_BIND_LIST parameters:paramers success:^(SNResult *result) {
         
         NSMutableArray *bindList = [[NSMutableArray alloc] init];
-        NSArray *resultData = (NSArray *)result.result_data;
+        NSArray *resultData = (NSArray *)result.data;
         for (int i=0; i<resultData.count; i++)
         {
             NSDictionary *dic = resultData[i];
@@ -1056,7 +1103,7 @@
     
     [SNIOTTool postWithURL:UPDATE_APP parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1078,7 +1125,7 @@
     
     [SNIOTTool postWithURL:UPDATE_HARDWARE parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1102,7 +1149,7 @@
     
     [SNIOTTool postWithURL:UPDATE_VENDOR parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1129,7 +1176,7 @@
 
     [SNIOTTool postWithURL:DATA_CONTROL parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1151,7 +1198,7 @@
 //
 //    [SNIOTTool postWithURL:DATA_POWER parameters:paramers success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *dataList = [SNHistoryData mj_objectArrayWithKeyValuesArray:result.result_data];
+//            NSArray *dataList = [SNHistoryData mj_objectArrayWithKeyValuesArray:result.data];
 //            success(dataList);
 //        }
 //    } failure:^(NSError *error) {
@@ -1177,7 +1224,7 @@
 //
 //    [SNIOTTool postWithURL:DATA_HISTORY parameters:paramers success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *dataList = [SNHistoryData mj_objectArrayWithKeyValuesArray:result.result_data];
+//            NSArray *dataList = [SNHistoryData mj_objectArrayWithKeyValuesArray:result.data];
 //            success(dataList);
 //        }
 //    } failure:^(NSError *error) {
@@ -1202,7 +1249,7 @@
     
     [SNIOTTool postWithURL:GPS_FENCE parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1224,7 +1271,7 @@
     
     [SNIOTTool postWithURL:WEATHER_AIR parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1250,7 +1297,7 @@
     
     [SNIOTTool postWithURL:LIGHT_BETA_GROUP_MODIFY parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1276,7 +1323,7 @@
     
     [SNIOTTool postWithURL:LIGHT_BETA_GROUP_LIST parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1323,7 +1370,7 @@
     
     [SNIOTTool postWithURL:LIGHT_BETA_CONTROLLER_GET parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1459,7 +1506,7 @@
     
     [SNIOTTool postWithURL:LIGHT_GROUP_LIST parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1552,7 +1599,7 @@
     
     [SNIOTTool postWithURL:LIGHT_CONTROLLER_GET parameters:paramers success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
     } failure:^(NSError *error) {
         if (failure) {
@@ -1608,7 +1655,7 @@
     [SNIOTTool postWithURL:SUGGESTION_TYPE_LIST parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -1702,7 +1749,7 @@
     
     [SNIOTTool postWithURL:BARCODE_GENERATE parameters:paramers success:^(SNResult *result) {
         
-        NSString *barcode = result.result_data[@"bar_code"];
+        NSString *barcode = result.data[@"bar_code"];
         if (success) {
             success(barcode);
         }
@@ -1729,7 +1776,7 @@
     [SNIOTTool postWithURL:BARCODE_PARSE parameters:paramers success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -1772,7 +1819,7 @@
     [SNIOTTool postWithURL:SMART_PRODUCT_CATEGORY parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -1795,7 +1842,7 @@
     [SNIOTTool postWithURL:SMART_PRODUCT_CATEGORY_SECONDARY parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -1819,7 +1866,7 @@
     [SNIOTTool postWithURL:SMART_PRODUCT_UPDATE parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -1836,7 +1883,7 @@
 //    [SNIOTTool postWithURL:SMART_DEVICE_LIST parameters:dict success:^(SNResult *result) {
 //
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *deviceArr = [NSMutableArray array];
 //            [deviceArr addObjectsFromArray:[SNDevice mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:deviceArr]);
@@ -1865,7 +1912,7 @@
 //    [SNIOTTool postWithURL:SMART_GATEWAY_SUBDEVICE_LIST parameters:dict success:^(SNResult *result) {
 //
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *deviceArr = [NSMutableArray array];
 //            [deviceArr addObjectsFromArray:[SNDevice mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:deviceArr]);
@@ -1893,7 +1940,7 @@
 //
 //    [SNIOTTool postWithURL:SMART_DEVICE_DETAIL parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            SNDevice* device = [SNDevice mj_objectWithKeyValues:result.result_data];
+//            SNDevice* device = [SNDevice mj_objectWithKeyValues:result.data];
 //            success(device);
 //        }
 //
@@ -1987,7 +2034,7 @@
 //    [SNIOTTool postWithURL:SMART_SCENE_LIST parameters:dict success:^(SNResult *result) {
 //
 //        if (success) {
-//            NSArray *arr = [SNScene mj_objectArrayWithKeyValuesArray:result.result_data];
+//            NSArray *arr = [SNScene mj_objectArrayWithKeyValuesArray:result.data];
 //
 //            success(arr);
 //        }
@@ -2006,7 +2053,7 @@
 //    [SNIOTTool postWithURL:SMART_SCENE_CURRENT parameters:dict success:^(SNResult *result) {
 //
 //        if (success) {
-//            SNScene *scene = [SNScene mj_objectWithKeyValues:result.result_data];
+//            SNScene *scene = [SNScene mj_objectWithKeyValues:result.data];
 //            success(scene);
 //        }
 //
@@ -2119,7 +2166,7 @@
 //    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"",sceneID] forKeys:@[@"token",@"scene_id"]];
 //    [SNIOTTool postWithURL:SMART_SCENE_DEVICE_LIST parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *deviceArr = [NSMutableArray array];
 //            [deviceArr addObjectsFromArray:[SNDevice mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:deviceArr]);
@@ -2145,7 +2192,7 @@
 //     if (gatewayDeviceID) [dict setObject:gatewayDeviceID forKey:@"gateway_device_id"];
 //    [SNIOTTool postWithURL:SMART_SCENE_DEVICE_DETAIL parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            SNDevice* device = [SNDevice mj_objectWithKeyValues:result.result_data];
+//            SNDevice* device = [SNDevice mj_objectWithKeyValues:result.data];
 //            success(device);
 //        }
 //
@@ -2168,7 +2215,7 @@
     NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"",sceneID,deviceID] forKeys:@[@"token",@"scene_id",@"device_id"]];
     [SNIOTTool postWithURL:SMART_SCENE_GATEWAY_TYPE parameters:dict success:^(SNResult *result) {
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -2190,7 +2237,7 @@
 //    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"",sceneID,deviceID,typeCode] forKeys:@[@"token",@"scene_id",@"device_id",@"type_code"]];
 //    [SNIOTTool postWithURL:SMART_SCENE_GATEWAY_SUBDEVICE parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *deviceArr = [NSMutableArray array];
 //            [deviceArr addObjectsFromArray:[SNDevice mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:deviceArr]);
@@ -2237,7 +2284,7 @@
 //    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"",deviceID,gatewayDeviceID,subTypeCode] forKeys:@[@"token",@"device_id",@"gateway_device_id",@"sub_type_code"]];
 //    [SNIOTTool postWithURL:GATEWAY_ACTION_LIST parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *actionArr = [NSMutableArray array];
 //            [actionArr addObjectsFromArray:[SNAction mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:actionArr]);
@@ -2413,7 +2460,7 @@
 //    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjects:@[@"",sceneID,deviceID,gatewayDeviceID, subTypeCode] forKeys:@[@"token",@"scene_id",@"device_id",@"gateway_device_id", @"sub_type_code"]];
 //    [SNIOTTool postWithURL:SMART_SCENE_GATEWAY_SAFETY_LIST parameters:dict success:^(SNResult *result) {
 //        if (success) {
-//            NSArray *array = result.result_data;
+//            NSArray *array = result.data;
 //            NSMutableArray *actionArr = [NSMutableArray array];
 //            [actionArr addObjectsFromArray:[SNAction mj_objectArrayWithKeyValuesArray:array]];
 //            success([NSArray arrayWithArray:actionArr]);
@@ -2463,7 +2510,7 @@
 //    [SNIOTTool postWithURL:ZIGBEE_DEVICE_LIST parameters:dict success:^(SNResult *result) {
 //
 //        if (success) {
-//            NSArray *deviceList = [SNDevice mj_objectArrayWithKeyValuesArray:result.result_data];
+//            NSArray *deviceList = [SNDevice mj_objectArrayWithKeyValuesArray:result.data];
 //            success(deviceList);
 //        }
 //
@@ -2533,7 +2580,7 @@
     [SNIOTTool postWithURL:ALARM_AREA_LIST parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            success(result.result_data);
+            success(result.data);
         }
         
     } failure:^(NSError *error) {
@@ -2580,6 +2627,7 @@
         }
         
     } failure:^(NSError *error) {
+        [MBProgressHUD showError:error.domain];
         if (failure) {
             failure(error);
         }

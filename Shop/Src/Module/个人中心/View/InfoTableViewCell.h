@@ -51,9 +51,17 @@
 
 @end
 
-
 ///人车合影
 @interface InfoTableViewCell5 : UITableViewCell
++(instancetype)cellWithTableView:(UITableView *)tableView;
+
+@end
+
+///人车合影
+@interface InfoTableViewCell6 : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UILabel *titleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *photoBtn;
 
 +(instancetype)cellWithTableView:(UITableView *)tableView;
 

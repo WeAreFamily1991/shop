@@ -10,6 +10,7 @@
 #import "YCWindow.h"
 @interface BackVC ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIButton *closeBtn;
 
 @end
 
@@ -18,6 +19,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
+    self.tableView.scrollEnabled =NO;
+    self.closeBtn.layer.cornerRadius =self.closeBtn.dc_height/2;
+    self.closeBtn.layer.masksToBounds =self.closeBtn.dc_height/2;
+    
     // Do any additional setup after loading the view.
 }
 static YCWindow *ycWindow = nil;
@@ -80,14 +85,13 @@ static YCWindow *ycWindow = nil;
 #pragma mark 表的行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
     return 30;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    NSArray *titleArr =@[@"申请单号：KP-201902-D00002",@"开票方：三块神铁",@"金额：¥202.80",@"申请单号：KP-201902-D00002",@"开票方：三块神铁",@"金额：¥202.80",@"金额：¥202.80"];
-    NSArray *detailTitleArr =@[@"申请单号：KP-201902-D00002",@"开票方：三块神铁",@"金额：¥202.80"];
+    NSArray *titleArr =@[[NSString stringWithFormat:@"发票类型：%@",self.MessageModel.invoiceType?@"增值税专用发票":@"增值税普通发票"],[NSString stringWithFormat:@"发票抬头：%@",self.MessageModel.title],[NSString stringWithFormat:@"税号：%@",self.MessageModel.taxNo],[NSString stringWithFormat:@"注册地址：%@",self.MessageModel.invoiceAddress],[NSString stringWithFormat:@"注册电话：%@",self.MessageModel.invoiceTel],[NSString stringWithFormat:@"开户行：%@",self.MessageModel.bankName],[NSString stringWithFormat:@"银行账户：%@",self.MessageModel.bankAccount]];
+    NSArray *detailTitleArr =@[[NSString stringWithFormat:@"收票人：%@",self.MessageModel.receiverName],[NSString stringWithFormat:@"详细地址：%@",self.MessageModel.receiverAddress],[NSString stringWithFormat:@"联系电话：%@",self.MessageModel.receiverPhone]];
     
     static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:

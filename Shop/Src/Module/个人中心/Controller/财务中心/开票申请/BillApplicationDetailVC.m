@@ -12,11 +12,14 @@
 #import "UIViewExt.h"
 #import "ShoppingCarCell.h"
 #import "ShoppingModel.h"
+#import "DCUpDownButton.h"
+#import "DetailOrdervc.h"
 @interface BillApplicationDetailVC ()<UITableViewDelegate,UITableViewDataSource,ShoppingCarCellDelegate>
 {
     int pageCount;
+    NSString *idStr;
 }
-@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
+
 @property (nonatomic,strong)NSMutableArray *MsgListArr;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
@@ -25,8 +28,9 @@
 
 @property (nonatomic,strong) UIButton *jieSuanBtn;//结算按钮
 @property (nonatomic,strong) UILabel *totalMoneyLab;//总金额
-
+@property (nonatomic,retain)ShoppingModel *model;
 @property(nonatomic,assign) float allPrice;
+@property (nonatomic,retain)DCUpDownButton *bgTipButton ;
 @end
 
 @implementation BillApplicationDetailVC
@@ -34,7 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor =BACKGROUNDCOLOR;
-    
+    [self.view addSubview:self.bgTipButton];
+   _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[self.sendDataDictionary[@"startTime"]?:@"",self.sendDataDictionary[@"endTime"]?:@"",self.sendDataDictionary[@"dzNo"]?:@""] forKeys:@[@"startTime",@"endTime",@"keyWord"]];
 //    self.tableView.frame =CGRectMake(0, 80, SCREEN_WIDTH, self.tableView.height - 120-DRTopHeight);
 //    self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor =BACKGROUNDCOLOR;
@@ -57,109 +62,106 @@
         self.tableView.height =self.tableView.height-60;
         [self createSubViews];
     }
-    [self initData];
+//    [self initData];
+    [self getMsgList];
     [_tableView registerClass:[FirstTableViewCell class] forCellReuseIdentifier:@"FirstTableViewCell"];
-    __weak typeof(self) weakSelf = self;
-    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
-        if (weakSelf.MsgListArr.count) {
-            [weakSelf.MsgListArr removeAllObjects];
-        }
-        pageCount=1;
-        [weakSelf initData];
-        [weakSelf.tableView.mj_header endRefreshing];
-
-    }];
-    [self.tableView.mj_header beginRefreshing];
-    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-
-        pageCount = pageCount +1;
-        [weakSelf initData];
-    }];
-    [self.tableView.mj_footer endRefreshing];
+//    __weak typeof(self) weakSelf = self;
+//    self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
+//        if (weakSelf.MsgListArr.count) {
+//            [weakSelf.MsgListArr removeAllObjects];
+//        }
+//        pageCount=1;
+//        [weakSelf initData];
+//        [weakSelf.tableView.mj_header endRefreshing];
+//
+//    }];
+//    [self.tableView.mj_header beginRefreshing];
+//    self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
+//
+//        pageCount = pageCount +1;
+//        [weakSelf initData];
+//    }];
+//    [self.tableView.mj_footer endRefreshing];
+//    [self initData];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"record" object:nil];
 //       self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
+}
+- (void)notificationHandler:(NSNotification *)notification {
+    if ([notification.name isEqualToString:@"record"]) {
+        NSDictionary *dic =notification.userInfo;
+        
+        if ([dic[@"index"] intValue]==3) {
+            [_sendDataDictionary setObject:dic[@"dzNo"]?:@"" forKey:@"keyWord"];
+            
+        }else
+        {
+            [_sendDataDictionary setObject:dic[@"startTime"]?:@"" forKey:@"startTime"];
+            [_sendDataDictionary setObject:dic[@"endTime"]?:@"" forKey:@"endTime"];
+            
+        }
+        [self getMsgList];
+    }
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"record" object:nil];
 }
 -(void)getMsgList
 {
-    if (!_sendDataDictionary) {
-        _sendDataDictionary = [[NSMutableDictionary alloc] init];
-    }
+   
     //    [MBProgressHUD showMessage:@""];
     [self loadDataSource:_sendDataDictionary withpagecount:[NSString stringWithFormat:@"%d",pageCount]];
 }
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
-    [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[[UserModel sharedManager].token,] forKeys:@[@"token"]];
-    //    NSString *urlStr = @"/ZcApi/CollectInfoList";
-    //    if (self.statusStr == nil || [self.statusStr isEqualToString:@"2"]) {
-    //        urlStr = @"/ZcApi/CollectInfoList";
-    //        if ([self.title isEqualToString:SNStandardString(@"我的采集")]) {
-    //            [dic setValue:@"2" forKey:@"s_type"];
-    //        }
-    //    }
-    //    else if ([self.statusStr isEqualToString:@"1"]) {
-    //        urlStr = @"/ZcApi/MyAssignList";
-    //    }
-    //    if (page) {
-    //        [dic setObject:page forKey:@"page"];
-    //        [dic setObject:@"10" forKey:@"limit"];
-    //    }
-    //    if (dictionary) {
-    //        [dic addEntriesFromDictionary:dictionary];
-    //    }
-    //    if (self.status) {
-    //        [dic setValue:self.status forKey:@"status"];
-    //    }
-    //
-    //    [Interface_Base Post:urlStr dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //        NSLog(@"data=%@",data[@"data"]);
-    //        if ([data[@"data"] isKindOfClass:[NSNull class]]||data[@"data"]==nil) {
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            //             self.tableView.mj_footer.hidden =YES;
-    //            [self.tableView reloadData];
-    //
-    //            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //        }else
-    //        {
-    //            [self.MsgListArr addObjectsFromArray:data[@"data"]];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            [self.tableView reloadData];
-    //            if (self.MsgListArr.count<10) {
-    //                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //                //                self.tableView.mj_footer.hidden =YES;
-    //            }
-    //            else
-    //            {
-    //                //                self.tableView.mj_footer.hidden =NO;
-    //                [self.tableView.mj_footer endRefreshing];
-    //            }
-    //            [self.tableView.mj_header endRefreshing];
-    //            [MBProgressHUD hideHUD];
-    //        }
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [self.tableView.mj_header endRefreshing];
-    //        [self.tableView.mj_footer endRefreshing];
-    //        [MBProgressHUD hideHUD];
-    //    }];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    NSString *urlStr ;
+    if (self.status == 0 || self.status == 3) {
+        urlStr = @"buyer/invoiceAbleList";
+        if (self.status==0) {
+            
+            [dic setObject:@"0" forKey:@"status"];
+        }
+        else
+        {
+            [dic setObject:@"1" forKey:@"status"];
+        }
+    }
+    else
+    {
+        if (self.status==1) {
+            
+            [dic setObject:@"0" forKey:@"status"];
+        }
+        else
+        {
+            [dic setObject:@"3" forKey:@"status"];
+        }
+        urlStr = @"buyer/inReviewInvoice";
+    }
+    if (page) {
+        [dic setObject:@"1" forKey:@"pageNum"];
+        [dic setObject:@"10000" forKey:@"pageSize"];
+    }
+    if (dictionary) {
+        [dic addEntriesFromDictionary:dictionary];
+    }
+    DRWeakSelf;
+    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+        NSLog(@"data=%@",result.data[@"list"]);
+        NSArray *listArr =result.data[@"list"];
+        weakSelf.MsgListArr =[NSMutableArray array];
+        NSMutableArray *modelArray =[ShoppingModel mj_objectArrayWithKeyValuesArray:[listArr firstObject][@"orderList"]];
+        [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+        [weakSelf.tableView reloadData];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [MBProgressHUD hideHUD];
+    }];
 }
-
 /**
  * 初始化假数据
  */
-
 -(void)initData{
     for (int i = 0; i<3; i++)
     {
@@ -172,8 +174,8 @@
         [infoDict setValue:@"可开票" forKey:@"typeRight"];
         [infoDict setValue:[NSNumber numberWithBool:NO] forKey:@"selectState"];
         [infoDict setValue:[NSNumber numberWithInt:1] forKey:@"goodsNum"];
-        ShoppingModel *goodsModel = [[ShoppingModel alloc]initWithShopDict:infoDict];
-        [self.MsgListArr addObject:goodsModel];
+//        self.model = [[ShoppingModel alloc]initWithShopDict:infoDict];
+//        [self.MsgListArr addObject: self.model];
     }
 }
 -(void)createSubViews{
@@ -182,8 +184,8 @@
     [self.view addSubview:bottomView];
     self.selectAllBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.selectAllBtn.frame = CGRectMake(10,(50-20)/2.0, 60, 20);
-    [self.selectAllBtn setImage:IMAGENAMED(@"check_n") forState:UIControlStateNormal];
-    [self.selectAllBtn setImage:IMAGENAMED(@"check_p") forState:UIControlStateSelected];
+    [self.selectAllBtn setImage:IMAGENAMED(@"Unchecked") forState:UIControlStateNormal];
+    [self.selectAllBtn setImage:IMAGENAMED(@"checked") forState:UIControlStateSelected];
     [self.selectAllBtn addTarget:self action:@selector(selectAllaction:) forControlEvents:UIControlEventTouchUpInside];
     [self.selectAllBtn setTitle:@"全选" forState:UIControlStateNormal];
     [self.selectAllBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
@@ -216,6 +218,29 @@
 //结算
 -(void)jieSuanAction{
     NSLog(@"结算");
+    DRWeakSelf;
+    if (self.allPrice==0.00) {
+        return;
+    }
+    NSDictionary *dic =@{@"ids":idStr};
+    [SNIOTTool postWithURL:@"buyer/applyInvoice" parameters:[dic mutableCopy] success:^(SNResult *result) {
+        
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+            weakSelf.allPrice=0.00;
+            [weakSelf getMsgList];
+            idStr =nil;
+            NSMutableAttributedString *str = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"总金额:￥%.2f元",weakSelf.allPrice]];
+            [str addAttribute:NSFontAttributeName value:DR_FONT(15) range:NSMakeRange(4,str.length-4)];
+            [str addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(4,str.length-4)];
+            weakSelf.totalMoneyLab.attributedText = str;
+            
+        }
+        
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
 }
 
 //全选
@@ -241,24 +266,51 @@
     return self.MsgListArr.count;
 }
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+     self.bgTipButton.hidden = (_MsgListArr.count > 0) ? YES : NO;
     return 3;
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    self.model =self.MsgListArr[indexPath.section];
     if (indexPath.row==0) {
-        CollectionCell7 *cell =[CollectionCell7 cellWithTableView:tableView];
+        static NSString *index =@"cell0";
+        UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:index];
+        if (cell==nil) {
+            cell =[[UITableViewCell alloc]initWithStyle:0 reuseIdentifier:index];
+            UIView*  headView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, HScale(30))];
+            headView.backgroundColor=[UIColor whiteColor];
+            UIButton*  button=[UIButton buttonWithType:UIButtonTypeCustom];
+            [button setFrame:CGRectMake(15, HScale(5), WScale(45), HScale(20))];
+            button.titleLabel.font =DR_FONT(14);
+            [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+            
+            [button setTitle:@"自营" forState:UIControlStateNormal];
+            [button setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+            [button setTitle:@"非自营" forState:UIControlStateSelected];
+            [button setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateSelected];
+            button.selected =[self.model.compType boolValue];
+            [headView addSubview:button];
+            UILabel *headLab =[[UILabel alloc]initWithFrame:CGRectMake(button.dc_right+15, 0, 2*ScreenW/3, HScale(30))];
+            headLab.font =DR_FONT(14);
+            headLab.textColor =[UIColor blackColor];
+            headLab.textAlignment = 0;
+            headLab.text=self.model.sellerName;
+            [headView addSubview:headLab];
+            [cell.contentView addSubview:headView];
+        }
         return cell;
     }
     else if (indexPath.row==1)
     {
-        static NSString *index =@"cell";
+        static NSString *index =@"cell1";
         UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:index];
         if (cell==nil) {
             cell =[[UITableViewCell alloc]initWithStyle:0 reuseIdentifier:index];
         }
-        cell.textLabel.text =@"开票方：三块神铁";
+        cell.textLabel.text =[NSString stringWithFormat:@"开票方：%@",self.model.fpPartyName];
         cell.textLabel.textColor =[UIColor redColor];
-        cell.textLabel.font =DR_FONT(12);
+        cell.textLabel.font =DR_FONT(13);
+       
         return cell;
     }
     static NSString *cellStr = @"ShopCarCell";
@@ -268,14 +320,23 @@
     }
     cell.delegate = self;
     cell.detailBtn.tag =indexPath.section;
-    [cell.detailBtn addTarget:self action:@selector(detailBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    cell.shoppingModel = self.MsgListArr[indexPath.section];
+    if (self.status==0) {
+        cell.checkImg.hidden =NO;
+    }
+    else
+    {
+        cell.checkImg.hidden =YES;
+    }
+    
+    cell.selectClickBlock = ^{
+         NSLog(@"sender=%ld",indexPath.section);
+        DetailOrdervc *detailVC =[[DetailOrdervc alloc]init];
+        [self.navigationController pushViewController:detailVC animated:YES];
+    };
+//    [cell.detailBtn addTarget:self action:@selector(detailBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    cell.shoppingModel = self.model;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
-}
--(void)detailBtnClick:(UIButton *)sender
-{
-    NSLog(@"sender=%ld",(long)sender.tag);
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row==2) {
@@ -348,7 +409,16 @@
         ShoppingModel *model = self.MsgListArr[i];
         if (model.selectState)
         {
-            self.allPrice = self.allPrice + [[model.number substringWithRange:NSMakeRange(7,model.number.length-7)] floatValue];
+            self.allPrice = self.allPrice + [model.realAmt  floatValue];
+            if (idStr) {
+                
+                idStr =[NSString stringWithFormat:@"%@,%@",idStr,model.application_id];
+            }
+            else
+            {
+                idStr =  model.application_id ;
+            }
+        
         }
     }
     //给总价赋值
@@ -357,7 +427,7 @@
     [str addAttribute:NSForegroundColorAttributeName value:[UIColor redColor] range:NSMakeRange(4,str.length-4)];
     self.totalMoneyLab.attributedText = str;
     NSLog(@"%f",self.allPrice);
-    self.allPrice = 0.0;
+//    self.allPrice = 0.0;
 }
 //区头的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
@@ -372,5 +442,19 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     
+}
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无数据" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
 }
 @end

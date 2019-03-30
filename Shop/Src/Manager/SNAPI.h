@@ -17,6 +17,7 @@
 //#import "SNScene.h"
 //#import "SNAction.h"
 //#import "SNArticle.h"
+
 #import "SNMessage.h"
 
 @interface SNAPI : NSObject
@@ -85,6 +86,16 @@
 /**
  *  登录
  *
+ *  @param username  账号
+ *  @param secret 密码
+
+ */
+
++(void)getToken;
+
+/**
+ *  登录
+ *
  *  @param account  账号
  *  @param password 密码
  *  @param areaCode 地区编码
@@ -113,16 +124,18 @@
  */
 + (void)userRegisterEmail:(NSString *)email password:(NSString *)password type:(int)type qqOpenid:(NSString *)qqOpenid userName:(NSString *)userName userNickName:(NSString *)userNickName success:(void (^)(NSString *userDigit))success failure:(void (^)(NSError *error))failure;
 
+
 /**
- *  手机注册
- *
- *  @param email     Email账号(可选)
- *  @param password  密码
- *  @param type      用户类型(0：不能登陆web；1：可以登陆web)(可选)
- *  @param ticket    短信验证ticket
- *  @param validCode 短信验证码
+ 手机号注册
+
+ @param company 公司
+ @param mobile 手机号
+ @param valid_code 数字验证码
+ @param location 地址
+ @param locationCode 地址编码
+ 
  */
-+ (void)userRegisterMobileWithEmail:(NSString *)email password:(NSString *)password type:(int)type ticket:(NSString *)ticket validCode:(NSString *)validCode success:(void (^)(NSString *userDigit))success failure:(void (^)(NSError *error))failure;
++ (void)userRegisterMobileWithCompany:(NSString *)company mobile:(NSString *)mobile valid_code:(NSString *)valid_code location:(NSString *)location locationCode:(NSString *)locationCode success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure ;
 
 /**
  *  修改密码
@@ -216,7 +229,7 @@
  *  @param image    用户头像图片
  *  @param nickName 用户昵称(可选)
  */
-+ (void)userAvatar:(UIImage *)image nickName:(NSString *)nickName success:(void (^)())success failure:(void (^)(NSError *error))failure;
++ (void)userAvatar:(UIImage *)image nickName:(NSString *)nickName success:(void (^)(SNResult *))success failure:(void (^)(NSError *error))failure;
 
 /**
  *  绑定iPhone设备和用户
@@ -415,15 +428,22 @@
 + (void)sensorDataWithDeviceID:(NSString *)deviceID sensorID:(NSString *)sensorID sensorType:(NSString *)sensorType success:(void (^)(NSArray *dataArray))success failure:(void (^)(NSError *error))failure;
 
 #pragma mark - 公共接口
-
+/**
+ *  请求图形验证码
+ *
+ *  @param mobile   目标手机号码
+ *  @param type     类型，0：默认类型；1：用户注册时手机用户已存在提示；2：绑定操作时手机用户不存在提示
+ *  @param validCode 区号，支持国外手机传区号，不支持则传“86”
+ */
++ (void)GetvalidCodesuccess:(void (^)(NSString *))success failure:(void (^)(NSError *))failure ;
 /**
  *  请求发送短信验证码
  *
  *  @param mobile   目标手机号码
  *  @param type     类型，0：默认类型；1：用户注册时手机用户已存在提示；2：绑定操作时手机用户不存在提示
- *  @param areaCode 区号，支持国外手机传区号，不支持则传“86”
+ *  @param validCode 区号，支持国外手机传区号，不支持则传“86”
  */
-+ (void)commonMessageValidWithMobile:(NSString *)mobile type:(NSInteger)type areaCode:(NSString *)areaCode success:(void (^)(NSString * ticket))success failure:(void (^)(NSError *error))failure;
++ (void)commonMessageValidWithMobile:(NSString *)mobile validCode:(NSString *)validCode success:(void (^)(NSString *))success failure:(void (^)(NSError *))failure ;
 
 /**
  *  跳转到厂商商城

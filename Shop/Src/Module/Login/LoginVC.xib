@@ -14,7 +14,9 @@
             <connections>
                 <outlet property="loginBtn" destination="1mp-VA-aHY" id="hwV-ia-H0j"/>
                 <outlet property="passwordTF" destination="0q5-ci-G04" id="MSv-Qc-Sc2"/>
+                <outlet property="passwordView" destination="4oT-Co-V1O" id="McK-uz-MA9"/>
                 <outlet property="phoneTF" destination="WJf-kI-4qO" id="ZT6-MC-wcT"/>
+                <outlet property="phoneView" destination="bhn-qY-RyR" id="CC1-pR-rkN"/>
                 <outlet property="registebTN" destination="8jQ-TQ-b8c" id="0rf-Jo-IxR"/>
                 <outlet property="remmberBtn" destination="gyl-pb-5OJ" id="UH4-aa-DOZ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -25,41 +27,22 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入用户名或手机号" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WJf-kI-4qO">
-                    <rect key="frame" x="40" y="150" width="295" height="50"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                    <nil key="textColor"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <textInputTraits key="textInputTraits"/>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="BxM-84-J81"/>
-                    </connections>
-                </textField>
-                <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入登录密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0q5-ci-G04">
-                    <rect key="frame" x="40" y="210" width="295" height="50"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                    <nil key="textColor"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                    <textInputTraits key="textInputTraits"/>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="XWk-81-m4H"/>
-                    </connections>
-                </textField>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gyl-pb-5OJ">
-                    <rect key="frame" x="44" y="282" width="73" height="20"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gyl-pb-5OJ">
+                    <rect key="frame" x="30" y="282" width="70" height="28"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="28" id="03u-dP-FDr"/>
+                    </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                    <state key="normal" title=" 记住密码" image="checkbox_rest">
+                    <state key="normal" title=" 记住密码" image="Unchecked">
                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </state>
-                    <state key="selected" image="checkbox_selected"/>
+                    <state key="selected" image="checked"/>
                     <connections>
                         <action selector="remmberBtnCLICK:" destination="-1" eventType="touchUpInside" id="otS-Cq-k19"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aDp-1G-HIL">
-                    <rect key="frame" x="264" y="279" width="62" height="27"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aDp-1G-HIL">
+                    <rect key="frame" x="283" y="281" width="62" height="30"/>
                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                     <state key="normal" title="忘记密码？">
                         <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -69,10 +52,10 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mp-VA-aHY">
-                    <rect key="frame" x="40" y="318.5" width="295" height="50"/>
+                    <rect key="frame" x="30" y="321" width="315" height="45"/>
                     <color key="backgroundColor" red="1" green="0.0" blue="0.0039215686274509803" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="a1o-zu-veh"/>
+                        <constraint firstAttribute="height" constant="45" id="a1o-zu-veh"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                     <state key="normal" title="登录">
@@ -83,10 +66,10 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8jQ-TQ-b8c">
-                    <rect key="frame" x="40" y="383.5" width="295" height="50"/>
+                    <rect key="frame" x="30" y="381" width="315" height="45"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="D5b-52-8uy"/>
+                        <constraint firstAttribute="height" constant="45" id="D5b-52-8uy"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
                     <state key="normal" title="免费注册">
@@ -96,22 +79,71 @@
                         <action selector="registBtnClick:" destination="-1" eventType="touchUpInside" id="NBl-YA-Xuz"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bhn-qY-RyR">
+                    <rect key="frame" x="30" y="162" width="315" height="50"/>
+                    <subviews>
+                        <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入用户名或手机号" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WJf-kI-4qO">
+                            <rect key="frame" x="20" y="0.0" width="275" height="50"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <nil key="textColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="BxM-84-J81"/>
+                            </connections>
+                        </textField>
+                    </subviews>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="tgo-hA-rAr"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4oT-Co-V1O">
+                    <rect key="frame" x="30" y="220" width="315" height="50"/>
+                    <subviews>
+                        <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="请输入登录密码" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0q5-ci-G04">
+                            <rect key="frame" x="20" y="0.0" width="275" height="50"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                            <nil key="textColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="XWk-81-m4H"/>
+                            </connections>
+                        </textField>
+                    </subviews>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="2fr-Ia-oy1"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="1mp-VA-aHY" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="40" id="8dW-81-4zJ"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="1mp-VA-aHY" secondAttribute="trailing" constant="40" id="JFZ-m4-NcS"/>
-                <constraint firstItem="8jQ-TQ-b8c" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="40" id="YFF-GV-MBo"/>
+                <constraint firstItem="bhn-qY-RyR" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="30" id="8RD-7A-5Dw"/>
+                <constraint firstItem="1mp-VA-aHY" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="30" id="8dW-81-4zJ"/>
+                <constraint firstItem="gyl-pb-5OJ" firstAttribute="top" secondItem="4oT-Co-V1O" secondAttribute="bottom" constant="12" id="9di-P0-ryd"/>
+                <constraint firstItem="bhn-qY-RyR" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="EVe-e0-ikf"/>
+                <constraint firstItem="4oT-Co-V1O" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="Ecj-u8-6fN"/>
+                <constraint firstItem="8jQ-TQ-b8c" firstAttribute="leading" secondItem="1mp-VA-aHY" secondAttribute="leading" id="JfA-S7-pAC"/>
+                <constraint firstItem="4oT-Co-V1O" firstAttribute="trailing" secondItem="aDp-1G-HIL" secondAttribute="trailing" id="Jln-Za-XgP"/>
+                <constraint firstItem="4oT-Co-V1O" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="30" id="Jyn-NK-niv"/>
+                <constraint firstItem="aDp-1G-HIL" firstAttribute="top" secondItem="4oT-Co-V1O" secondAttribute="bottom" constant="11" id="M6O-TP-lPP"/>
                 <constraint firstItem="8jQ-TQ-b8c" firstAttribute="top" secondItem="1mp-VA-aHY" secondAttribute="bottom" constant="15" id="alf-R5-tb1"/>
-                <constraint firstItem="1mp-VA-aHY" firstAttribute="centerY" secondItem="Q5M-cg-NOt" secondAttribute="centerY" id="dTc-6i-4j5"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="8jQ-TQ-b8c" secondAttribute="trailing" constant="40" id="pTc-NX-4wZ"/>
+                <constraint firstItem="1mp-VA-aHY" firstAttribute="top" secondItem="gyl-pb-5OJ" secondAttribute="bottom" constant="11" id="dw8-yr-1aZ"/>
+                <constraint firstItem="4oT-Co-V1O" firstAttribute="leading" secondItem="gyl-pb-5OJ" secondAttribute="leading" id="inU-YU-CkP"/>
+                <constraint firstItem="gyl-pb-5OJ" firstAttribute="centerY" secondItem="aDp-1G-HIL" secondAttribute="centerY" id="lOi-z9-MGT"/>
+                <constraint firstItem="1mp-VA-aHY" firstAttribute="centerX" secondItem="Q5M-cg-NOt" secondAttribute="centerX" id="lcx-cu-hYv"/>
+                <constraint firstItem="8jQ-TQ-b8c" firstAttribute="trailing" secondItem="1mp-VA-aHY" secondAttribute="trailing" id="m7i-04-xbC"/>
+                <constraint firstItem="4oT-Co-V1O" firstAttribute="top" secondItem="bhn-qY-RyR" secondAttribute="bottom" constant="8" id="sJM-Aq-fT6"/>
+                <constraint firstItem="bhn-qY-RyR" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="142" id="vDg-Cl-Cy4"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
-            <point key="canvasLocation" x="-36" y="-127"/>
+            <point key="canvasLocation" x="-36" y="-127.28635682158921"/>
         </view>
     </objects>
     <resources>
-        <image name="checkbox_rest" width="20" height="20"/>
-        <image name="checkbox_selected" width="20" height="20"/>
+        <image name="Unchecked" width="17" height="17"/>
+        <image name="checked" width="17" height="17"/>
     </resources>
 </document>

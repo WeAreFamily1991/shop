@@ -34,7 +34,11 @@ NS_ASSUME_NONNULL_BEGIN
  token 的有效时长为12小时。
  */
 @property (nonatomic, copy) NSString *token;
+@property (nonatomic, copy) NSString *visitetoken;
 
+
+-(void)loginOut;
+-(void)removeToken;
 @end
 
 NS_ASSUME_NONNULL_END

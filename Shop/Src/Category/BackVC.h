@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BillMessageModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BackVC : UIViewController
+@property (nonatomic,retain)BillMessageModel *MessageModel;
 - (void)show;
 @end
 

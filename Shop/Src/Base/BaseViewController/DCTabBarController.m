@@ -9,7 +9,7 @@
 #import "DCTabBarController.h"
 
 // Controllers
-#import "DCNavigationController.h"
+
 #import "ChangeOrderVC.h"
 //#import "DCBeautyMessageViewController.h"
 // Models
@@ -119,16 +119,15 @@
 #pragma mark - 控制器跳转拦截
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     
-//    if(viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerPerson]||viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerBeautyStore]){
-//        
-//        if (![[DCObjManager dc_readUserDataForKey:@"isLogin"] isEqualToString:@"1"]) {
-//            LoginVC *dcLoginVc = [LoginVC new];
-//            DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
-//            [self presentViewController:nav animated:YES completion:nil];
-////            [self presentViewController:dcLoginVc animated:YES completion:nil];
-//            return NO;
-//        }
-//    }
+    if(viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerPerson]||viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerBeautyStore]){
+        
+        if (![User currentUser].isLogin) {
+            
+            [self presentViewController:[DRAppManager showLoginView] animated:YES completion:nil];
+//            [self presentViewController:dcLoginVc animated:YES completion:nil];
+            return NO;
+        }
+    }
     return YES;
 }
 

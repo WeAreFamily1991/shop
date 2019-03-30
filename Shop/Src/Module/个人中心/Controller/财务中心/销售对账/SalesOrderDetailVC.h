@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SalesOrderDetailVC : UIViewController
 @property(nonatomic,assign)NSInteger status;
+@property (nonatomic)NSMutableDictionary *sourceDic;
+-(void)setSourceWithDic:(NSMutableDictionary*)dic withIndex:(NSInteger)index;
 @end
 
 NS_ASSUME_NONNULL_END

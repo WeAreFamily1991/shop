@@ -12,14 +12,15 @@
 #define SNURL_h
 
 #pragma mark - 用户管理
-
-#define USER_LOGIN                   @"/user/login"
+#define GET_TOKEN                    @"token/getToken"
+#define USER_LOGIN                   @"user/login"
+#define USER_LOGOUT                   @"user/logout"
 #define USER_LOGIN_FAST              @"/user/login_fast"
 #define USER_REGISTER_EMAIL          @"/user/register_email"
-#define USER_REGISTER_MOBILE         @"/user/register_mobile"
+#define USER_REGISTER_MOBILE         @"mainPage/register"
 #define USER_MODITY_PASSWORD         @"/user/modify_pwd"
 #define USER_MODITY_BASE             @"/user/modify_base"
-#define USER_INFO                    @"/user/info"
+#define USER_INFO                    @"buyer/getBuyerInfo"
 #define USER_PERFECT_USERINFO        @"/user/perfect/userinfo"
 #define USER_BUY_MODEL_LIST          @"/user/buy/model_list"
 #define USER_BIND_MOBILE             @"/user/bind_mobile"
@@ -28,7 +29,7 @@
 #define USER_UNBIND_QQ               @"/user/unbind_qq"
 #define USER_FORGOTPWD_EMAIL         @"/user/forgotpwd_email"
 #define USER_FORGOTPWD_MOBILE        @"/user/forgotpwd_mobile"
-#define USER_AVATAR                  @"/user/avatar"
+#define USER_AVATAR                  @"openStResouces/appFileUpload"
 #define USER_iOS_TOKEN               @"/user/ios_token"
 #define USER_iOS_TOKEN_CLEAR         @"/user/ios_token_clear"
 #define USER_REFRESH_TOKEN           @"/user/refresh_token"
@@ -65,8 +66,8 @@
 #define SENSOR_DATA                  @"/sensor/data"
 
 #pragma mark - 公共接口
-
-#define COMMON_MESSAGE_VALID         @"/common/message_valid"
+#define COMMON_VALID                 @"openStResouces/getValidCode"
+#define COMMON_MESSAGE_VALID         @"/openStResouces/getMsgCode"
 #define COMMON_MARKET                @"/common/market"
 
 #pragma mark - 第三方登录

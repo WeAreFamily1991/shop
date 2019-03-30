@@ -7,7 +7,7 @@
 //
 
 #import "DCAdressDateBase.h"
-
+#import "SNIOTTool.h"
 #import "DCAdressItem.h"
 #import <FMDB.h>
 
@@ -152,25 +152,43 @@ static DCAdressDateBase *_DBCtl = nil;
 #pragma mark - 获取所有数据
 - (NSMutableArray *)getAllAdressItem
 {
-    [_db open];
-    
+//    [_db open];
+//
     NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+//
+//    FMResultSet *res = [_db executeQuery:@"SELECT * FROM adress"];
+//
+//    while ([res next]) {
+   NSMutableDictionary *paramers =[NSMutableDictionary dictionary];
+    [SNIOTTool getWithURL:@"buyer/addressList" parameters:paramers success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+            DCAdressItem *adressItem = [[DCAdressItem alloc] init];
+            adressItem.ID = result.data[@"id"];
+            adressItem.userName = result.data[@"receiver"];
+            adressItem.userPhone = result.data[@"mobile"];
+            adressItem.chooseAdress = result.data[@"chooseAdress"];
+            adressItem.userAdress = result.data[@"address"];
+            adressItem.isDefault = result.data[@"isdefault"];
+            [dataArray addObject:adressItem];
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
     
-    FMResultSet *res = [_db executeQuery:@"SELECT * FROM adress"];
-    
-    while ([res next]) {
-        DCAdressItem *adressItem = [[DCAdressItem alloc] init];
-        adressItem.ID = @([[res stringForColumn:@"adress_id"] integerValue]);
-        adressItem.userName = [res stringForColumn:@"userName"];
-        adressItem.userPhone = [res stringForColumn:@"userPhone"];
-        adressItem.chooseAdress = [res stringForColumn:@"chooseAdress"];
-        adressItem.userAdress = [res stringForColumn:@"userAdress"];
-        adressItem.isDefault = [res stringForColumn:@"isDefault"];
-        [dataArray addObject:adressItem];
-    }
-    
-    [_db close];
-    
+        
+//        {
+//            "id": "F410C40D148A46019437B6FA3B8192F2",//地址ID
+//            "buyerid": "7E6C1A06F5AE495EA5388CAC77D8E03C",//买家ID
+//            "districtid": "123",
+//            "receiver": "test",
+//            "address": "123465",
+//            "phone": "12345678910",
+//            "mobile": "987654321",
+//            "isdefault": false,
+//            "isdelete": false
+//        }
+
     return dataArray;
 }
 

@@ -13,16 +13,15 @@
 
 //选中按钮
 @property (nonatomic,retain) UIButton *selectBtn;
-//显示照片
-@property (nonatomic,retain) UIImageView *imageView_cell;
+
 //商品名
 @property (nonatomic,retain) UILabel *nameLabel;
-//尺寸
-@property (nonatomic,retain) UILabel *sizeLabel;
+
 //时间
 @property (nonatomic,retain) UILabel *dateLabel;
-//价格
-@property (nonatomic,retain) UILabel *priceLabel;
+
+//line
+@property (nonatomic,retain) UIView *lineView;
 
 @end
 
@@ -38,15 +37,15 @@
     // Configure the view for the selected state
 }
 
--(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        self.backgroundColor = RGBCOLOR(245, 246, 248);
-        [self setupMainView];
-    }
-    return self;
-}
+//-(instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+//{
+//    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+//    if (self) {
+//        self.backgroundColor = RGBCOLOR(245, 246, 248);
+//        [self setupMainView];
+//    }
+//    return self;
+//}
 //选中按钮点击事件
 -(void)selectBtnClick:(UIButton*)button
 {
@@ -74,179 +73,69 @@
 
 -(void)reloadDataWith:(CartModel*)model
 {
+    self.nameLabel.text =model.title;
+    
+    self.dateLabel.text =[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",(long)model.addTime]];
 
-    self.imageView_cell.image = model.image;
-    self.nameLabel.text = model.nameStr;
-    self.priceLabel.text = model.price;
-    self.dateLabel.text = model.dateStr;
-    self.numberLabel.text = [NSString stringWithFormat:@"%ld",(long)model.number];
-    self.sizeLabel.text = model.sizeStr;
+    self.nameLabel.textColor =model.isRead?[UIColor blackColor]:[UIColor redColor];
+    self.dateLabel.textColor =model.isRead?[UIColor lightGrayColor]:[UIColor redColor];
+
     self.selectBtn.selected = self.isSelected;
 
 }
--(void)setupMainView
+-(UIButton *)selectBtn
 {
-    //白色背景
-    UIView *bgView = [[UIView alloc]init];
-    bgView.backgroundColor = [UIColor whiteColor];
-    bgView.layer.borderColor = kUIColorFromRGB(0xEEEEEE).CGColor;
-    bgView.layer.borderWidth = 1;
-    [self addSubview:bgView];
-    
-    //选中按钮
-    self.selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.selectBtn.selected = self.isSelected;
-    [self.selectBtn setImage:[UIImage imageNamed:@"cart_unSelect_btn"] forState:UIControlStateNormal];
-    [self.selectBtn setImage:[UIImage imageNamed:@"cart_selected_btn"] forState:UIControlStateSelected];
-    [self.selectBtn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    [bgView addSubview:self.selectBtn];
-    
-    //照片背景
-    UIView *imageBgView = [[UIView alloc]init];
-    imageBgView.backgroundColor = kUIColorFromRGB(0xF3F3F3);
-    [bgView addSubview:imageBgView];
-    
-    //显示照片
-    self.imageView_cell = [[UIImageView alloc]init];
-//    self.imageView_cell.image = [UIImage imageNamed:@"default_pic_1"];
-    self.imageView_cell.contentMode = UIViewContentModeScaleAspectFit;
-    [bgView addSubview:self.imageView_cell];
-    
-    //商品名
-    self.nameLabel = [[UILabel alloc]init];
-//    self.nameLabel.text = @"海报";
-    self.nameLabel.font = [UIFont systemFontOfSize:15];
-    [bgView addSubview:self.nameLabel];
-    
-    //尺寸
-    self.sizeLabel = [[UILabel alloc]init];
-//    self.sizeLabel.text = @"尺寸:58*86cm";
-    self.sizeLabel.textColor = RGBCOLOR(132, 132, 132);
-    self.sizeLabel.font = [UIFont systemFontOfSize:12];
-    [bgView addSubview:self.sizeLabel];
-    
-    //时间
-    self.dateLabel = [[UILabel alloc]init];
-    self.dateLabel.font = [UIFont systemFontOfSize:10];
-    self.dateLabel.textColor = RGBCOLOR(132, 132, 132);
-//    self.dateLabel.text = @"2015-12-03 17:49";
-    [bgView addSubview:self.dateLabel];
-    
-    //价格
-    self.priceLabel = [[UILabel alloc]init];
-//    self.priceLabel.text = @"￥100.11";
-    self.priceLabel.font = [UIFont boldSystemFontOfSize:16];
-    self.priceLabel.textColor = BASECOLOR_RED;
-    self.priceLabel.textAlignment = NSTextAlignmentCenter;
-    [bgView addSubview:self.priceLabel];
-    
-    //数量加按钮
-    UIButton *addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [addBtn setImage:[UIImage imageNamed:@"cart_addBtn_nomal"] forState:UIControlStateNormal];
-    [addBtn setImage:[UIImage imageNamed:@"cart_addBtn_highlight"] forState:UIControlStateHighlighted];
-    [addBtn addTarget:self action:@selector(addBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    [bgView addSubview:addBtn];
-    
-    //数量减按钮
-    UIButton *cutBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [cutBtn setImage:[UIImage imageNamed:@"cart_cutBtn_nomal"] forState:UIControlStateNormal];
-    [cutBtn setImage:[UIImage imageNamed:@"cart_cutBtn_highlight"] forState:UIControlStateHighlighted];
-    [cutBtn addTarget:self action:@selector(cutBtnClick) forControlEvents:UIControlEventTouchUpInside];
-    [bgView addSubview:cutBtn];
-    
-    //数量显示
-    self.numberLabel = [[UILabel alloc]init];
-    self.numberLabel.textAlignment = NSTextAlignmentCenter;
-    self.numberLabel.text = @"1";
-    self.numberLabel.font = [UIFont systemFontOfSize:15];
-    [bgView addSubview:self.numberLabel];
-    
-#pragma mark - 添加约束
-
-    //白色背景
-    [bgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self).offset(10);
-        make.top.equalTo(self).offset(10);
-        make.bottom.equalTo(self);
-        make.right.equalTo(self).offset(-10);
-        
-    }];
-    
-    //选中按钮
-    [self.selectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(bgView).offset(5);
-        make.centerY.equalTo(bgView);
-        make.width.equalTo(@30);
-        make.height.equalTo(@30);
-    }];
-    
-    //图片背景
-    [imageBgView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(bgView).offset(5);
-        make.left.equalTo(self.selectBtn.mas_right).offset(5);
-        make.bottom.equalTo(bgView).offset(-5);
-        make.width.equalTo(imageBgView.mas_height);
-    }];
-    
-    //显示图片
-    [self.imageView_cell mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.edges.equalTo(imageBgView).insets(UIEdgeInsetsMake(5, 5, 5, 5));
-    }];
-    
-    //商品名
-    [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(imageBgView.mas_right).offset(10);
-        make.top.equalTo(bgView).offset(10);
-        make.height.equalTo(@30);
-        make.width.equalTo(self.priceLabel);
-    }];
-    
-    //商品尺寸
-    [self.sizeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(imageBgView.mas_right).offset(5);
-        make.top.equalTo(self.nameLabel.mas_bottom).offset(5);
-        make.height.equalTo(@20);
-        make.width.equalTo(self.nameLabel);
-    }];
-    
-    //时间
-    [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(imageBgView.mas_right).offset(5);
-        make.bottom.equalTo(bgView).offset(-5);
-        make.height.equalTo(@20);
-        make.right.equalTo(cutBtn.mas_left);
-    }];
-    
-    //商品价格
-    [self.priceLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.nameLabel.mas_right).offset(5);
-        make.right.equalTo(bgView);
-        make.top.equalTo(bgView).offset(10);
-        make.width.equalTo(self.nameLabel);
-    }];
-    
-    //数量加按钮
-    [addBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(bgView).offset(-5);
-        make.bottom.equalTo(bgView).offset(-10);
-        make.height.equalTo(@25);
-        make.width.equalTo(@25);
-    }];
-    
-    //数量显示
-    [self.numberLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(addBtn.mas_left);
-        make.bottom.equalTo(addBtn);
-        make.width.equalTo(addBtn);
-        make.height.equalTo(addBtn);
-    }];
-    
-    //数量减按钮
-    [cutBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.right.equalTo(self.numberLabel.mas_left);
-        make.height.equalTo(addBtn);
-        make.width.equalTo(addBtn);
-        make.bottom.equalTo(addBtn);
-    }];
+    if (!_selectBtn) {
+        self.selectBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        self.selectBtn.selected = self.isSelected;
+        [self.selectBtn setImage:[UIImage imageNamed:@"Unchecked"] forState:UIControlStateNormal];
+        [self.selectBtn setImage:[UIImage imageNamed:@"checked"] forState:UIControlStateSelected];
+        [self.selectBtn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.selectBtn];
+        [self.selectBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self).offset(10);
+            make.centerY.equalTo(self);
+            make.width.equalTo(@30);
+            make.height.equalTo(@30);
+        }];
+    }
+    return _selectBtn;
 }
+
+-(UILabel *)nameLabel
+{
+    if (!_nameLabel) {
+        self.nameLabel = [[UILabel alloc]init];
+        //    self.nameLabel.text = @"海报";
+        self.nameLabel.numberOfLines =0;
+        self.nameLabel.font = DR_FONT(15);
+        [self addSubview:self.nameLabel];
+        [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(self.selectBtn.mas_right).offset(10);
+            make.top.equalTo(self).offset(10);
+            make.right.equalTo(self).offset(-10);
+        }];
+    }
+    return _nameLabel;
+}
+-(UILabel *)dateLabel
+{
+    if (!_dateLabel) {
+        self.dateLabel = [[UILabel alloc]init];
+        self.dateLabel.font = DR_FONT(12);
+    
+        //    self.dateLabel.text = @"2015-12-03 17:49";
+        [self addSubview:self.dateLabel];
+        [self.dateLabel mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(self.nameLabel.mas_left);
+            make.top.mas_equalTo(self.nameLabel.mas_bottom).offset(10);
+            make.right.mas_equalTo(WScale(-5));
+           make.bottom.mas_equalTo(WScale(-10));
+            
+        }];
+    }
+    return _dateLabel;
+}
+
+
 @end

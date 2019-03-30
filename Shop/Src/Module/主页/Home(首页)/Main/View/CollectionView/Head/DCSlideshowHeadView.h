@@ -13,4 +13,5 @@
 /* 轮播图数组 */
 @property (copy , nonatomic)NSArray *imageGroupArray;
 
+@property (copy,nonatomic) void (^ManageIndexBlock) (NSInteger ManageIndexBlock);
 @end

@@ -20,49 +20,49 @@ PODS:
   - FMDB/standard (2.7.5)
   - IQKeyboardManager (6.2.0)
   - JSONModel (1.8.0)
-  - KSCrash (1.15.18):
-    - KSCrash/Installations (= 1.15.18)
-  - KSCrash/Installations (1.15.18):
+  - KSCrash (1.15.19):
+    - KSCrash/Installations (= 1.15.19)
+  - KSCrash/Installations (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting
-  - KSCrash/Recording (1.15.18):
-    - KSCrash/Recording/Tools (= 1.15.18)
-  - KSCrash/Recording/Tools (1.15.18)
-  - KSCrash/Reporting (1.15.18):
+  - KSCrash/Recording (1.15.19):
+    - KSCrash/Recording/Tools (= 1.15.19)
+  - KSCrash/Recording/Tools (1.15.19)
+  - KSCrash/Reporting (1.15.19):
     - KSCrash/Recording
-    - KSCrash/Reporting/Filters (= 1.15.18)
-    - KSCrash/Reporting/MessageUI (= 1.15.18)
-    - KSCrash/Reporting/Sinks (= 1.15.18)
-    - KSCrash/Reporting/Tools (= 1.15.18)
-  - KSCrash/Reporting/Filters (1.15.18):
+    - KSCrash/Reporting/Filters (= 1.15.19)
+    - KSCrash/Reporting/MessageUI (= 1.15.19)
+    - KSCrash/Reporting/Sinks (= 1.15.19)
+    - KSCrash/Reporting/Tools (= 1.15.19)
+  - KSCrash/Reporting/Filters (1.15.19):
     - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Alert (= 1.15.18)
-    - KSCrash/Reporting/Filters/AppleFmt (= 1.15.18)
-    - KSCrash/Reporting/Filters/Base (= 1.15.18)
-    - KSCrash/Reporting/Filters/Basic (= 1.15.18)
-    - KSCrash/Reporting/Filters/GZip (= 1.15.18)
-    - KSCrash/Reporting/Filters/JSON (= 1.15.18)
-    - KSCrash/Reporting/Filters/Sets (= 1.15.18)
-    - KSCrash/Reporting/Filters/Stringify (= 1.15.18)
-    - KSCrash/Reporting/Filters/Tools (= 1.15.18)
-  - KSCrash/Reporting/Filters/Alert (1.15.18):
-    - KSCrash/Recording
-    - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/AppleFmt (1.15.18):
+    - KSCrash/Reporting/Filters/Alert (= 1.15.19)
+    - KSCrash/Reporting/Filters/AppleFmt (= 1.15.19)
+    - KSCrash/Reporting/Filters/Base (= 1.15.19)
+    - KSCrash/Reporting/Filters/Basic (= 1.15.19)
+    - KSCrash/Reporting/Filters/GZip (= 1.15.19)
+    - KSCrash/Reporting/Filters/JSON (= 1.15.19)
+    - KSCrash/Reporting/Filters/Sets (= 1.15.19)
+    - KSCrash/Reporting/Filters/Stringify (= 1.15.19)
+    - KSCrash/Reporting/Filters/Tools (= 1.15.19)
+  - KSCrash/Reporting/Filters/Alert (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/Base (1.15.18):
-    - KSCrash/Recording
-  - KSCrash/Reporting/Filters/Basic (1.15.18):
+  - KSCrash/Reporting/Filters/AppleFmt (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/GZip (1.15.18):
+  - KSCrash/Reporting/Filters/Base (1.15.19):
+    - KSCrash/Recording
+  - KSCrash/Reporting/Filters/Basic (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/JSON (1.15.18):
+  - KSCrash/Reporting/Filters/GZip (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/Sets (1.15.18):
+  - KSCrash/Reporting/Filters/JSON (1.15.19):
+    - KSCrash/Recording
+    - KSCrash/Reporting/Filters/Base
+  - KSCrash/Reporting/Filters/Sets (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/AppleFmt
     - KSCrash/Reporting/Filters/Base
@@ -70,18 +70,18 @@ PODS:
     - KSCrash/Reporting/Filters/GZip
     - KSCrash/Reporting/Filters/JSON
     - KSCrash/Reporting/Filters/Stringify
-  - KSCrash/Reporting/Filters/Stringify (1.15.18):
+  - KSCrash/Reporting/Filters/Stringify (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters/Base
-  - KSCrash/Reporting/Filters/Tools (1.15.18):
+  - KSCrash/Reporting/Filters/Tools (1.15.19):
     - KSCrash/Recording
-  - KSCrash/Reporting/MessageUI (1.15.18):
+  - KSCrash/Reporting/MessageUI (1.15.19):
     - KSCrash/Recording
-  - KSCrash/Reporting/Sinks (1.15.18):
+  - KSCrash/Reporting/Sinks (1.15.19):
     - KSCrash/Recording
     - KSCrash/Reporting/Filters
     - KSCrash/Reporting/Tools
-  - KSCrash/Reporting/Tools (1.15.18):
+  - KSCrash/Reporting/Tools (1.15.19):
     - KSCrash/Recording
   - Masonry (1.1.0)
   - MBProgressHUD (1.1.0)
@@ -109,11 +109,11 @@ DEPENDENCIES:
   - KSCrash
   - Masonry (~> 1.1.0)
   - MBProgressHUD (~> 1.1.0)
-  - MJExtension (~> 3.0.15.1)
+  - MJExtension
   - MJRefresh (~> 3.1.15.7)
   - RTRootNavigationController (~> 0.7.1)
   - SDCycleScrollView (~> 1.75)
-  - SDWebImage (= 4.4.3)
+  - SDWebImage
   - SVProgressHUD
   - YYKit (~> 1.0.9)
 
@@ -141,7 +141,7 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   IQKeyboardManager: 6194101620b73af5e67900b8f89707a99de0b804
   JSONModel: 02ab723958366a3fd27da57ea2af2113658762e9
-  KSCrash: 5394936f41e5c1ef7b79cf79b30d53299b0c160e
+  KSCrash: 49855f7867f7d456905c241640a203f53588497d
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
   MJExtension: 19bc33ce2eee2d319760f5622562cf581a6ff756
@@ -152,6 +152,6 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 74a439367823e62ffb9de2fbf86b3b57d47cc01a
+PODFILE CHECKSUM: e3779e71c55db0bb20acddfd6a5ccc9e287608c5
 
 COCOAPODS: 1.6.0

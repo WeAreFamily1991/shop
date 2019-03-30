@@ -14,14 +14,14 @@ typedef NS_ENUM (NSUInteger,DCSaveAdressType){
 };
 
 
-@class DCAdressItem;
+@class DRAdressListModel;
 @interface DCNewAdressViewController : UIViewController
-
+@property (nonatomic, strong) DRUserInfoModel *userModel;
 
 /* type */
 @property (nonatomic,assign) DCSaveAdressType saveType;
 
 /* 更改数据 */
-@property (strong , nonatomic)DCAdressItem *adressItem;
-
+@property (strong , nonatomic)DRAdressListModel *adressItem;
+@property (nonatomic, copy) void (^addressBlock)();
 @end

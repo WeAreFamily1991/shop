@@ -9,13 +9,15 @@
 #import "ChangeUserNameVC.h"
 #import "NNValidationView.h"
 #import "ZJBLTimerButton.h"
-@interface ChangeUserNameVC ()
-@property (weak, nonatomic) IBOutlet UITextField *companyTF;
+#import "SNAPIManager.h"
+#import "SNIOTTool.h"
+#import "ChangePhoneDetailVC.h"
+@interface ChangeUserNameVC ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
 @property (weak, nonatomic) IBOutlet UITextField *imgCodeTF;
 @property (weak, nonatomic) IBOutlet UIView *imgCodeView;
 @property (weak, nonatomic) IBOutlet UITextField *codeTF;
-
+@property (weak, nonatomic) IBOutlet UIButton *imgCodeBtn;
 @property (weak, nonatomic) IBOutlet UIView *codeView;
 @property (weak, nonatomic) IBOutlet UIButton *registeBtn;
 
@@ -26,7 +28,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title =@"修改用户名";
+    self.title =@"修改手机号";
 //    self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:[UIImage imageNamed:@"back"] WithSelected:nil Target:self action:@selector(leftBarButtonItem)];
     [self setupViews];
     [self layout];
@@ -40,6 +42,11 @@
 {
     self.registeBtn.layer.cornerRadius =25;
     self.registeBtn.layer.masksToBounds =25;
+    self.phoneTF.text =self.userModel.account;
+    [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    self.phoneTF.delegate =self;
+    [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    [self.codeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     //时间按钮
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
@@ -50,26 +57,111 @@
 }
 //发生网络请求 --> 获取验证码
 - (void)qurestCode {
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    //    DRWeakSelf;
+    [SNAPI commonMessageValidWithMobile:self.phoneTF.text validCode:self.imgCodeTF.text success:^(NSString *response) {
+        if ([response isEqualToString:@"200"]) {
+            [MBProgressHUD showError:@"验证码已发送"];
+        }
+    } failure:^(NSError *error) {
+        
+    }] ;
     NSLog(@"发生网络请求 --> 获取验证码");
     
 }
+-(NSString *)acdomURLStr
+{
+     NSString *tokenStr;
+    if ([User currentUser].isLogin) {
+        tokenStr =[User currentUser].token;
+    }
+    else{
+         tokenStr =[User currentUser].visitetoken;
+    }
+    NSString *urlStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",tokenStr,[SNTool getRandomNumber:1000 to:9999]];
+    return urlStr;
+ 
+}
+- (IBAction)imgCodeBtnClick:(id)sender {
+     [self.imgCodeBtn sd_setImageWithURL:[NSURL URLWithString:[self acdomURLStr]] forState:UIControlStateNormal];
+}
 - (void)setupViews {
-    _testView = [[NNValidationView alloc] initWithFrame:self.imgCodeView.bounds andCharCount:4 andLineCount:4];
-    [self.imgCodeView addSubview:_testView];
     
-    __weak typeof(self) weakSelf = self;
-    /// 返回验证码数字
-    _testView.changeValidationCodeBlock = ^(void){
-        NSLog(@"验证码被点击了：%@", weakSelf.testView.charString);
-    };
-    NSLog(@"第一次打印：%@", self.testView.charString);
+    [self.imgCodeBtn sd_setImageWithURL:[NSURL URLWithString:[self acdomURLStr]] forState:UIControlStateNormal];
+   
 }
-
-
+-(void)textFieldChangeAction:(UITextField *)textField
+{
+    switch (textField.tag) {
+        case 1:
+        {
+            if (textField.text.length>11) {
+                self.phoneTF.text = [self.phoneTF.text substringToIndex:11];
+            }
+        }
+            break;
+        case 2:
+        {
+            if (textField.text.length>4) {
+                self.imgCodeTF.text = [self.imgCodeTF.text substringToIndex:4];
+            }
+        }
+            break;
+        case 3:
+        {
+            if (textField.text.length>4) {
+                self.codeTF.text = [self.codeTF.text substringToIndex:4];
+            }
+        }
+            
+            break;
+            
+        default:
+            break;
+    }
+}
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
+{
+    if (textField==self.phoneTF) {
+        return NO;
+    }
+    return YES;
+}
 - (IBAction)registBtnClick:(id)sender {
+   
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    if (self.codeTF.text.length==0||self.codeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的验证码"];
+        return;
+    }
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.phoneTF.text,self.codeTF.text] forKeys:@[@"mobile",@"code"]];
+    
+    [SNAPI postWithURL:@"openStResouces/checkMsgNum" parameters:dic success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+            [MBProgressHUD showSuccess:@"验证成功"];
+            [self.navigationController pushViewController:[ChangePhoneDetailVC new] animated:YES];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+   
     
 }
-
 
 /*
  #pragma mark - Navigation

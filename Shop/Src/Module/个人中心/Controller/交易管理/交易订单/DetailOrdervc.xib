@@ -14,7 +14,6 @@
                 <outlet property="againBtn" destination="2kR-ly-CkQ" id="aXm-Ye-cOQ"/>
                 <outlet property="detailBtn" destination="ehf-4O-3Ky" id="IKL-Yq-Nui"/>
                 <outlet property="saleOutBtn" destination="K0t-Vw-H5q" id="BfI-Q0-3VQ"/>
-                <outlet property="tableView" destination="peI-TV-veH" id="Lw9-lf-Xlr"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -23,14 +22,6 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="peI-TV-veH">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="617"/>
-                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                    <connections>
-                        <outlet property="dataSource" destination="-1" id="n4F-w8-U5X"/>
-                        <outlet property="delegate" destination="-1" id="vnK-uD-xP6"/>
-                    </connections>
-                </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xvb-n3-Yyg">
                     <rect key="frame" x="0.0" y="617" width="375" height="50"/>
                     <subviews>
@@ -76,12 +67,8 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="peI-TV-veH" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="46f-DI-gIk"/>
                 <constraint firstItem="xvb-n3-Yyg" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="JqM-qz-4rH"/>
-                <constraint firstItem="peI-TV-veH" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Nru-ii-ofB"/>
-                <constraint firstItem="xvb-n3-Yyg" firstAttribute="top" secondItem="peI-TV-veH" secondAttribute="bottom" id="T4I-2s-qj2"/>
                 <constraint firstAttribute="bottom" secondItem="xvb-n3-Yyg" secondAttribute="bottom" id="W9H-yV-6nP"/>
-                <constraint firstAttribute="trailing" secondItem="peI-TV-veH" secondAttribute="trailing" id="ZHp-rd-gRL"/>
                 <constraint firstAttribute="trailing" secondItem="xvb-n3-Yyg" secondAttribute="trailing" id="qbv-7C-Ats"/>
             </constraints>
             <point key="canvasLocation" x="132" y="154.27286356821591"/>

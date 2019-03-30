@@ -10,9 +10,10 @@
 
 @interface SNResult : NSObject
 
-@property (nonatomic, assign) NSInteger result_code;
-@property (nonatomic, copy) NSString *result_message;
-@property (nonatomic, strong) id result_data;
+@property (nonatomic, assign) NSInteger state;
+@property (nonatomic, copy) NSString *msg;
+@property (nonatomic, strong) id data;
+@property (nonatomic, strong) NSString *token;
 
 //@property (nonatomic, copy) NSString *resultCode;
 //@property (nonatomic, copy) NSString *resultMessage;

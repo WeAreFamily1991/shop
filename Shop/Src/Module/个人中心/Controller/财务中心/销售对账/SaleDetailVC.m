@@ -21,15 +21,12 @@
     [super viewDidLoad];
     if (self.fatherStatus==1) {
         self.title =@"费用对账详情";
-
     }
     else
     {
-        
         self.title =@"订单对账详情";
     }
     [self addsegentView];
-    // Do any additional setup after loading the view.
 }
 -(void)addsegentView
 {
@@ -58,6 +55,7 @@
     {
         SaleDetailChildVC *VC = [[SaleDetailChildVC alloc] init];
         VC.fatherStatus =self.fatherStatus;
+        VC.saleModel =self.saleModel;
         VC.status = i;
         [childVCs addObject:VC];
     }

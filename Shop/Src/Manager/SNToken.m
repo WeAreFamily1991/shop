@@ -66,6 +66,32 @@
     NSString *fileName = [NSString stringWithFormat:@"%@.data", [@"sniot_token_lh" MD5]];
     return [[self defaultPath] stringByAppendingPathComponent:fileName];
 }
+// 存档Token
++ (void)saveVisistToken:(id)token {
+    
+    SNToken *vistToken = [[SNToken alloc] init];
+
+    vistToken.visit_token =token;
+  
+}
+
+//// 解档Token
+//+ (id)loadVisistToken {
+//    
+//    NSFileManager *manager = [NSFileManager defaultManager];
+//    if (![manager fileExistsAtPath:[self getFilePath]]) {
+//        return nil;
+//    }
+//    
+//    SNToken *token = [NSKeyedUnarchiver unarchiveObjectWithFile:[self getFilePath]];
+//    
+//    NSData *data = [token.tokenData AES256DecryptWithKey:KEncryptKey];
+//    token.access_token = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//    token.tokenData = nil;
+//    
+//    return token;
+//}
+
 
 // 存档Token
 + (void)saveToken:(SNToken *)token {
@@ -73,7 +99,8 @@
     SNToken *newToken = [[SNToken alloc] init];
     newToken.expiresTime = token.expiresTime;
     newToken.password = token.password;
-    newToken.tokenData = [[token.access_token dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:KEncryptKey];
+//    newToken.tokenData = [[token.access_token dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:KEncryptKey];
+     newToken.tokenData = [[token.access_token dataUsingEncoding:NSUTF8StringEncoding] AES256EncryptWithKey:KEncryptKey];
     
     [NSKeyedArchiver archiveRootObject:newToken toFile:[self getFilePath]];
 }

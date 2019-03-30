@@ -67,7 +67,7 @@
     
     _rightItemButton = ({
         UIButton * button = [UIButton new];
-        [button setTitle:@"工业园区" forState:UIControlStateNormal];
+        [button setTitle:@"请选择" forState:UIControlStateNormal];
         [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
         button.titleLabel.font =DR_FONT(12);
         [button setImage:[UIImage imageNamed:@"down_ico"] forState:UIControlStateNormal];
@@ -114,7 +114,7 @@
     [_voiceButton addTarget:self action:@selector(voiceButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [_voiceButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     _voiceButton.titleLabel.font =DR_FONT(12);
-    [_voiceButton setTitle:@"工业园区" forState:UIControlStateNormal];
+    [_voiceButton setTitle:@"请选择地区" forState:UIControlStateNormal];
     [_voiceButton setImage:[UIImage imageNamed:@"down_ico"] forState:0];
     [_voiceButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:10];
     [_topSearchView addSubview:_voiceButton];

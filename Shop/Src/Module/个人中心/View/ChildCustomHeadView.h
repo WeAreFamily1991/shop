@@ -11,6 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ChildCustomHeadView : UIView
+@property (weak, nonatomic) IBOutlet UILabel *allCountMoneyLab;
+@property (weak, nonatomic) IBOutlet UILabel *payCountMoneyLab;
+@property (weak, nonatomic) IBOutlet UILabel *backCountLab;
 
 @end
 

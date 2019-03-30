@@ -10,16 +10,19 @@
 #import "FirstTableViewCell.h"
 #import "SaleOrderCell.h"
 #import "BillMessageDetailChildVC.h"
+#import "DCUpDownButton.h"
+#import "BillMessageModel.h"
 @interface BillMessageDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
 }
-@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
+
 @property (nonatomic,strong)NSMutableArray *MsgListArr;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIView *backView;
-
+@property (nonatomic,retain)DCUpDownButton *bgTipButton;
 @property (nonatomic, copy) NSString *titleStr;
+@property (nonatomic,retain)BillMessageModel *MessageModel;
 @end
 
 @implementation BillMessageDetailVC
@@ -27,6 +30,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor =BACKGROUNDCOLOR;
+    [self.view addSubview:self.bgTipButton];
+    _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[self.sendDataDictionary[@"startTime"]?:@"",self.sendDataDictionary[@"endTime"]?:@"",self.sendDataDictionary[@"dzNo"]?:@"",[NSString stringWithFormat:@"%ld",(long)self.status-1]] forKeys:@[@"startTime",@"endTime",@"keyWord",@"status"]];
+    
     //    self.tableView.frame =CGRectMake(0, 80, SCREEN_WIDTH, self.tableView.height - 120-DRTopHeight);
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor =BACKGROUNDCOLOR;
@@ -58,113 +64,112 @@
     }];
     [self.tableView.mj_footer endRefreshing];
     //   self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
-    [self CustomView];
-    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(hideZheGaiBtn) name:@"yinCanZheGai" object:nil];
+//    [self CustomView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"message" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"yinCanZheGai" object:nil];
+    
+    //       self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
+}
+-(NSMutableArray *)MsgListArr
+{
+    if (!_MsgListArr) {
+        _MsgListArr =[NSMutableArray array];
+    }
+    return _MsgListArr;
+}
+- (void)notificationHandler:(NSNotification *)notification {
+    if ([notification.name isEqualToString:@"message"]) {
+        NSDictionary *dic =notification.userInfo;
+        if ([dic[@"index"] intValue]==3) {
+            [_sendDataDictionary setObject:dic[@"dzNo"]?:@"" forKey:@"keyWord"];
+            
+        }else
+        {
+            [_sendDataDictionary setObject:dic[@"startTime"]?:@"" forKey:@"startTime"];
+            [_sendDataDictionary setObject:dic[@"endTime"]?:@"" forKey:@"endTime"];
+            
+        }
+        [self.tableView.mj_header beginRefreshing];
+    }
+    else if ([notification.name isEqualToString:@"yinCanZheGai"])
+    {
+//        [self hideZheGaiBtn];
+    }
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"yinCanZheGai" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"message" object:nil];
 }
 -(void)CustomView
 {
     BackVC *vc = [[BackVC alloc]init];
-    self.backView.hidden = !self.backView.hidden;
+//    self.backView.hidden = !self.backView.hidden;
     [vc show];
 }
 //通知回调
-- (void)hideZheGaiBtn{
-    self.backView.hidden = !self.backView.hidden;
-}
-- (void)dealloc{
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
+//- (void)hideZheGaiBtn{
+////    self.backView.hidden = !self.backView.hidden;
+//}
 
-//YCViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"YCViewController"];
-//self.zheGaiView.hidden = !self.zheGaiView.hidden;
-//[vc show];
 -(void)getMsgList
 {
-    if (!_sendDataDictionary) {
-        _sendDataDictionary = [[NSMutableDictionary alloc] init];
-    }
+    
+    
     //    [MBProgressHUD showMessage:@""];
     [self loadDataSource:_sendDataDictionary withpagecount:[NSString stringWithFormat:@"%d",pageCount]];
 }
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
-    [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[[UserModel sharedManager].token,] forKeys:@[@"token"]];
-    //    NSString *urlStr = @"/ZcApi/CollectInfoList";
-    //    if (self.statusStr == nil || [self.statusStr isEqualToString:@"2"]) {
-    //        urlStr = @"/ZcApi/CollectInfoList";
-    //        if ([self.title isEqualToString:SNStandardString(@"我的采集")]) {
-    //            [dic setValue:@"2" forKey:@"s_type"];
-    //        }
-    //    }
-    //    else if ([self.statusStr isEqualToString:@"1"]) {
-    //        urlStr = @"/ZcApi/MyAssignList";
-    //    }
-    //    if (page) {
-    //        [dic setObject:page forKey:@"page"];
-    //        [dic setObject:@"10" forKey:@"limit"];
-    //    }
-    //    if (dictionary) {
-    //        [dic addEntriesFromDictionary:dictionary];
-    //    }
-    //    if (self.status) {
-    //        [dic setValue:self.status forKey:@"status"];
-    //    }
-    //
-    //    [Interface_Base Post:urlStr dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //        NSLog(@"data=%@",data[@"data"]);
-    //        if ([data[@"data"] isKindOfClass:[NSNull class]]||data[@"data"]==nil) {
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            //             self.tableView.mj_footer.hidden =YES;
-    //            [self.tableView reloadData];
-    //
-    //            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //        }else
-    //        {
-    //            [self.MsgListArr addObjectsFromArray:data[@"data"]];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            [self.tableView reloadData];
-    //            if (self.MsgListArr.count<10) {
-    //                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //                //                self.tableView.mj_footer.hidden =YES;
-    //            }
-    //            else
-    //            {
-    //                //                self.tableView.mj_footer.hidden =NO;
-    //                [self.tableView.mj_footer endRefreshing];
-    //            }
-    //            [self.tableView.mj_header endRefreshing];
-    //            [MBProgressHUD hideHUD];
-    //        }
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [self.tableView.mj_header endRefreshing];
-    //        [self.tableView.mj_footer endRefreshing];
-    //        [MBProgressHUD hideHUD];
-    //    }];
-}
--(void)addCustomView
-{
-    UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, 2, SCREEN_WIDTH, 36)];
-    backView.backgroundColor =[UIColor whiteColor];
-    [self.view addSubview:backView];
-    
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    NSString *urlStr =@"buyer/invoiceRecord" ;
+    if (page) {
+        [dic setObject:page forKey:@"pageNum"];
+        [dic setObject:@"10" forKey:@"pageSize"];
+    }
+    if (dictionary) {
+        [dic addEntriesFromDictionary:dictionary];
+    }
+    if (self.status==0) {
+        [dic setObject:@"" forKey:@"status"];
+    }
+    DRWeakSelf;
+    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+        NSLog(@"data=%@",result.data[@"list"]);
+        NSMutableArray*addArr=result.data[@"list"];
+        NSMutableArray *modelArray =[BillMessageModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
+        [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+        [self.tableView reloadData];
+        if (addArr.count<10){
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        else{
+            [self.tableView.mj_footer endRefreshing];
+        }
+        [self.tableView.mj_header endRefreshing];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        [MBProgressHUD hideHUD];
+    }];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无数据" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
 }
 
 
@@ -172,7 +177,9 @@
 #pragma mark 表的区数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 4;
+   self.bgTipButton.hidden = (_MsgListArr.count > 0) ? YES : NO;
+   return self.MsgListArr.count;
+//    return 4;
 }
 #pragma mark 表的行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -192,7 +199,7 @@
             break;
             
         case 3:
-            return SCREEN_HEIGHT/25;
+            return HScale(35);
             break;
             
             
@@ -217,83 +224,97 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
-    NSArray *titleArr =@[@"申请单号：KP-201902-D00002",@"开票方：三块神铁",@"金额：¥202.80"];
-    switch (indexPath.row) {
-        case 0:
-        {
-            static NSString *SimpleTableIdentifier = @"cell1";
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                     SimpleTableIdentifier];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                              reuseIdentifier: SimpleTableIdentifier];
-                if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
-                    [cell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+    if (self.MsgListArr.count!=0) {
+        
+        self.MessageModel =self.MsgListArr[indexPath.section];
+        NSArray *titleArr =@[[NSString stringWithFormat:@"申请单号：%@",self.MessageModel.applyNo],[NSString stringWithFormat:@"开票方：%@",self.MessageModel.fpPartyName],[NSString stringWithFormat:@"金额：%.2f",self.MessageModel.invoiceAmt]];
+        switch (indexPath.row) {
+            case 0:
+            {
+                static NSString *SimpleTableIdentifier = @"cell1";
+                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                                         SimpleTableIdentifier];
+                if (cell == nil) {
+                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                  reuseIdentifier: SimpleTableIdentifier];
+                    if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
+                        [cell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, 0)];
+                    }
+                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleSingleLine;
                 }
-                self.tableView.separatorStyle =UITableViewCellSeparatorStyleSingleLine;
-            }
-            cell.textLabel.text =titleArr[indexPath.row];
-            cell.textLabel.textColor =[UIColor redColor];
-            cell.textLabel.font =DR_BoldFONT(14);
-            return cell;
-        }
-            break;
-        case 1:
-        {
-            static NSString *SimpleTableIdentifier = @"cell2";
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                     SimpleTableIdentifier];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:1
-                                              reuseIdentifier: SimpleTableIdentifier];
-                self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
-            }
-            
-            cell.textLabel.text =titleArr[indexPath.row];
-            cell.textLabel.textColor =[UIColor blackColor];
-            cell.textLabel.font =DR_BoldFONT(12);
-            cell.detailTextLabel.text =@"待审核";
-            cell.detailTextLabel.textColor =[UIColor redColor];
-            cell.detailTextLabel.font =DR_FONT(12);
-            
+                cell.textLabel.text =titleArr[indexPath.row];
+                cell.textLabel.textColor =[UIColor redColor];
+                cell.textLabel.font =DR_BoldFONT(14);
                 return cell;
-          
-        }
-            break;
-        
-        case 2:
-        {
-            static NSString *SimpleTableIdentifier = @"cell3";
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                     SimpleTableIdentifier];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:1
-                                              reuseIdentifier: SimpleTableIdentifier];
-                self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
             }
-            
-            cell.textLabel.text =titleArr[indexPath.row];
-            cell.textLabel.textColor =[UIColor blackColor];
-            cell.textLabel.font =DR_FONT(12);
-            cell.detailTextLabel.text =@"2019-02-28";
-            cell.detailTextLabel.textColor =[UIColor lightGrayColor];
-            cell.detailTextLabel.font =DR_FONT(12);
-            
-            return cell;
+                break;
+            case 1:
+            {
+                static NSString *SimpleTableIdentifier = @"cell2";
+                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                                         SimpleTableIdentifier];
+                if (cell == nil) {
+                    cell = [[UITableViewCell alloc] initWithStyle:1
+                                                  reuseIdentifier: SimpleTableIdentifier];
+                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
+                }
+                
+                cell.textLabel.text =titleArr[indexPath.row];
+                cell.textLabel.textColor =[UIColor blackColor];
+                cell.textLabel.font =DR_BoldFONT(12);
+                
+                cell.detailTextLabel.text =@"待审核";
+                cell.detailTextLabel.textColor =[UIColor redColor];
+                cell.detailTextLabel.font =DR_FONT(12);
+                
+                return cell;
+                
+            }
+                break;
+                
+            case 2:
+            {
+                static NSString *SimpleTableIdentifier = @"cell3";
+                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                                         SimpleTableIdentifier];
+                if (cell == nil) {
+                    cell = [[UITableViewCell alloc] initWithStyle:1
+                                                  reuseIdentifier: SimpleTableIdentifier];
+                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
+                }
+                
+                cell.textLabel.text =titleArr[indexPath.row];
+                cell.textLabel.textColor =[UIColor blackColor];
+                cell.textLabel.font =DR_FONT(12);
+                cell.detailTextLabel.text =self.MessageModel.applyeTime;
+                cell.detailTextLabel.textColor =[UIColor lightGrayColor];
+                cell.detailTextLabel.font =DR_FONT(12);
+                
+                return cell;
+            }
+                break;
+                
+            case 3:
+                
+            {
+                SaleOrderCell2 *cell =[SaleOrderCell2 cellWithTableView:tableView];
+                if (self.MessageModel.status==0) {
+                    
+                    cell.returnBackBtn.hidden =NO;
+                }else
+                {
+                    cell.returnBackBtn.hidden =YES;
+                }
+                cell.BtntagBlock = ^(NSInteger Btntag) {
+                    [self BtnClickWithTag:Btntag withIndexPath:indexPath];
+                };
+                return cell;
+            }
+                break;
+                
+            default:
+                break;
         }
-            break;
-        
-        case 3:
-            
-        {
-            SaleOrderCell2 *cell =[SaleOrderCell2 cellWithTableView:tableView];
-            return cell;
-        }
-            break;
-            
-        default:
-            break;
     }
     static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
@@ -304,12 +325,79 @@
     }
     cell.textLabel.text = [_titleStr stringByAppendingString:[NSString stringWithFormat:@"-%d",(int)indexPath.row]];
     return cell;
+}
+-(void)BtnClickWithTag:(NSInteger)tag withIndexPath:(NSIndexPath *)indexPath
+{
+    self.MessageModel =self.MsgListArr[indexPath.section];
+    switch (tag) {
+        case 100:
+        {
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                     message:@"确定撤回开票申请吗？"
+                                                                              preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction * _Nonnull action)
+                                      {
+                                          
+                                          NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
+                                          [SNAPI postWithURL:@"buyer/recall" parameters:dic success:^(SNResult *result) {
+                                              [self.tableView.mj_header beginRefreshing];
+                                          } failure:^(NSError *error) {
+                                              
+                                          }];
+                                      }];
+            [alertController addAction:action1];
+            
+            UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
+                                                              style:UIAlertActionStyleCancel
+                                                            handler:nil];
+            //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
+            [alertController addAction:action2];
+            
+            dispatch_async(dispatch_get_main_queue(),^{
+                [self presentViewController:alertController animated:YES completion:nil];
+            });
+          
+           
+        }
+            break;
+        case 200:
+        {
+            NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
+            [SNIOTTool getWithURL:@"buyer/invoiceApplyDetail" parameters:dic success:^(SNResult *result) {
+                if (result.state==200) {
+                    
+                    BackVC *vc = [[BackVC alloc]init];
+                    vc.MessageModel =[BillMessageModel mj_objectWithKeyValues:result.data];
+//                    self.backView.hidden = !self.backView.hidden;
+                    [vc show];
+                }
+
+            } failure:^(NSError *error) {
+                [MBProgressHUD showError:error.domain];
+            }];
+        }
+            break;
+        case 300:
+        {
+           
+            BillMessageDetailChildVC *childVC =[[BillMessageDetailChildVC alloc]init];
+            childVC.MessageModel =self.MsgListArr[indexPath.section];
+            [self.navigationController pushViewController:childVC animated:YES];
+            
+        }
+            
+        default:
+            break;
+    }
     
 }
-
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    [self.navigationController pushViewController:[BillMessageDetailChildVC new] animated:YES];
+    
+    
 }
 @end

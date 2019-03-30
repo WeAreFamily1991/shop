@@ -10,8 +10,9 @@
 #import "HQCollectionViewFlowLayout.h"
 #import "HQTopStopView.h"
 // Controllers
-#import "DCNavigationController.h"
+
 #import "CGXPickerView.h"
+#import "NewsModel.h"
 //#import "DCGoodsSetViewController.h"
 //#import "DCCommodityViewController.h"
 //#import "DCMyTrolleyViewController.h"
@@ -52,6 +53,8 @@
 
 @interface DCHandPickViewController ()<UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
+@property (nonatomic,strong)NewsModel *newmodel;
+@property (nonatomic,strong)NSMutableArray *bannerArr,*newsArr;
 /* collectionView */
 @property (strong , nonatomic)UICollectionView *collectionView;
 /* 10个属性 */
@@ -62,6 +65,8 @@
 @property (nonatomic, strong) DCHomeTopToolView *topToolView;
 /* 滚回顶部按钮 */
 @property (strong , nonatomic)UIButton *backTopButton;
+
+
 
 @end
 /* cell */
@@ -139,15 +144,30 @@ static NSString *const DRTopViewID = @"HQTopStopView";
     [self setUpGIFRrfresh];
     
     [self getNetwork];
+    
 }
 
-
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    if (![User currentUser].isLogin&&[self.topToolView.voiceButton.titleLabel.text isEqualToString:@"请选择地区"]) {
+        [CGXPickerView showAddressPickerWithTitle:@"请选择地区" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
+            
+            NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
+            self.topToolView.voiceButton.titleLabel.text =selectAddressArr[2];
+            //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+        }];
+        
+    }
+}
 #pragma mark - initialize
 - (void)setUpBase
 {
     self.collectionView.backgroundColor = BACKGROUNDCOLOR;
     
     [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+    
+    
 }
 
 
@@ -182,6 +202,22 @@ static NSString *const DRTopViewID = @"HQTopStopView";
 {
     _gridItem = [DCGridItem mj_objectArrayWithFilename:@"GoodsGrid.plist"];
     _youLikeItem = [DCRecommendItem mj_objectArrayWithFilename:@"HomeHighGoods.plist"];
+    NSDictionary *dic =@{@"typeCode":@"mobileBanner",@"page":@"1",@"pageSize":@"10"};
+    [SNIOTTool getWithURL:@"mainPage/news" parameters:[dic mutableCopy] success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
+           
+            self.bannerArr =[NSMutableArray array];
+            NSArray *sourceArr =[NewsModel mj_objectArrayWithKeyValuesArray:result.data];
+            for (NewsModel *model in sourceArr) {
+                [self.bannerArr addObject:model.imageurl];
+            }
+        }
+        [self.collectionView reloadData];
+    } failure:^(NSError *error) {
+        
+    }];
+    
+   
 }
 
 #pragma mark - 滚回顶部
@@ -346,11 +382,15 @@ static NSString *const DRTopViewID = @"HQTopStopView";
         
         if (indexPath.section == 0) {
             DCSlideshowHeadView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:DCSlideshowHeadViewID forIndexPath:indexPath];
-            footerView.imageGroupArray = GoodsHomeSilderImagesArray;
+            footerView.imageGroupArray = self.bannerArr.copy;
+            footerView.ManageIndexBlock = ^(NSInteger ManageIndexBlock) {                
+            };
             return  footerView ;
         }
         else if (indexPath.section == 2) {
             DCTopLineFootView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:DCTopLineFootViewID forIndexPath:indexPath];
+            footerView.ManageIndexBlock = ^(NSInteger ManageIndexBlock) {
+            };
             return footerView;
         }
         else if (indexPath.section == 3){

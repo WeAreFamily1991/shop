@@ -25,4 +25,15 @@
  */
 + (NSString *)getNetWorkStates;
 
++(NSString *)jsontringData:(id)data;
++(NSString*)DataTOjsonString:(id)object;
++(NSString *)convertToJsonData:(NSDictionary *)dict;
++ (NSDictionary *)dictionaryWithJsonString:(NSString *)jsonString;
++(NSString *)StringTimeFormat:(NSString *)format;
++(NSString *)yearMonthTimeFormat:(NSString *)format;
+///< 获取当前时间的: 前一周(day:-7)丶前一个月(month:-30)丶前一年(year:-1)的时间戳
++ (NSString *)ddpGetExpectTimestamp:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day;
++(NSString *)currenTime;
++(void)setTextColor:(UILabel *)label FontNumber:(id)font AndRange:(NSRange)range AndColor:(UIColor *)vaColor;
++ (int)getRandomNumber:(int)from to:(int)to ;
 @end

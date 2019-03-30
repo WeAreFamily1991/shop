@@ -10,6 +10,7 @@
 #import "NNValidationView.h"
 #import "ZJBLTimerButton.h"
 #import "CGXPickerView.h"
+#import "SNAPIManager.h"
 @interface RegisteVC ()
 @property (weak, nonatomic) IBOutlet UITextField *companyTF;
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
@@ -24,7 +25,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *xieyiBtn;
 @property (weak, nonatomic) IBOutlet UIButton *registeBtn;
 @property (weak, nonatomic) IBOutlet UIButton *loginBtn;
+@property (weak, nonatomic) IBOutlet UIButton *codeBtn;
+@property (strong, nonatomic)UIImageView *codeIMG;
+
 @property (nonatomic, strong) NNValidationView *testView;
+@property (nonatomic,retain)NSString *validCodeIMGStr;
+@property (nonatomic,retain)NSString * selectAreaCodeStr,*imgStr;
+
 @end
 
 @implementation RegisteVC
@@ -32,11 +39,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title =@"注册";
+   
 //     self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:[UIImage imageNamed:@"back"] WithSelected:nil Target:self action:@selector(leftBarButtonItem)];
     [self setupViews];
     [self layout];
+    
     // Do any additional setup after loading the view from its nib.
 }
+
 -(void)leftBarButtonItem
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -50,6 +60,9 @@
     [self.loginBtn.layer setBorderWidth:1.0];
     self.registeBtn.layer.cornerRadius =25;
     self.registeBtn.layer.masksToBounds =25;
+    [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
+    [self.codeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     //时间按钮
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
@@ -61,28 +74,82 @@
 }
 //发生网络请求 --> 获取验证码
 - (void)qurestCode {
-    
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+//    DRWeakSelf;
+    [SNAPI commonMessageValidWithMobile:self.phoneTF.text validCode:self.imgCodeTF.text success:^(NSString *response) {
+        if ([response isEqualToString:@"200"]) {
+            [MBProgressHUD showError:@"验证码已发送"];
+        }
+    } failure:^(NSError *error) {
+        
+    }] ;
+        
+
     NSLog(@"发生网络请求 --> 获取验证码");
     
     
 }
-- (void)setupViews {
-    _testView = [[NNValidationView alloc] initWithFrame:self.imgCodeView.bounds andCharCount:4 andLineCount:4];
-    [self.imgCodeView addSubview:_testView];
+-(void)textFieldChangeAction:(UITextField *)textField
+{
+    switch (textField.tag) {
+        case 1:
+        {
+            if (textField.text.length>11) {
+                self.phoneTF.text = [self.phoneTF.text substringToIndex:11];
+            }
+        }
+            break;
+        case 2:
+        {
+            if (textField.text.length>4) {
+              self.imgCodeTF.text = [self.imgCodeTF.text substringToIndex:4];
+            }
+        }
+            break;
+        case 3:
+        {
+            if (textField.text.length>4) {
+                self.codeTF.text = [self.codeTF.text substringToIndex:4];
+            }
+        }
+        
+            break;
+            
+        default:
+            break;
+    }
+}
+- (IBAction)codeBtnClick:(id)sender {
+   self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"token"],[SNTool getRandomNumber:1000 to:9999]];
+     NSLog(@"wwwww+%d",[SNTool getRandomNumber:1000 to:9999]);
+     [self.codeBtn sd_setImageWithURL:[NSURL URLWithString:self.imgStr] forState:UIControlStateNormal];
     
-    __weak typeof(self) weakSelf = self;
-    /// 返回验证码数字
-    _testView.changeValidationCodeBlock = ^(void){
-        NSLog(@"验证码被点击了：%@", weakSelf.testView.charString);
-    };
-    NSLog(@"第一次打印：%@", self.testView.charString);
 }
 
+- (void)setupViews {
+    self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"token"],[SNTool getRandomNumber:1000 to:9999]];
+    [self.codeBtn sd_setImageWithURL:[NSURL URLWithString:self.imgStr] forState:UIControlStateNormal];
+}
+-(void)addIMG
+{
+
+   
+}
 - (IBAction)selectAreaBtnClick:(id)sender {
     [CGXPickerView showAddressPickerWithTitle:@"请选择你的城市" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
-        
+        self.selectAreaBtn.selected =YES;
+        [self.selectAreaBtn setTitle:[NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]] forState:UIControlStateNormal];
         NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
+        self.selectAreaCodeStr =[NSString stringWithFormat:@"%@",[selectAddressArr lastObject]];
         //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+        
     }];
     
 }
@@ -94,8 +161,67 @@
     
 }
 - (IBAction)registBtnClick:(id)sender {
+    if (self.companyTF.text.length==0) {
+        [MBProgressHUD showError:@"请输入您的公司名称"];
+        return;
+    }
+    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    
+    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    if (self.codeTF.text.length==0||self.codeTF.text.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的验证码"];
+        return;
+    }
+
+    if (self.selectAreaCodeStr.length==0) {
+        [MBProgressHUD showError:@"请选择您所在地区"];
+        return;
+    }
+    if (!self.selectBtn.selected) {
+        [MBProgressHUD showError:@"请勾选注册服务协议"];
+        return;
+    }
+    DRWeakSelf;
+    [SNAPI userRegisterMobileWithCompany:self.companyTF.text mobile:self.phoneTF.text valid_code:self.codeTF.text location:self.selectAreaBtn.titleLabel.text locationCode:self.selectAreaCodeStr success:^(NSString *userDigit) {
+        if ([userDigit isEqualToString:@"200"]) {
+            [MBProgressHUD showSuccess:SNStandardString(@"注册成功")];
+            [weakSelf success];            
+        }
+    } failure:^(NSError *error) {
+        [weakSelf failure];
+    }];
+//    [SNAPI userRegisterMobileWithEmail:nil password:self.phoneTF.text type:0 ticket:self.ticket validCode:self.validCodeField.text success:^(NSString *userDigit) {
+//
+//        [weakSelf success];
+//        [MBProgressHUD showSuccess:SNStandardString(@"register_success")];
+//
+//    } failure:^(NSError *error) {
+//        [weakSelf failure];
+//    }];
+    NSLog(@"走走走");
     
 }
+- (void)success {
+    
+    [MBProgressHUD hideHUDForView:self.view];
+    [self performSelector:@selector(back) withObject:nil afterDelay:1];
+}
+-(void)back
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (void)failure {
+    
+   
+    [MBProgressHUD hideHUDForView:self.view];
+}
+
 - (IBAction)loginBtnClick:(id)sender {
     
 }

@@ -5,7 +5,7 @@
 //  Created by BWJ on 2018/12/29.
 //  Copyright © 2018 SanTie. All rights reserved.
 //
-#import "DCNavigationController.h"
+
 #import "MineViewController.h"
 #import "MineCell.h"
 #import "HaveShopNewsDetailVC.h"
@@ -23,6 +23,7 @@
 #import "PasswordChangeVC.h"
 #import "DCReceivingAddressViewController.h"
 #import "ChildVC.h"
+#import "SNIOTTool.h"
 @interface MineViewController ()
 @property (nonatomic,strong)DRUserInfoModel *usermodel;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -39,7 +40,23 @@
     self.tableView.backgroundColor =[UIColor clearColor];
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     [self footerViewCustom];
+     [self loadUser];
+}
+- (void)loadUser {
     
+    if (![User currentUser].isLogin) {
+        return;
+    }
+    DRWeakSelf;
+    [SNAPI userInfoSuccess:^(DRUserInfoModel *user) {
+        weakSelf.usermodel = user;
+        [weakSelf.tableView reloadData];
+//        [weakSelf.avatarBtn sd_setImageWithURL:[NSURL URLWithString:user.avatar] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"icon_touxiang"]];
+//        weakSelf.nameLB.text = user.user_nickname;
+    } failure:^(NSError *error) {
+       
+        [self logOut];
+    }];
 }
 -(void)footerViewCustom
 {
@@ -52,6 +69,14 @@
     titleLab.font=DR_FONT(12);
     titleLab.textAlignment =1;
     [footView addSubview:titleLab];
+    UIButton *titleBtn =[UIButton buttonWithType:UIButtonTypeCustom];
+    titleBtn.frame =titleLab.bounds;
+    [titleBtn addTarget:self action:@selector(titleBtnClick) forControlEvents:UIControlEventTouchUpInside];
+    [footView addSubview:titleBtn];
+}
+-(void)titleBtnClick
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"telprompt://0573-83108631"]];
 }
 #pragma mark - <UITableViewDataSource>
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -67,6 +92,15 @@
    
     if (indexPath.row == 0) {
         MineCell *cell = [MineCell cellWithTableView:tableView];
+        if (self.usermodel.buyer.name.length!=0) {
+             cell.nameLab.text =self.usermodel.buyer.name;
+        }
+       else
+       {
+            cell.nameLab.text =self.usermodel.account;
+       }
+        cell.phoneLab.text =self.usermodel.mobilePhone;
+        [cell.iconBtn sd_setImageWithURL:[NSURL URLWithString:self.usermodel.buyer.logo] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_head"]];
         cell.BtnManagetagBlock = ^(NSInteger manageBtntag) {
             [self managePushVC:manageBtntag];
         };
@@ -89,6 +123,7 @@
 {
     [super viewWillAppear:YES];
      [self hideNavigationBar];
+    [self loadUser];
 }
 -(void)viewWillDisappear:(BOOL)animated
 {
@@ -116,6 +151,7 @@
 #pragma mark - 跳转二级页面
 -(void)managePushVC:(NSInteger )pushTag
 {
+    DRWeakSelf;
     NSLog(@"pushTag=%ld",(long)pushTag);
 //    [self.navigationController pushViewController:[@[@"ChangeOrderVC",@"SelloutVC",@"SelloutVC",@"CollectionVC"][pushTag] new] animated:YES];
     switch (pushTag) {
@@ -183,7 +219,7 @@
             DRUserInfoVC *userInfoVC =[[DRUserInfoVC alloc]init];
             userInfoVC.userModel =self.usermodel;
             userInfoVC.changeInfo = ^{
-                
+                [weakSelf loadUser];
             };
             [self.navigationController pushViewController:userInfoVC animated:YES];
         }
@@ -195,7 +231,9 @@
             break;
         case 24:
         {
-            [self.navigationController pushViewController:[DCReceivingAddressViewController new] animated:YES];
+            DCReceivingAddressViewController *addressVC=[[DCReceivingAddressViewController alloc]init];
+            addressVC.userModel =self.usermodel;
+            [self.navigationController pushViewController:addressVC animated:YES];
         }
             break;
         case 25:
@@ -219,9 +257,7 @@
                                                             handler:^(UIAlertAction * _Nonnull action)
                                       {
                                          
-                                          LoginVC *dcLoginVc = [LoginVC new];
-                                          DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
-                                          [self presentViewController:nav animated:YES completion:nil];
+                                          [self logOut];
                                       }];
             [alertController addAction:action1];
             
@@ -241,7 +277,24 @@
             break;
     }
 }
-
+-(void)logOut
+{
+    [[User currentUser] loginOut];
+    LoginVC *dcLoginVc = [LoginVC new];
+    DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
+    [self presentViewController:nav animated:YES completion:nil];
+    NSMutableDictionary *dic =[NSMutableDictionary dictionary];
+    [SNIOTTool postWithURL:USER_LOGOUT parameters:dic success:^(SNResult *result) {
+        if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
+            
+        }
+        
+    } failure:^(NSError *error) {
+        
+    }];
+    
+   
+}
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     
 }

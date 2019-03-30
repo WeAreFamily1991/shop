@@ -39,6 +39,9 @@ static NSString *const keyImageSelectedDouble = @"keyImageSelectedDouble";
 @property (nonatomic, strong) UIColor *titleColorNormal;
 /// 字体颜色 选择状态（默认橙色）
 @property (nonatomic, strong) UIColor *titleColorSelected;
+/// 字体颜色 选择状态（默认橙色）
+@property (nonatomic, strong) UIImage *btnIMGSelected;
+@property (nonatomic, assign) BOOL isDescending; // 默认升序，即NO
 
 /// 按钮标题数组
 @property (nonatomic, strong) NSArray <NSString *> *titles;

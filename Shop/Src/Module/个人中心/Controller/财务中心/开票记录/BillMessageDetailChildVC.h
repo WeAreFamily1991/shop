@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "BillMessageModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface BillMessageDetailChildVC : UIViewController
-
+@property (nonatomic,retain)BillMessageModel *MessageModel;
 @end
 
 NS_ASSUME_NONNULL_END

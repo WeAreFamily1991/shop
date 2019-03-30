@@ -11,7 +11,7 @@ target 'Shop' do
   pod 'AFNetworking', '~> 3.2.1'
 
   # 图片加载
-  pod 'SDWebImage', '4.4.3'
+  pod 'SDWebImage'
 
   # 布局
   pod 'Masonry', '~> 1.1.0'
@@ -20,11 +20,10 @@ target 'Shop' do
   pod 'MJRefresh', '~> 3.1.15.7'
 
   # 字典模型互转
-  pod 'MJExtension', '~> 3.0.15.1'
+  pod 'MJExtension'
 
   # Loading
   pod 'MBProgressHUD', '~> 1.1.0'
-
   # 轮播图
   pod 'SDCycleScrollView', '~> 1.75'
   
@@ -39,6 +38,6 @@ target 'Shop' do
   pod 'FMDB'
   pod 'KSCrash'
   pod 'JSONModel'
-  pod 'LTScrollView', '~> 0.2.0'
+ 
   pod 'CDDPagerController'
 end
