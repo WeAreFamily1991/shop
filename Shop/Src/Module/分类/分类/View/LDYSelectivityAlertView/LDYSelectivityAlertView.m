@@ -35,7 +35,7 @@
 @implementation LDYSelectivityAlertView
 
 -(instancetype)initWithdatas:(NSArray *)datas
-                        contentDatas:(NSArray*)contentDatas
+                        contentDatas:(NSArray*)contentDatas selectDatas:(NSMutableArray*)selectDatas
            ifSupportMultiple:(BOOL)ifSupportMultiple{
     if (self = [super init]) {
 //        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
@@ -203,12 +203,14 @@
         [self.selectArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSNumber *data = obj;
             int row = [data intValue];
-            [dataAr addObject:self.datas[row]];
+            NSArray *idArr =@[@"0",@"st",@"zf"];
+            [dataAr addObject:idArr[row]];
         }];
 
         NSArray *datas = [NSArray arrayWithArray:dataAr];
         if (_delegate && [_delegate respondsToSelector:@selector(multipleChoiceBlockDatas:)])
         {
+            
             [_delegate multipleChoiceBlockDatas:datas];
         }
     }

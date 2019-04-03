@@ -28,7 +28,11 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+    BOOL serverFlag = ![version hasSuffix:@"_T"];
    
+    [SNAPI initWithIsFormalServer:serverFlag];
+    
     [self setUpRootVC]; //跟控制器判断
     
     [self.window makeKeyAndVisible];

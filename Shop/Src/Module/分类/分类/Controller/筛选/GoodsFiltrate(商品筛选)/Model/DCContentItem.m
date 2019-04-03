@@ -9,5 +9,13 @@
 #import "DCContentItem.h"
 
 @implementation DCContentItem
-
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    return @{
+             @"child_id" : @"id"
+             };
+}
+-(void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    
+}
 @end

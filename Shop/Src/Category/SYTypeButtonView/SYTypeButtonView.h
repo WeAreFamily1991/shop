@@ -62,5 +62,5 @@ static NSString *const keyImageSelectedDouble = @"keyImageSelectedDouble";
 - (void)setTitleButton:(NSString *)title index:(NSInteger)index;
 /// 设置某个按钮升序或降序状态
 - (void)setTypeButton:(BOOL)isDescending index:(NSInteger)index;
-
+-(void)setButton:(BOOL)isDescending index:(NSInteger)index;
 @end

@@ -9,7 +9,8 @@
 @class DROpenUserListModel;
 @class DRBuyerModel;
 @interface DRUserInfoModel : NSObject
-
+#pragma mark - 单例
++(instancetype)sharedManager;
 
 @property (nonatomic , copy) NSString               * account;//账号
 @property (nonatomic , copy) NSString              * password;//密码，null(前台不可见)
@@ -29,6 +30,9 @@
 @end
 
 @interface DRBuyerModel : NSObject
+#pragma mark - 单例
++(instancetype)sharedManager;
+
 @property (nonatomic , copy) NSString              * remainCredit;
 @property (nonatomic , copy) NSString              * location;//区域
 @property (nonatomic , copy) NSString              * cTel;

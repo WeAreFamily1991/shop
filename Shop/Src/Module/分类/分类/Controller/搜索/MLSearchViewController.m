@@ -104,6 +104,9 @@
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStyleDone target:self action:@selector(cancelDidClick)];
     self.navigationController.navigationBar.tintColor = [UIColor redColor];
+    [self.navigationController.navigationItem setHidesBackButton:YES];
+    [self.navigationItem setHidesBackButton:YES];
+    [self.navigationController.navigationBar.backItem setHidesBackButton:YES];
 //    self.navigationItem.leftBarButtonItem =[UIBarButtonItem ItemWithImage:nil WithSelected:nil Target:self action:@selector(leftBarButtonClick)];
     self.headerView = [[UIView alloc] init];
     self.headerView.mj_x = 0;

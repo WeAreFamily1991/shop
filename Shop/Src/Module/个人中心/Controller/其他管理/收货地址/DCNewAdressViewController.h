@@ -16,7 +16,7 @@ typedef NS_ENUM (NSUInteger,DCSaveAdressType){
 
 @class DRAdressListModel;
 @interface DCNewAdressViewController : UIViewController
-@property (nonatomic, strong) DRUserInfoModel *userModel;
+//@property (nonatomic, strong) DRUserInfoModel *userModel;
 
 /* type */
 @property (nonatomic,assign) DCSaveAdressType saveType;

@@ -15,7 +15,6 @@
 #import "DCAdressDateBase.h"
 // Views
 #import "DCUserAdressCell.h"
-#import "DCUpDownButton.h"
 // Vendors
 #import <SVProgressHUD.h>
 #import "UIView+Toast.h"
@@ -188,7 +187,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
         dcNewVc.addressBlock = ^{
             [weakSelf setUpAccNote];
         };
-        dcNewVc.userModel =self.userModel;
+//        dcNewVc.userModel =self.userModel;
         dcNewVc.saveType = DCSaveAdressChangeType;
         [weakSelf.navigationController pushViewController:dcNewVc animated:YES];
         
@@ -225,7 +224,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
 {
     DRWeakSelf;
     DCNewAdressViewController *dcNewVc = [DCNewAdressViewController new];
-    dcNewVc.userModel =self.userModel;
+//    dcNewVc.userModel =self.userModel;
     dcNewVc.addressBlock = ^{
         [weakSelf setUpAccNote];
     };

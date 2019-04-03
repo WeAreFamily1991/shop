@@ -40,10 +40,10 @@
     _headLabel.text = headFiltrate.headTitle;
     
     if (headFiltrate.isOpen) { //箭头
-        [self.upDownButton setImage:[UIImage imageNamed:@"arrow_down"] forState:0];
+        [self.upDownButton setImage:[UIImage imageNamed:@"arrow_up"] forState:0];
 //        self.selectHeadLabel.text =@"收起";
     }else{
-        [self.upDownButton setImage:[UIImage imageNamed:@"arrow_up"] forState:0];
+        [self.upDownButton setImage:[UIImage imageNamed:@"arrow_down"] forState:0];
 //        self.selectHeadLabel.text =@"展开";
     }
 }

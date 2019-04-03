@@ -14,6 +14,7 @@
 // Models
 #import "DCFiltrateItem.h"
 #import "DCContentItem.h"
+#import "GoodsShareModel.h"
 // Views
 #import "DCHeaderReusableView.h"
 #import "DCFooterReusableView.h"
@@ -34,7 +35,7 @@
 @property (strong , nonatomic)UICollectionView *collectionView;
 
 @property (nonatomic , strong) NSMutableArray<DCFiltrateItem *> *filtrateItem;
-
+@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @end
 
 static NSString *const DCAttributeItemCellID = @"DCAttributeItemCell";
@@ -55,7 +56,7 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
         _collectionView.delegate = self;
         _collectionView.dataSource = self;
         _collectionView.alwaysBounceVertical = YES;
-        _collectionView.frame = CGRectMake(5, 10, FiltrateViewScreenW - 10, ScreenH - 60);
+        _collectionView.frame = CGRectMake(5, DRStatusBarHeight, FiltrateViewScreenW - 10, ScreenH - 50-DRStatusBarHeight);
         _collectionView.showsVerticalScrollIndicator = NO;
         
         [_collectionView registerClass:[DCAttributeItemCell class] forCellWithReuseIdentifier:DCAttributeItemCellID];//cell
@@ -102,7 +103,17 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
 #pragma mark - 筛选Item数据
 - (void)setUpFiltrateData
 {
-    _filtrateItem = [DCFiltrateItem mj_objectArrayWithFilename:@"FiltrateItem.plist"];
+    DRWeakSelf;
+    _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[[GoodsShareModel sharedManager].type?:@"",[GoodsShareModel sharedManager].level1Id?:@"",[GoodsShareModel sharedManager].level2Id?:@"",[GoodsShareModel sharedManager].cz?:@"",[GoodsShareModel sharedManager].categoryId?:@"",@"1",[GoodsShareModel sharedManager].jb?:@"",[GoodsShareModel sharedManager].bmcl?:@"",[GoodsShareModel sharedManager].cd?:@"",[GoodsShareModel sharedManager].cl?:@"",[GoodsShareModel sharedManager].yj?:@"",[GoodsShareModel sharedManager].yx?:@"",[GoodsShareModel sharedManager].pp?:@"",[GoodsShareModel sharedManager].zj?:@""] forKeys:@[@"type",@"level1Id",@"level2Id",@"cz",@"categoryId",@"subType",@"jb",@"bmcl",@"cd",@"cl",@"yj",@"yx",@"pp",@"zj"]];
+    [SNIOTTool getWithURL:@"mainPage/getCategoryRelationCondition" parameters:_sendDataDictionary success:^(SNResult *result) {
+//        NSDictionary *bigDic =@{@"headTitle":@"",@"content":@""};
+        NSArray *bigArr =@[@{@"headTitle":@"标准",@"content":result.data[@"bzlist"]},@{@"headTitle":@"材质",@"content":result.data[@"czlist"]},@{@"headTitle":@"材料",@"content":result.data[@"cllist"]},@{@"headTitle":@"直径",@"content":result.data[@"zjlist"]},@{@"headTitle":@"长度",@"content":result.data[@"cdlist"]},@{@"headTitle":@"级别",@"content":result.data[@"jblist"]},@{@"headTitle":@"表面处理",@"content":result.data[@"bmcllist"]},@{@"headTitle":@"品牌",@"content":result.data[@"pplist"]},@{@"headTitle":@"牙距",@"content":result.data[@"yjlist"]},@{@"headTitle":@"牙型",@"content":result.data[@"yxlist"]}];
+        weakSelf.filtrateItem = [DCFiltrateItem mj_objectArrayWithKeyValuesArray:bigArr];
+        [weakSelf.collectionView reloadData];
+       
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 #pragma mark - 底部重置确定按钮
@@ -110,7 +121,7 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
 {
     CGFloat buttonW = FiltrateViewScreenW/2;
     CGFloat buttonH = 50;
-    CGFloat buttonY = ScreenH - buttonH;
+    CGFloat buttonY = ScreenH - buttonH-10;
     NSArray *titles = @[@"重置",@"确定"];
     for (NSInteger i = 0; i < titles.count; i++) {
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -124,7 +135,6 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
         button.titleLabel.font = DR_FONT(15);
         button.backgroundColor = (i == 0) ? self.collectionView.backgroundColor : [UIColor redColor];
         [button addTarget:self action:@selector(bottomButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-        
         [_filtrateConView addSubview:button];
     }
 }
@@ -136,21 +146,20 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
 
 #pragma mark - <UICollectionViewDelegate>
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    
     NSInteger doubleLine = (self.filtrateItem[section].content.count >= 6) ? 6 :  self.filtrateItem[section].content.count; //默认两行
     NSInteger oneLine = (self.filtrateItem[section].content.count >= 3) ? 3 : self.filtrateItem[section].content.count; //默认一行
-    
     //这里默认第一组品牌展示两行数据其余展示一行数据（3个一行）
     return (_filtrateItem[section].isOpen == YES) ? self.filtrateItem[section].content.count : (section == 0) ? doubleLine : oneLine ;
 }
-
-
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    
     DCAttributeItemCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DCAttributeItemCellID forIndexPath:indexPath];
     
     cell.contentItem = _filtrateItem[indexPath.section].content[indexPath.row];
-    
+  
+    if (indexPath.section==0) {
+          DCContentItem *itemModel =_filtrateItem[indexPath.section].content[indexPath.row];
+         [cell.contentButton setTitle:itemModel.code forState:0];
+    }
     return cell;
 }
 
@@ -172,9 +181,9 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
         NSString *selectName = @"";
         for (NSInteger i = 0; i < array.count; i ++ ) {
             if (i == array.count - 1) {
-                selectName = [selectName stringByAppendingString:[NSString stringWithFormat:@"%@",array[i]]];
+                selectName = [selectName stringByAppendingString:[NSString stringWithFormat:@"%@",array[i][@"name"]]];
             }else{
-                selectName = [selectName stringByAppendingString:[NSString stringWithFormat:@"%@,",array[i]]];
+                selectName = [selectName stringByAppendingString:[NSString stringWithFormat:@"%@,",array[i][@"name"]]];
             }
             
         }
@@ -208,11 +217,26 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
     //把所选的每组Item分别加入每组的数组中
     for (NSInteger i = 0; i < _filtrateItem.count; i++) {
         for (NSInteger j = 0; j < _filtrateItem[i].content.count; j++) {
-            if (_filtrateItem[i].content[j].isSelect == YES) {
-                [_seleArray[i] addObject:_filtrateItem[i].content[j].content];
-            }else{
-                [_seleArray[i] removeObject:_filtrateItem[i].content[j].content];
+            if (indexPath.section==0) {
+                if (_filtrateItem[i].content[j].isSelect == YES) {
+                    NSDictionary *dic =@{@"name":_filtrateItem[i].content[j].code,@"id":_filtrateItem[i].content[j].child_id};
+                    [_seleArray[i] addObject:dic];
+                }else{
+                    NSDictionary *dic =@{@"name":_filtrateItem[i].content[j].code,@"id":_filtrateItem[i].content[j].child_id};
+                    [_seleArray[i] removeObject:dic];
+                }
             }
+            else
+            {
+                if (_filtrateItem[i].content[j].isSelect == YES) {
+                    NSDictionary *dic =@{@"name":_filtrateItem[i].content[j].name,@"id":_filtrateItem[i].content[j].child_id};
+                    [_seleArray[i] addObject:dic];
+                }else{
+                    NSDictionary *dic =@{@"name":_filtrateItem[i].content[j].name,@"id":_filtrateItem[i].content[j].child_id};
+                    [_seleArray[i] removeObject:dic];
+                }
+            }
+           
         }
     }
     
@@ -222,14 +246,12 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
 
 #pragma mark - UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    return CGSizeMake(self.collectionView.dc_width, 55);
+    return CGSizeMake(self.collectionView.dc_width, HScale(40));
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForFooterInSection:(NSInteger)section {
     return CGSizeMake(self.collectionView.dc_width, 10);
 }
-
-
 #pragma mark - 点击事件
 - (void)bottomButtonClick:(UIButton *)button
 {

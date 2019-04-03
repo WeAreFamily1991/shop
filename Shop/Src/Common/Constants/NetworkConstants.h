@@ -25,8 +25,8 @@
 #define DEBUGAPI_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", DEBUGSERVER_ROOT]
 
  // 线上环境
-#define SERVER_ROOT             @"192.168.31.133:8081"
-#define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/api/", SERVER_ROOT]
+#define SERVER_ROOT             @"192.168.31.195:8081"
+#define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/", SERVER_ROOT]
 #pragma mark - 状态码
 typedef NS_ENUM(NSUInteger, NetWorkStatus) {
     NetWorkStatusSuccess = 200, // 请求成功

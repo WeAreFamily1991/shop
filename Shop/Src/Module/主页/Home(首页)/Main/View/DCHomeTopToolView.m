@@ -114,9 +114,9 @@
     [_voiceButton addTarget:self action:@selector(voiceButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [_voiceButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     _voiceButton.titleLabel.font =DR_FONT(12);
-    [_voiceButton setTitle:@"请选择地区" forState:UIControlStateNormal];
+    [_voiceButton setTitle:@"请选择" forState:UIControlStateNormal];
     [_voiceButton setImage:[UIImage imageNamed:@"down_ico"] forState:0];
-    [_voiceButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:10];
+    [_voiceButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:8];
     [_topSearchView addSubview:_voiceButton];
     self.lineView =[[UIView alloc]init];
     self.lineView.backgroundColor =BACKGROUNDCOLOR;

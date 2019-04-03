@@ -24,6 +24,7 @@
 
 #pragma mark - 初始化
 
++(void)initWithIsFormalServer:(BOOL)isformalServer;
 /**
  初始化，根据版本号是否带_T判断服务器
  
@@ -158,7 +159,7 @@
 /**
  *  获取用户基本信息
  */
-+ (void)userInfoSuccess:(void (^)(DRUserInfoModel *user))success failure:(void (^)(NSError *error))failure;
++ (void)userInfoSuccess:(void (^)(SNResult *))success failure:(void (^)(NSError *error))failure;
 
 
 /**

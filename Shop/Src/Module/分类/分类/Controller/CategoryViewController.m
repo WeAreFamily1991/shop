@@ -16,6 +16,8 @@
 #import "RightMenuTableViewController.h"
 #import "MLSearchViewController.h"
 #import "CategoryDetailVC.h"
+#import "SYMoreButtonView.h"
+#import "SendSourceModel.h"
 #define Start_X 10.0f           // 第一个按钮的X坐标
 #define Start_Y 84.0f           // 第一个按钮的Y坐标
 #define Width_Space 5.0f        // 2个按钮之间的横间距
@@ -23,11 +25,15 @@
 #define Button_Height 49.0f    // 高
 #define Button_Width 60.0f      // 宽
 //#import "JDNavigationController.h"
-@interface CategoryViewController ()<SearchBarViewDelegate>
+@interface CategoryViewController ()<SearchBarViewDelegate,SYMoreButtonDelegate>
 {
     NSMutableArray * _list;
 }
 @property(nonatomic,strong)UIButton *fBtn;
+@property (nonatomic,strong)SYMoreButtonView *bottomBtnView;
+@property (nonatomic,strong)NSMutableArray *sendArr ,*nameArr;
+@property (nonatomic,strong)SendSourceModel *souceModel;
+@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @end
 @implementation CategoryViewController
 - (void)viewDidLoad {
@@ -40,6 +46,7 @@
     //初始化分类菜单
     [self initCategoryMenu];
 }
+
 - (void)viewWillAppear:(BOOL)animated;
 {
      (( AppDelegate *) [UIApplication sharedApplication].delegate).avatar.hidden=YES;
@@ -88,6 +95,8 @@
 }
 - (void)initData{
 
+   
+    
      _list=[NSMutableArray arrayWithCapacity:0];
     NSString *path=[[NSBundle mainBundle] pathForResource:@"Category" ofType:@"plist"];
     NSArray *array=[NSArray arrayWithContentsOfFile:path];
@@ -130,41 +139,57 @@
 }
 -(void)addSelectedBtn:(UIView *)backView
 {
-    for (int i = 0 ; i < 4; i++) {
-        NSInteger index = i % 4;
-//        NSInteger page = i / 4;
-        
-        // 圆角按钮
-        UIButton *aBt = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        aBt.frame = CGRectMake(index * (Button_Width + Width_Space) + Start_X,0, Button_Width, Button_Height);
-
-        //tag标记值
-        aBt.tag = i;
-        //文字
-        NSMutableArray *arry = [[NSMutableArray alloc]initWithObjects:@"全部",@"碳钢",@"不锈钢",@"其他" ,nil];
-        [aBt setTitle:arry[i] forState:UIControlStateNormal];
-        
-        //默认第一个选中
-        if (aBt.tag == 0) {
-            
-//            aBt.backgroundColor = [UIColor orangeColor];
-            [aBt setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-            //定义第一个按钮sender是已经被选中
-            _fBtn = aBt;
+    DRWeakSelf;
+    [SNIOTTool getWithURL:@"mainPage/getCzList" parameters:nil success:^(SNResult *result) {
+        NSDictionary *dic =@{@"id":@"",@"name":@"全部"};
+        weakSelf.nameArr=[NSMutableArray arrayWithObject:@"全部"];
+        for (NSDictionary *dic in result.data) {
+            [weakSelf.nameArr addObject:dic[@"name"]];
         }
-        else{
-            
-//            aBt.backgroundColor = [UIColor blackColor];
-            [aBt setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        }
+        weakSelf.sendArr=[[NSMutableArray alloc]initWithObjects:dic, nil];
         
-        [aBt addTarget:self action:@selector(btnClickMethod:) forControlEvents:UIControlEventTouchUpInside];
+        NSArray *sourceArr =[SendSourceModel mj_objectArrayWithKeyValuesArray:result.data];
+        [weakSelf.sendArr addObjectsFromArray:sourceArr];
+        weakSelf.bottomBtnView = [[SYMoreButtonView alloc] initWithFrame:CGRectMake(0.0, 0, ScreenW, backView.dc_height)];
+        [backView addSubview:weakSelf.bottomBtnView];
+        
+        weakSelf.bottomBtnView.backgroundColor = [UIColor clearColor];
+        weakSelf.bottomBtnView.titles = weakSelf.nameArr;
+       
+        weakSelf.bottomBtnView.showline = NO;
+        weakSelf.bottomBtnView.showlineAnimation = NO;
+        weakSelf.bottomBtnView.font = 14;
+        weakSelf.bottomBtnView.indexSelected = 0;
+        weakSelf.bottomBtnView.colorSelected = [UIColor redColor];
+        weakSelf.bottomBtnView.delegate = self;
+        weakSelf.bottomBtnView.buttonClick = ^(NSInteger index) {
+            NSLog(@"block click index = %@", @(index));
+            [weakSelf.sendDataDictionary setObject:weakSelf.sendArr[index] forKey:@"id"];
+        };
+         [weakSelf.bottomBtnView reloadData];
         UIView *lineView =[[UIView alloc]initWithFrame:CGRectMake(0, 49, SCREEN_WIDTH, 1)];
         lineView.backgroundColor =[UIColor lightGrayColor];
         [backView addSubview: lineView];
-        [backView addSubview:aBt];
-    }
+       
+        
+    } failure:^(NSError *error) {
+        
+        
+    }];
+ 
 }
+-(NSMutableDictionary *)sendDataDictionary
+{
+    if (!_sendDataDictionary) {
+        _sendDataDictionary =[NSMutableDictionary dictionary];
+    }
+    return _sendDataDictionary;
+}
+- (void)sy_buttonClick:(NSInteger)index
+{
+    
+}
+
 #pragma mark -- 按钮点击事件
 -(void)btnClickMethod:(UIButton *)sender{
     

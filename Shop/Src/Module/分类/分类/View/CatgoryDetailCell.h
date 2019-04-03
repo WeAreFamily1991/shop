@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "NumberCalculate.h"
-@class CarDetailModel;
+#import "GoodsModel.h"
+//@class CarDetailModel;
+
 NS_ASSUME_NONNULL_BEGIN
 
 
@@ -17,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *shopCarBtn;
 @property (weak, nonatomic) IBOutlet UIButton *shoucangBtn;
 @property (weak, nonatomic) IBOutlet UILabel *priceAccountLab;
-
+@property (nonatomic,retain)GoodsModel *goodsModel;
 @property (copy,nonatomic) void (^shoucangBlock) (NSInteger shoucangtag);
 @property (copy,nonatomic) void (^shopCarBlock) (NSInteger shopCartag);
 @end
@@ -29,10 +31,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)tableViewScroll:(UITextField *)textField;
 
 @end
-@interface CatgoryDetailCell1 : UITableViewCell<NumberCalculateDelegate>
+@interface CatgoryDetailCell1 : UITableViewCell
 
 +(instancetype)cellWithTableView:(UITableView *)tableView withIndexPath:(NSIndexPath *)indexPath;
-@property (nonatomic, strong) CarDetailModel *goodsModel;
+//@property (nonatomic, strong) CarDetailModel *goodsModel;
 //@property (weak, nonatomic) IBOutlet UIView *selectView;
 @property (weak, nonatomic) IBOutlet UIButton *danweiBtn;
 @property (weak, nonatomic) IBOutlet UITextField *countTF;
@@ -43,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet NumberCalculate *numberCalculate;
 @property (copy,nonatomic) void (^danweiBtnBlock) (NSInteger danweiBtntag);
 @property (nonatomic, weak) id<CatgoryDetailCellSelectDelegate>delegate;
+@property (nonatomic,retain)GoodsModel *goodsModel;
 @end
 
 NS_ASSUME_NONNULL_END

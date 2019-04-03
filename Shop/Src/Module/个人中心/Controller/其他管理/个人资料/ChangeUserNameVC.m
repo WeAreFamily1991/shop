@@ -42,7 +42,7 @@
 {
     self.registeBtn.layer.cornerRadius =25;
     self.registeBtn.layer.masksToBounds =25;
-    self.phoneTF.text =self.userModel.account;
+    self.phoneTF.text =[DRUserInfoModel sharedManager].account;
     [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     self.phoneTF.delegate =self;
     [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
@@ -120,7 +120,6 @@
                 self.codeTF.text = [self.codeTF.text substringToIndex:4];
             }
         }
-            
             break;
             
         default:

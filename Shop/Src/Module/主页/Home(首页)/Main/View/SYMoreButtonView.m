@@ -110,12 +110,12 @@ static NSInteger const tagButton = 1000;
     [_titles enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
         // 字符实际长度
-        CGFloat titleWidth = [obj boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:DR_FONT(12)} context:nil].size.width;
+        CGFloat titleWidth = [obj boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName:DR_FONT(14)} context:nil].size.width;
         
-        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(sizeWidth, 0.0, titleWidth, self.titleView.frame.size.height)];
+        UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(1.5*sizeWidth, 0.0, titleWidth, self.titleView.frame.size.height)];
         [self.titleView addSubview:button];
         button.backgroundColor = [UIColor clearColor];
-        button.titleLabel.font = DR_FONT(12);
+        button.titleLabel.font = DR_FONT(14);
         [button setTitle:obj forState:UIControlStateNormal];
         [button setTitleColor:_colorNormal forState:UIControlStateNormal];
         [button setTitleColor:_colorSelected forState:UIControlStateSelected];

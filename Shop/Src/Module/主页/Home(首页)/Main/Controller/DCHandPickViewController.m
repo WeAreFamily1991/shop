@@ -150,15 +150,46 @@ static NSString *const DRTopViewID = @"HQTopStopView";
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:YES];
-    if (![User currentUser].isLogin&&[self.topToolView.voiceButton.titleLabel.text isEqualToString:@"请选择地区"]) {
-        [CGXPickerView showAddressPickerWithTitle:@"请选择地区" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
+    NSLog(@"location =%@",[DRBuyerModel sharedManager].locationcode);
+    [self loadLocation];
+}
+-(void)loadLocation
+{
+    if (![User currentUser].isLogin) {
+        if (![DRBuyerModel sharedManager].location) {
+            [CGXPickerView showAddressPickerWithTitle:@"请选择地区" DefaultSelected:@[@0, @0,@0] IsAutoSelect:YES Manager:nil ResultBlock:^(NSArray *selectAddressArr, NSArray *selectAddressRow) {
+                NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
+                self.topToolView.voiceButton.titleLabel.text =selectAddressArr[2];
+                
+                [DRBuyerModel sharedManager].location = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+                [DRBuyerModel sharedManager].locationcode =[selectAddressArr lastObject];
+                //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+            }];
+        }
+        else
+        {
+            NSArray *nameArr =[[DRBuyerModel sharedManager].location componentsSeparatedByString:@"/"];
+            if (nameArr.count==3) {
+                _topToolView.voiceButton.titleLabel.text =[nameArr lastObject];
+                
+            }
+        }
+    }else
+    {
+        DRWeakSelf;
+        [SNAPI userInfoSuccess:^(SNResult *result) {
+            [[DRUserInfoModel sharedManager] setValuesForKeysWithDictionary:result.data];
+            [[DRBuyerModel sharedManager] setValuesForKeysWithDictionary:result.data[@"buyer"]];
+            NSArray *nameArr =[[DRBuyerModel sharedManager].location componentsSeparatedByString:@"/"];
+            if (nameArr.count==3) {
+                weakSelf.topToolView.voiceButton.titleLabel.text =[nameArr lastObject];
+                
+            }
+        } failure:^(NSError *error) {
             
-            NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
-            self.topToolView.voiceButton.titleLabel.text =selectAddressArr[2];
-            //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
         }];
-        
     }
+    
 }
 #pragma mark - initialize
 - (void)setUpBase
@@ -236,6 +267,8 @@ static NSString *const DRTopViewID = @"HQTopStopView";
 {
     _topToolView = [[DCHomeTopToolView alloc] initWithFrame:CGRectMake(0, 0, ScreenW, DRTopHeight)];
     DRWeakSelf;
+    
+   
     _topToolView.leftItemClickBlock = ^{
         NSLog(@"点击了首页扫一扫");
 //        DCGMScanViewController *dcGMvC = [DCGMScanViewController new];
@@ -268,7 +301,10 @@ static NSString *const DRTopViewID = @"HQTopStopView";
             
             NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
             weakSelf.topToolView.voiceButton.titleLabel.text =selectAddressArr[2];
-            //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+           
+            [DRBuyerModel sharedManager].location = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
+            [DRBuyerModel sharedManager].locationcode =[selectAddressArr lastObject];
+            
         }];
         NSLog(@"点击了首页语音");
     };
@@ -383,7 +419,7 @@ static NSString *const DRTopViewID = @"HQTopStopView";
         if (indexPath.section == 0) {
             DCSlideshowHeadView *footerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:DCSlideshowHeadViewID forIndexPath:indexPath];
             footerView.imageGroupArray = self.bannerArr.copy;
-            footerView.ManageIndexBlock = ^(NSInteger ManageIndexBlock) {                
+            footerView.ManageIndexBlock = ^(NSInteger ManageIndexBlock) {
             };
             return  footerView ;
         }
@@ -422,7 +458,6 @@ static NSString *const DRTopViewID = @"HQTopStopView";
             footview.timeLabel.text =@"买产品";
             return footview;
         }
-        
     }
     return nil;
 }

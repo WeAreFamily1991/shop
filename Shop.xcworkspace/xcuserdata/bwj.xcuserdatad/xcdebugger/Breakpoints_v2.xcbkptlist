@@ -20,7 +20,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x7533;&#x8bf7;/BillApplicationVC.m"
-            timestampString = "575538983.627187"
+            timestampString = "575802575.804541"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "166"
@@ -36,7 +36,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x7533;&#x8bf7;/BillApplicationDetailVC.m"
-            timestampString = "575538983.6276751"
+            timestampString = "575986363.156548"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
@@ -52,7 +52,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x7533;&#x8bf7;/BillApplicationDetailVC.m"
-            timestampString = "575538983.628004"
+            timestampString = "575986363.156738"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "221"
@@ -68,7 +68,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x7533;&#x8bf7;/BillApplicationDetailVC.m"
-            timestampString = "575538983.628101"
+            timestampString = "575986363.156912"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
@@ -84,7 +84,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x7533;&#x8bf7;/BillApplicationDetailVC.m"
-            timestampString = "575538983.628189"
+            timestampString = "575986363.156993"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "227"
@@ -99,13 +99,61 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/Controller/&#x8d22;&#x52a1;&#x4e2d;&#x5fc3;/&#x5f00;&#x7968;&#x8bb0;&#x5f55;/BillMessageDetailVC.m"
-            timestampString = "575538983.628282"
+            filePath = "Shop/Src/Module/&#x4e3b;&#x9875;/Home(&#x9996;&#x9875;)/Main/Controller/DCHandPickViewController.m"
+            timestampString = "575945137.8350869"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "136"
-            endingLineNumber = "136"
-            landmarkName = "-loadDataSource:withpagecount:"
+            startingLineNumber = "302"
+            endingLineNumber = "302"
+            landmarkName = "-setUpNavTopView"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x5206;&#x7c7b;/&#x5206;&#x7c7b;/Classify(&#x5206;&#x7c7b;)/Controller/Main/CategoryDetailVC.m"
+            timestampString = "575986363.1573009"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "257"
+            endingLineNumber = "257"
+            landmarkName = "-selectClickWithTag:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x4e2a;&#x4eba;&#x4e2d;&#x5fc3;/View/CollectionCell.m"
+            timestampString = "575953431.597908"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "-setVouchModel:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shop/Src/Module/&#x5206;&#x7c7b;/&#x5206;&#x7c7b;/Controller/&#x7b5b;&#x9009;/GoodsFiltrate(&#x5546;&#x54c1;&#x7b5b;&#x9009;)/Controller/DCFiltrateViewController.m"
+            timestampString = "575986363.157732"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "283"
+            endingLineNumber = "283"
+            landmarkName = "-bottomButtonClick:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

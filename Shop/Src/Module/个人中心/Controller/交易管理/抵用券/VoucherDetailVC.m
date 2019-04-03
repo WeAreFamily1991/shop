@@ -19,6 +19,7 @@
 @property (nonatomic, copy) NSString *titleStr;
 @property (nonatomic,assign)NSInteger selectIndex;
 @property (nonatomic,retain)VoucherModel *VouchModel;
+@property (nonatomic,retain)DCUpDownButton *bgTipButton;
 @end
 
 @implementation VoucherDetailVC
@@ -31,6 +32,7 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self.view addSubview:self.bgTipButton];
     self.view.backgroundColor =BACKGROUNDCOLOR;
 //    self.tableView.frame =CGRectMake(0, 0, SCREEN_WIDTH, self.tableView.height);
     if (@available(iOS 11.0, *)) {
@@ -133,9 +135,23 @@
    
     return SCREEN_HEIGHT/9;
 }
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无数据" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+     self.bgTipButton.hidden = (_MsgListArr.count > 0) ? YES : NO;
     return self.MsgListArr.count;
 }
 
@@ -149,13 +165,10 @@
         if (self.status==0) {
             if (self.VouchModel.topicType==0) {
                 cell.iconBackIMG.image =[UIImage imageNamed:@"平台抵用券"];
-               
                 cell.statusBtn.selected =NO;
-                
             }else
             {
-                cell.iconBackIMG.image =[UIImage imageNamed:@"店铺券"];
-                
+                cell.iconBackIMG.image =[UIImage imageNamed:@"店铺券"];                
                 cell.statusBtn.selected =YES;
             }
             [cell.statusBtn setTitle:@"去使用" forState:UIControlStateNormal];

@@ -27,7 +27,7 @@
  *
  */
 -(instancetype)initWithdatas:(NSArray *)datas
-                contentDatas:(NSArray*)contentDatas
+                contentDatas:(NSArray*)contentDatas selectDatas:(NSMutableArray*)selectDatas
            ifSupportMultiple:(BOOL)ifSupportMultiple;
 
 

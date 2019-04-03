@@ -23,8 +23,7 @@
 #import "DCSpeedy.h"
 
 @interface DCAttributeItemCell ()
-/* item按钮 */
-@property (strong , nonatomic)UIButton *contentButton;
+
 
 @end
 
@@ -48,7 +47,7 @@
     _contentButton.enabled = NO;
     [self addSubview:_contentButton];
     _contentButton.titleLabel.font = DR_FONT(12);
-    [_contentButton setTitleColor:[UIColor blackColor] forState:0];
+    [_contentButton setTitleColor:[UIColor darkGrayColor] forState:0];
 }
 
 #pragma mark - 布局
@@ -66,7 +65,7 @@
 - (void)setContentItem:(DCContentItem *)contentItem
 {
     _contentItem = contentItem;
-    [_contentButton setTitle:contentItem.content forState:0];
+    [_contentButton setTitle:contentItem.name forState:0];
     
     if (contentItem.isSelect) {
         [_contentButton setImage:[UIImage imageNamed:@"isSelectYes"] forState:0];
@@ -78,9 +77,9 @@
         
         [_contentButton setImage:nil forState:0];
         [_contentButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        _contentButton.backgroundColor = RGB(230, 230, 230);
+        _contentButton.backgroundColor = BACKGROUNDCOLOR;
         
-        [DCSpeedy dc_chageControlCircularWith:self AndSetCornerRadius:3 SetBorderWidth:1 SetBorderColor:RGB(230, 230, 230) canMasksToBounds:YES];
+        [DCSpeedy dc_chageControlCircularWith:self AndSetCornerRadius:3 SetBorderWidth:1 SetBorderColor:BACKGROUNDCOLOR canMasksToBounds:YES];
     }
 }
 

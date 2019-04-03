@@ -9,6 +9,9 @@
 
 #import "CatgoryDetailCell.h"
 #import "ShopCarDetailModel.h"
+#import "GoodsModel.h"
+
+
 @implementation CatgoryDetailCell
 
 +(instancetype)cellWithTableView:(UITableView *)tableView
@@ -33,8 +36,11 @@
 }
 -(void)shopCarBtnClick:(UIButton *)sender
 {
-    if (_shopCarBlock) {
-        _shopCarBlock(sender.tag);
+    if ([_goodsModel.qty intValue]!=0) {
+        
+        if (_shopCarBlock) {
+            _shopCarBlock(sender.tag);
+        }
     }
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -42,9 +48,32 @@
     
     // Configure the view for the selected state
 }
+-(void)setGoodsModel:(GoodsModel *)goodsModel
+{
+    _goodsModel =goodsModel;
+    NSLog(@"id =%@",goodsModel.favariteId);
+//    if (goodsModel.favariteId.length!=0) {
+//        self.shoucangBtn.selected =YES;
+//    }
+//    else
+//    {
+//       self.shoucangBtn.selected =NO;
+//    }
+    if ([goodsModel.qty intValue]==0) {
+        self.shopCarBtn.selected =YES;
+    }
+    else
+    {
+       self.shopCarBtn.selected =NO;
+    }
+    
+    
+    
+}
+@end
+@interface  CatgoryDetailCell1 ()<NumberCalculateDelegate>
 
 @end
-
 @implementation CatgoryDetailCell1
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -64,47 +93,18 @@
     cell.danweiBtn.layer.borderWidth =1;
     cell.countTF.layer.borderWidth =1;
     cell.countTF.layer.borderColor =BACKGROUNDCOLOR.CGColor;
-    cell.numberCalculate.delegate =self;
+    cell.numberCalculate.delegate =cell;
     [cell.danweiBtn addTarget:cell action:@selector(danweiBtnClick:) forControlEvents:UIControlEventTouchUpInside];
 //    cell.selectCountTF.layer.borderColor =[UIColor lightGrayColor].CGColor;
 //    cell.selectCountTF.layer.borderWidth =1;
     return cell;
 }
-//- (IBAction)selectedBtn:(id)sender {
-//    UIButton *button =(UIButton *)sender;
-//    switch (button.tag) {
-//        case 0:
-//        {
-//            if ([_selectCountTF.text intValue] == 1) {
-//                _cutCountBtn.userInteractionEnabled = NO;
-//            }else{
-//                _selectCountTF.text = [NSString stringWithFormat:@"%d",[_selectCountTF.text intValue] - 1];
-//            }
-//
-//        }
-//            break;
-//        case 1:
-//        {
-//            if ([_selectCountTF.text intValue] == [_goodsModel.stock intValue]) {
-//                _selectCountTF.text = _goodsModel.stock;
-//
-//            }else{
-//                _selectCountTF.text = [NSString stringWithFormat:@"%d",[_selectCountTF.text intValue] + 1];
-//            }
-//
-//        }
-//            break;
-//        default:
-//            break;
-//    }
-//
-//    _goodsModel.count = _selectCountTF.text;
-//
-////    [_shopNumBtn setTitle:[NSString stringWithFormat:@"x%@",_changeCountField.text] forState:UIControlStateNormal];
-//    if ([self.delegate respondsToSelector:@selector(changeShopCount:)]) {
-//        [self.delegate changeShopCount:sender];
-//    }
-//}
+-(void)setGoodsModel:(GoodsModel *)goodsModel
+{
+    _goodsModel =goodsModel;
+    
+   
+}
 -(void)danweiBtnClick:(UIButton *)sender
 {
     if (_danweiBtnBlock) {

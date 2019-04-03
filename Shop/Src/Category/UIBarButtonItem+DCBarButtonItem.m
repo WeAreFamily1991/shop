@@ -5,7 +5,6 @@
 //  Created by apple on 2017/3/19.
 //  Copyright © 2017年 apple. All rights reserved.
 //
-
 #import "UIBarButtonItem+DCBarButtonItem.h"
 
 @implementation UIBarButtonItem (DCBarButtonItem)
@@ -14,7 +13,6 @@
 {
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
     negativeSpacer.width = -15;
-    
     UIButton *button = [[UIButton alloc] init];
     [button setImage:image forState:UIControlStateNormal];
     [button setImage:HighlightedImage forState:UIControlStateHighlighted];
@@ -23,12 +21,10 @@
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     return [[UIBarButtonItem alloc] initWithCustomView:button];
 }
-
 + (UIBarButtonItem *)ItemWithImage:(UIImage *)image WithSelected:(UIImage *)SelectedImage Target:(id)target action:(SEL)action
 {
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
-    negativeSpacer.width = -15;
-    
+    negativeSpacer.width = -15;    
     UIButton *button = [[UIButton alloc] init];
     [button setImage:image forState:UIControlStateNormal];
     [button setImage:SelectedImage forState:UIControlStateSelected];
@@ -37,8 +33,6 @@
     [button addTarget:target action:action forControlEvents:UIControlEventTouchUpInside];
     return [[UIBarButtonItem alloc] initWithCustomView:button];
 }
-
-
 + (UIBarButtonItem *)backItemWithImage:(UIImage *)image WithHighlightedImage:(UIImage *)HighlightedImage Target:(id)target action:(SEL)action title:(NSString *)title
 {
     UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];

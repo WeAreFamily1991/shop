@@ -71,13 +71,13 @@
     self.titleLab.text =vouchModel.topicType?@"店铺抵用券":@"平台抵用券";
     self.titleLab.textColor =vouchModel.topicType?RGBHex(0x0094ec):[UIColor redColor];
     
-    self.conditionLab.text =[NSString stringWithFormat:@"￥%@",vouchModel.descriptionStr];
+    self.conditionLab.text =[NSString stringWithFormat:@"%@",vouchModel.descriptionStr];
     if (vouchModel.endtime==4102329600000) {
         self.timeLab.text =@"无门槛、无时间限制、无产品限制";
     }
     else
     {
-        self.timeLab.text =[NSString stringWithFormat:@"%@-%@",[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.starttime]],[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.endtime]]];
+        self.timeLab.text =[NSString stringWithFormat:@"%@至%@",[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.starttime]],[SNTool yearMonthTimeFormat:[NSString stringWithFormat:@"%ld",(long)vouchModel.endtime]]];
     }
     self.hidenBtn.hidden =!vouchModel.valid;
     self.moneyCountLab.text =[NSString stringWithFormat:@"￥%.0f",vouchModel.voucherSum];

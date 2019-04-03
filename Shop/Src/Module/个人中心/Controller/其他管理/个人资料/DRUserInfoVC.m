@@ -106,7 +106,7 @@
     [self.selectBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.selectBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
     self.selectBtn.titleLabel.font =DR_FONT(13);
-    self.selectBtn.selected =self.userModel.status;
+    self.selectBtn.selected =[DRUserInfoModel sharedManager].status;
     [self.selectBtn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.selectBtn];
     
@@ -119,7 +119,7 @@
     [self.normelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.normelBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
     self.normelBtn.titleLabel.font = DR_FONT(13);
-    self.normelBtn.selected =!self.userModel.status;
+    self.normelBtn.selected =![DRUserInfoModel sharedManager].status;
     [self.normelBtn addTarget:self action:@selector(normelBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.normelBtn];
     UIView *lineView =[[UIView alloc]initWithFrame:CGRectMake(0, HScale(55)-1, SCREEN_WIDTH, 1)];
@@ -149,7 +149,7 @@
 #pragma mark 按钮点击事件
 -(void)saveBtnClick:(UIButton *)sender
 {
-    NSArray *valueArray = @[self.userModel.buyer.logo?:@"",self.userModel.buyer.mobilephone?:@"",self.userModel.buyer.name?:@"",self.userModel.buyer.companyAddress?:@"",self.userModel.buyer.cName?:@"",self.userModel.buyer.cPhone?:@"",self.userModel.buyer.cTel?:@"",[NSString stringWithFormat:@"%d",self.selectBtn.selected]];
+    NSArray *valueArray = @[[DRBuyerModel sharedManager].logo?:@"",[DRBuyerModel sharedManager].mobilephone?:@"",[DRBuyerModel sharedManager].name?:@"",[DRBuyerModel sharedManager].companyAddress?:@"",[DRBuyerModel sharedManager].cName?:@"",[DRBuyerModel sharedManager].cPhone?:@"",[DRBuyerModel sharedManager].cTel?:@"",[NSString stringWithFormat:@"%d",self.selectBtn.selected]];
     NSArray *keyArr =@[@"logo",@"mobilephone",@"name",@"companyAddress",@"cName",@"cPhone",@"cTel",@"ticketType"];
     NSDictionary *dic =@{keyArr[0]:valueArray[0],keyArr[1]:valueArray[1],keyArr[2]:valueArray[2],keyArr[3]:valueArray[3],keyArr[4]:valueArray[4],keyArr[5]:valueArray[5],keyArr[6]:valueArray[6],keyArr[7]:valueArray[7]};
     NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObject:[SNTool jsontringData:dic] forKey:@"buyer"];
@@ -243,7 +243,7 @@
         cell.photoBtn.tag = [tagStr intValue];
         cell.titleLabel.text =@"选择图片";
         [cell.photoBtn addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
-        id imgStr1 = self.userModel.buyer.logo?:@"default_head";
+        id imgStr1 = [DRBuyerModel sharedManager].logo?:@"default_head";
         
         if (![imgStr1 isEqualToString:@"default_head"]) {
             
@@ -255,7 +255,7 @@
     {
         titleArray = @[@"手机号：",@"公司名称：",@"公司地址：",@"联系人：",@"固定电话：",@"手机号码："];
         placeholdArray= @[@"请输入手机号",@"请输入公司名称",@"请输入公司地址",@"请输入联系人",@"请输入固定电话",@"请输入手机号码"];
-        NSArray *contentArray = @[self.userModel.buyer.mobilephone?:@"",self.userModel.buyer.name?:@"",self.userModel.buyer.companyAddress?:@"",self.userModel.buyer.cName?:@"",self.userModel.buyer.cTel?:@"",self.userModel.buyer.cPhone?:@""];
+        NSArray *contentArray = @[[DRBuyerModel sharedManager].mobilephone?:@"",[DRBuyerModel sharedManager].name?:@"",[DRBuyerModel sharedManager].companyAddress?:@"",[DRBuyerModel sharedManager].cName?:@"",[DRBuyerModel sharedManager].cTel?:@"",[DRBuyerModel sharedManager].cPhone?:@""];
         InfoTableViewCell *cell = [InfoTableViewCell cellWithTableView:tableView];
         if (indexPath.row==1) {
             cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
@@ -338,26 +338,26 @@
    
      if (textField.tag == 2)
     {
-        self.userModel.buyer.mobilephone = textField.text;
+        [DRBuyerModel sharedManager].mobilephone = textField.text;
     }
     else if (textField.tag == 3)
     {
-        self.userModel.buyer.name = textField.text;
+        [DRBuyerModel sharedManager].name = textField.text;
     }
     else if (textField.tag == 4)
     {
-        self.userModel.buyer.companyAddress = textField.text;
+        [DRBuyerModel sharedManager].companyAddress = textField.text;
     }
     else if (textField.tag == 5)
     {
-        self.userModel.buyer.cPhone = textField.text;
+        [DRBuyerModel sharedManager].cPhone = textField.text;
     } else if (textField.tag == 6)
     {
-        self.userModel.buyer.cName = textField.text;
+        [DRBuyerModel sharedManager].cName = textField.text;
     }
     else if (textField.tag == 7)
     {
-        self.userModel.buyer.cTel = textField.text;
+        [DRBuyerModel sharedManager].cTel = textField.text;
     }
     
    
@@ -378,7 +378,7 @@
     if (indexPath.row==1)
     {
         ChangeUserNameVC *phoneVC =[[ChangeUserNameVC alloc]init];
-        phoneVC.userModel =self.userModel;
+//        phoneVC.userModel =self.userModel;
         [self.navigationController pushViewController:phoneVC animated:YES];
         NSLog(@"index=%ld",(long)indexPath.row);
     }
@@ -493,7 +493,7 @@
     
     [SNAPI userAvatar:image nickName:nil success:^(SNResult *result){
         [MBProgressHUD showSuccess:SNStandardString(@"上传成功")];
-        self.userModel.buyer.logo =result.data[@"src"];
+        [DRBuyerModel sharedManager].logo =result.data[@"src"];
         if (weakSelf.changeInfo) {
             weakSelf.changeInfo();
         }

@@ -12,7 +12,7 @@
 
 @interface DRUserInfoVC : UIViewController
 
-@property (nonatomic, strong) DRUserInfoModel *userModel;
+//@property (nonatomic, strong) DRUserInfoModel *userModel;
 
 @property (nonatomic, copy) void (^changeInfo)();
 @end

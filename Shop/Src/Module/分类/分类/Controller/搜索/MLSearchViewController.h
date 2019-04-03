@@ -14,5 +14,5 @@
 @property (nonatomic, weak) UISearchBar *searchBar;
 
 @property (nonatomic, strong) NSArray *tagsArray;
-
+@property (strong,nonatomic) NSArray *hotSearchArr;
 @end

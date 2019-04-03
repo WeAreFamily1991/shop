@@ -75,6 +75,11 @@
 //        [SNCrash setupBugHDProjectKey:@"c0e5a86b95ce3961c83432fe593fc6cd" projectID:@"58e5db2ba1de52586600001a" atMobiles:nil];
 //    }
 }
++(void)initWithIsFormalServer:(BOOL)isformalServer
+{
+    SNAPIManager *manager = [SNAPIManager shareAPIManager];
+    manager.isConnectFormalServer = isformalServer;
+}
 
 // 设置语言
 + (void)setLanguage:(NSString *)language {
@@ -299,16 +304,17 @@
 }
 
 // 获取用户基本信息
-+ (void)userInfoSuccess:(void (^)(DRUserInfoModel *))success failure:(void (^)(NSError *))failure {
++ (void)userInfoSuccess:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
     
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
     [SNIOTTool postWithURL:USER_INFO parameters:dict success:^(SNResult *result) {
         
         if (success) {
-            DRUserInfoModel *user = [DRUserInfoModel mj_objectWithKeyValues:result.data];
+//            [[DRUserInfoModel sharedManager] setValuesForKeysWithDictionary:result.data];
+//            DRUserInfoModel *user = [DRUserInfoModel setValuesForKeysWithDictionary:result.data];
            
-            success(user);
+            success(result);
         }
         
     } failure:^(NSError *error) {

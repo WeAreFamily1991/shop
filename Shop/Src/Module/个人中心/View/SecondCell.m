@@ -22,10 +22,12 @@
     [super awakeFromNib];
     
 }
--(void)setDataDict:(NSDictionary *)dataDict
+-(void)setGoodsModel:(GoodsModel *)goodsModel
 {
-    self.productImg.image = [UIImage imageNamed:@"product"];
-    self.productName.text = @"哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
+    _goodsModel =goodsModel;
+    
+    [self.productImg sd_setImageWithURL:[NSURL URLWithString:goodsModel.imgurl] placeholderImage:[UIImage imageNamed:@"santie_default_img"]];
+    self.productName.text =goodsModel.itemname;
     [self.moreBtn setImage: [UIImage imageNamed: @"arrow_right_grey" ]forState:UIControlStateSelected];
     
     [self.moreBtn setImage: [UIImage imageNamed: @"arrow_down_grey" ]forState:UIControlStateNormal];
@@ -37,16 +39,47 @@
     
     [self.moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
       [self.moreBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleBottom imageTitleSpace:5];
- 
-   
-    
-    NSArray * array = @[@"M1.6-0.35*2",@"12.9级",@"35CrMo(合金钢)",@"淬黑",@"哈哈",@"紧固之星"];
+
+    NSArray * array = @[goodsModel.spec?:@"",goodsModel.levelname?:@"",goodsModel.materialname?:@"",goodsModel.surfacename?:@"",goodsModel.brandname?:@""];
+    NSMutableArray *titArr =[NSMutableArray array];
+    for (NSString *str in array) {
+        if (str.length!=0) {
+            [titArr addObject:str];
+        }
+    }
     Height = WScale(30);
-    [self setStandWithArray:array];
-    
-    self.parameterLabel.text = @"包装参数：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
-    self.cellLabel.text = @"最小销售单位：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
-    self.countLabel.text = @"库存数：72.0000支 华东仓";
+    [self setStandWithArray:titArr];
+
+    NSString *baseStr;//basicunitid 5千支  6公斤  7吨
+    if ([goodsModel.basicunitid intValue]==5) {
+        baseStr =@"千支";
+    }
+    if ([goodsModel.basicunitid intValue]==6) {
+        baseStr =@"公斤";
+    }
+    if ([goodsModel.basicunitid intValue]==7) {
+        baseStr =@"吨";
+    }
+    NSString *nameStr;
+    if (goodsModel.unitconversion1.length!=0) {
+        nameStr =[NSString stringWithFormat:@"包装参数：%.3f%@/%@",[goodsModel.unitconversion1 doubleValue],baseStr,goodsModel.unitname1];
+    }
+    if (goodsModel.unitconversion2.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion2 doubleValue],baseStr,goodsModel.unitname2];
+    }
+    if (goodsModel.unitconversion3.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion3 doubleValue],baseStr,goodsModel.unitname3];
+    }
+    if (goodsModel.unitconversion4.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion4 doubleValue],baseStr,goodsModel.unitname4];
+    }
+    if (goodsModel.unitconversion5.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion5 doubleValue],baseStr,goodsModel.unitname5];
+    }
+   
+    self.parameterLabel.text =nameStr;
+    self.cellLabel.text = nil;
+    self.countLabel.text =[NSString stringWithFormat:@"库存数(%@)：%.3f  %@",baseStr,[goodsModel.qty doubleValue],goodsModel.storeName] ;
 }
 -(UIImageView *)productImg
 {

@@ -296,8 +296,7 @@ static NSInteger const tagButton = 1000;
             }
         }
         return;
-    }
-    
+    }    
     SYButton *button = self.buttonArray[_selectedIndex];
     if (button && [button isKindOfClass:[SYButton class]]) {
         // 改变按钮状态，不响应交互事件
@@ -305,7 +304,6 @@ static NSInteger const tagButton = 1000;
         [self buttonActionLine:button];
     }
 }
-
 /// 重置按钮标题
 - (void)setTitleButton:(NSString *)title index:(NSInteger)index
 {
@@ -354,5 +352,18 @@ static NSInteger const tagButton = 1000;
     //
     [self buttonActionLine:button];
 }
-
+-(void)setButton:(BOOL)isDescending index:(NSInteger)index
+{
+    if (0 > index || (self.subviews.count - 1) <= index) {
+        return;
+    }
+    
+    // 取消已选
+    for (SYButton *button in self.buttonArray) {
+        if (button.isSelected) {
+            button.selected = NO;
+            button.userInteractionEnabled = YES;
+        }
+    }
+}
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "GoodsModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SecondCell : UITableViewCell
@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *parameterLabel;  ///<产品参数
 @property(nonatomic,strong)UILabel *cellLabel;       ///<销售单位
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
-@property(nonatomic,strong)NSDictionary *dataDict;
+@property (nonatomic,retain)GoodsModel *goodsModel;
 @end
 
 NS_ASSUME_NONNULL_END

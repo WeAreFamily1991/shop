@@ -25,7 +25,7 @@
 #import "ChildVC.h"
 #import "SNIOTTool.h"
 @interface MineViewController ()
-@property (nonatomic,strong)DRUserInfoModel *usermodel;
+//@property (nonatomic,strong)DRUserInfoModel *usermodel;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
@@ -47,16 +47,24 @@
     if (![User currentUser].isLogin) {
         return;
     }
-    DRWeakSelf;
-    [SNAPI userInfoSuccess:^(DRUserInfoModel *user) {
-        weakSelf.usermodel = user;
-        [weakSelf.tableView reloadData];
-//        [weakSelf.avatarBtn sd_setImageWithURL:[NSURL URLWithString:user.avatar] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"icon_touxiang"]];
-//        weakSelf.nameLB.text = user.user_nickname;
+//    DRWeakSelf;
+    [SNAPI userInfoSuccess:^(SNResult *result) {
+        [[DRUserInfoModel sharedManager] setValuesForKeysWithDictionary:result.data];
+        [[DRBuyerModel sharedManager] setValuesForKeysWithDictionary:result.data[@"buyer"]];
+        [self.tableView reloadData];
     } failure:^(NSError *error) {
-       
         [self logOut];
     }];
+//    [SNAPI userInfoSuccess:^(DRUserInfoModel *user) {
+//
+//        weakSelf.usermodel = user;
+//        [weakSelf.tableView reloadData];
+////        [weakSelf.avatarBtn sd_setImageWithURL:[NSURL URLWithString:user.avatar] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"icon_touxiang"]];
+////        weakSelf.nameLB.text = user.user_nickname;
+//    } failure:^(NSError *error) {
+//
+//        [self logOut];
+//    }];
 }
 -(void)footerViewCustom
 {
@@ -92,15 +100,18 @@
    
     if (indexPath.row == 0) {
         MineCell *cell = [MineCell cellWithTableView:tableView];
-        if (self.usermodel.buyer.name.length!=0) {
-             cell.nameLab.text =self.usermodel.buyer.name;
+        NSString *nameStr =[DRBuyerModel sharedManager].name;
+        if (nameStr) {
+            cell.nameLab.text =[DRBuyerModel sharedManager].name;
         }
+        
        else
        {
-            cell.nameLab.text =self.usermodel.account;
+            cell.nameLab.text =[DRUserInfoModel sharedManager].account;
        }
-        cell.phoneLab.text =self.usermodel.mobilePhone;
-        [cell.iconBtn sd_setImageWithURL:[NSURL URLWithString:self.usermodel.buyer.logo] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_head"]];
+       
+        cell.phoneLab.text =[DRUserInfoModel sharedManager].mobilePhone;
+        [cell.iconBtn sd_setImageWithURL:[NSURL URLWithString:[DRBuyerModel sharedManager].logo] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_head"]];
         cell.BtnManagetagBlock = ^(NSInteger manageBtntag) {
             [self managePushVC:manageBtntag];
         };
@@ -217,7 +228,7 @@
         case 22:
         {
             DRUserInfoVC *userInfoVC =[[DRUserInfoVC alloc]init];
-            userInfoVC.userModel =self.usermodel;
+//            userInfoVC.userModel =self.usermodel;
             userInfoVC.changeInfo = ^{
                 [weakSelf loadUser];
             };
@@ -232,7 +243,7 @@
         case 24:
         {
             DCReceivingAddressViewController *addressVC=[[DCReceivingAddressViewController alloc]init];
-            addressVC.userModel =self.usermodel;
+//            addressVC.userModel =self.usermodel;
             [self.navigationController pushViewController:addressVC animated:YES];
         }
             break;

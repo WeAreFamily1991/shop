@@ -10,7 +10,8 @@
 
 @class DCContentItem;
 @interface DCAttributeItemCell : UICollectionViewCell
-
+/* item按钮 */
+@property (strong , nonatomic)UIButton *contentButton;
 /* 内容 */
 @property (strong , nonatomic)DCContentItem *contentItem;
 

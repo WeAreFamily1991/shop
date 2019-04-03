@@ -89,7 +89,7 @@
         weakSelf.infoModel =[DRAddressInfoModel mj_objectWithKeyValues:result.data];
         if (weakSelf.saveType == DCSaveAdressChangeType) { //编辑
             weakSelf.adressHeadView.rePersonField.text =weakSelf.infoModel.receiver;
-            weakSelf.adressHeadView.addressLabel.text = self.userModel.buyer.location;
+            weakSelf.adressHeadView.addressLabel.text =[DRBuyerModel sharedManager].location;
             weakSelf.adressHeadView.rePhoneField.text =weakSelf.infoModel.mobile;
             //        _adressHeadView.provinceField.text =_adressItem.provAddress;
             weakSelf.adressHeadView.detailTextView.text = weakSelf.infoModel.address;
@@ -106,7 +106,7 @@
 -(void)getDistrict
 {
     DRWeakSelf;
-    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.userModel.buyer.locationcode] forKeys:@[@"parentId"]];
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[[DRBuyerModel sharedManager].locationcode] forKeys:@[@"parentId"]];
     [SNIOTTool getWithURL:@"mainPage/getDistrict" parameters:dic success:^(SNResult *result) {
 
         weakSelf.townArr =result.data;
@@ -123,7 +123,7 @@
             }
         }
         else if (weakSelf.saveType == DCSaveAdressNewType) {
-            weakSelf.adressHeadView.addressLabel.text = self.userModel.buyer.location;
+            weakSelf.adressHeadView.addressLabel.text = [DRBuyerModel sharedManager].location;
             weakSelf.adressHeadView.isDefautsBtn.selected =YES;
         }
 

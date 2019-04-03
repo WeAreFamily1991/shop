@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ChangeUserNameVC : UIViewController
-@property (nonatomic, strong) DRUserInfoModel *userModel;
+//@property (nonatomic, strong) DRUserInfoModel *userModel;
 @end
 
 NS_ASSUME_NONNULL_END

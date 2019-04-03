@@ -82,7 +82,7 @@
                               MallImgKey    : @"home",
                               MallSelImgKey : @"home_select"},
                             
-                            @{MallClassKey  : @"CategoryViewController",
+                            @{MallClassKey  : @"DCCommodityViewController",
                               MallTitleKey  : @"分类购买",
                               MallImgKey    : @"classify",
                               MallSelImgKey : @"classify_select"},

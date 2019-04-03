@@ -11,7 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CategoryDetailVC : UIViewController
-
+@property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
+@property (strong,nonatomic)  NSString *classListStr,*czID;
 @end
 
 NS_ASSUME_NONNULL_END
