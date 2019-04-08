@@ -9,6 +9,8 @@
 #import "CollectionDetailVC.h"
 #import "CollectionCell.h"
 #import "FirstTableViewCell.h"
+#import "GoodsModel.h"
+#import "CatgoryDetailCell.h"
 @interface CollectionDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
@@ -19,14 +21,25 @@
 
 @property (nonatomic, copy) NSString *titleStr;
 @property (nonatomic,assign)NSInteger selectIndex;
+@property (nonatomic,retain)GoodsModel *goodsModel;
+@property (nonatomic,retain)FavoriteModel *favoriModel;
+
+@property (nonatomic,retain)DCUpDownButton *bgTipButton;
 @end
 
 @implementation CollectionDetailVC
-
+-(NSMutableArray *)MsgListArr
+{
+    if (!_MsgListArr) {
+        _MsgListArr =[NSMutableArray array];
+    }
+    return _MsgListArr;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor =BACKGROUNDCOLOR;
- 
+  
+    [self.view addSubview:self.bgTipButton];
 //    self.tableView.frame =CGRectMake(0, 0, SCREEN_WIDTH, self.tableView.height);
     if (@available(iOS 11.0, *)) {
         
@@ -68,71 +81,67 @@
 }
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
-    //    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[[UserModel sharedManager].token,] forKeys:@[@"token"]];
-    //    NSString *urlStr = @"/ZcApi/CollectInfoList";
-    //    if (self.statusStr == nil || [self.statusStr isEqualToString:@"2"]) {
-    //        urlStr = @"/ZcApi/CollectInfoList";
-    //        if ([self.title isEqualToString:SNStandardString(@"我的采集")]) {
-    //            [dic setValue:@"2" forKey:@"s_type"];
-    //        }
-    //    }
-    //    else if ([self.statusStr isEqualToString:@"1"]) {
-    //        urlStr = @"/ZcApi/MyAssignList";
-    //    }
-    //    if (page) {
-    //        [dic setObject:page forKey:@"page"];
-    //        [dic setObject:@"10" forKey:@"limit"];
-    //    }
-    //    if (dictionary) {
-    //        [dic addEntriesFromDictionary:dictionary];
-    //    }
-    //    if (self.status) {
-    //        [dic setValue:self.status forKey:@"status"];
-    //    }
-    //
-    //    [Interface_Base Post:urlStr dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //        NSLog(@"data=%@",data[@"data"]);
-    //        if ([data[@"data"] isKindOfClass:[NSNull class]]||data[@"data"]==nil) {
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            //             self.tableView.mj_footer.hidden =YES;
-    //            [self.tableView reloadData];
-    //
-    //            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //        }else
-    //        {
-    //            [self.MsgListArr addObjectsFromArray:data[@"data"]];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            [self.tableView reloadData];
-    //            if (self.MsgListArr.count<10) {
-    //                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //                //                self.tableView.mj_footer.hidden =YES;
-    //            }
-    //            else
-    //            {
-    //                //                self.tableView.mj_footer.hidden =NO;
-    //                [self.tableView.mj_footer endRefreshing];
-    //            }
-    //            [self.tableView.mj_header endRefreshing];
-    //            [MBProgressHUD hideHUD];
-    //        }
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [self.tableView.mj_header endRefreshing];
-    //        [self.tableView.mj_footer endRefreshing];
-    //        [MBProgressHUD hideHUD];
-    //    }];
+    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    NSString *urlStr ;
+    
+    
+    if (self.status==0) {
+        urlStr =@"buyer/getItem";
+        if (page) {
+            [dic setObject:page forKey:@"pageindex"];
+        }
+         [dic setObject:@"Wechat" forKey:@"sourceType"];
+         [dic setObject:@"favorite" forKey:@"queryType"];
+         [dic setObject:@"" forKey:@"keyword"];
+    }
+    else
+    {
+         urlStr =@"buyer/favoriteSellerList";
+        if (page) {
+            [dic setObject:page forKey:@"pageNum"];
+            [dic setObject:@"10" forKey:@"pageSize"];
+        }
+        [dic setObject:@"" forKey:@"name"];
+    }
+    if (dictionary) {
+        [dic addEntriesFromDictionary:dictionary];
+    }
+    DRWeakSelf;
+    [MBProgressHUD showMessage:@""];
+    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+        if (self.status==0) {
+            NSLog(@"data=%@",result.data[@"itemdata"]);
+            NSMutableArray*addArr=result.data[@"itemdata"];
+            NSMutableArray *modelArray =[GoodsModel mj_objectArrayWithKeyValuesArray:result.data[@"itemdata"]];
+            [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+            [self.tableView reloadData];
+            if (addArr.count<10){
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+            else{
+                [self.tableView.mj_footer endRefreshing];
+            }
+        }else
+        {
+            NSLog(@"data=%@",result.data[@"list"]);
+            NSMutableArray*addArr=result.data[@"list"];
+            NSMutableArray *modelArray =[FavoriteModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
+            [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+            [self.tableView reloadData];
+            if (addArr.count<10){
+                [self.tableView.mj_footer endRefreshingWithNoMoreData];
+            }
+            else{
+                [self.tableView.mj_footer endRefreshing];
+            }
+        }
+        [self.tableView.mj_header endRefreshing];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        [MBProgressHUD hideHUD];
+    }];
 }
 -(void)addCustomView
 {
@@ -145,7 +154,28 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无数据" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
+}
 
+
+
+#pragma mark 表的区数
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    self.bgTipButton.hidden = (_MsgListArr.count > 0) ? YES : NO;
+    return self.MsgListArr.count;
+}
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.status==1) {
@@ -191,64 +221,116 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (self.status==1) {
-        return 10;
+        return 1;
     }
     return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.status==1) {
-        CollectionCell *cell =[CollectionCell cellWithTableView:tableView];
-        return cell;
-    }
-    switch (indexPath.row) {
-        case 0:
-            
-        {
-            CollectionCell5 *cell =[CollectionCell5 cellWithTableView:tableView];
+    if (self.MsgListArr.count!=0) {
+        
+        if (self.status==1) {
+            self.favoriModel=self.MsgListArr[indexPath.section];
+            CollectionCell *cell =[CollectionCell cellWithTableView:tableView];
+            cell.favoriModel =self.favoriModel;
+            cell.collectionSelectBlock = ^(NSInteger collectionSelectag) {
+                NSDictionary *dic =@{@"id":self.favoriModel.favorite_id};
+                
+                [SNIOTTool deleteWithURL:@"buyer/cancelSellerFavorite" parameters:[dic mutableCopy] success:^(SNResult *result) {
+                    [self.tableView.mj_header beginRefreshing];
+                    
+                } failure:^(NSError *error) {
+                    
+                }];
+            };
             return cell;
         }
-            break;
-        case 1:
-            
-        {
-            static NSString *SimpleTableIdentifier = @"cell";
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                     SimpleTableIdentifier];
-            if (cell == nil) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                              reuseIdentifier: SimpleTableIdentifier];
+        self.goodsModel=self.MsgListArr[indexPath.section];
+        switch (indexPath.row) {
+            case 0:
+                
+            {
+                CollectionCell5 *cell =[CollectionCell5 cellWithTableView:tableView];
+                cell.goodsModel =self.goodsModel;
+                return cell;
             }
-            cell.textLabel.text = @"含税含运";
-            cell.textLabel.textColor =[UIColor redColor];
-            cell.textLabel.font =DR_FONT(13);
-            
-            return cell;
-            
+                break;
+            case 1:
+                
+            {
+                static NSString *SimpleTableIdentifier = @"cell";
+                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                                         SimpleTableIdentifier];
+                if (cell == nil) {
+                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                                  reuseIdentifier: SimpleTableIdentifier];
+                }
+                cell.textLabel.text =[NSString stringWithFormat:@"开票方：%@",_goodsModel.kpName];
+                cell.textLabel.textColor =[UIColor redColor];
+                cell.textLabel.font =DR_FONT(13);
+                
+                return cell;
+                
+            }
+                break;
+            case 2:
+                
+            {
+                FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
+                cell.goodsModel =self.goodsModel;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                return cell;
+                
+            }
+                break;
+            case 3:
+                
+            {
+                CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
+                cell.goodsModel =self.goodsModel;
+                if (self.goodsModel.favariteId.length==0)
+                {
+                    cell.shoucangBtn.selected =NO;
+                }
+                else
+                {
+                    cell.shoucangBtn.selected =YES;
+                }
+                cell.shoucangBlock = ^(NSInteger shoucangtag) {
+                    NSDictionary *dic =@{@"id":self.goodsModel.favariteId};
+                    //111   @"favariteId" : @"2338F0C13F834B14831F9E17E4A605F5"
+                   // [105]    (null)    @"favariteId" : @"7AEF5F58A01448428BE5B066C065BD6F"
+                    //[105]    (null)    @"favariteId" : @"A87394C2156F4987A5C6A90940986850"    
+                    [SNIOTTool deleteWithURL:@"buyer/cancelItemFavorite" parameters:[dic mutableCopy] success:^(SNResult *result) {
+                        [MBProgressHUD showSuccess:result.data];
+                        [self.tableView.mj_header beginRefreshing];
+                        
+                    } failure:^(NSError *error) {
+                        
+                    }];
+                    
+                };
+                cell.shopCarBlock = ^(NSInteger shopCartag) {
+                    //                    [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
+                    //                        if (result.state==200) {
+                    //                            NSLog(@"result=%@",result.data);
+                    //
+                    //
+                    //                            //                                [self.tableView reloadData];
+                    //                        }
+                    //                    } failure:^(NSError *error) {
+                    //
+                    //                    }];
+                };
+                return cell;
+            }
+                break;
+                
+                
+            default:
+                break;
         }
-            break;
-        case 2:
-            
-        {
-            FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
-            cell.dataDict = @{};
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            return cell;
-            
-        }
-            break;
-        case 3:
-            
-        {
-            CollectionCell6 *cell =[CollectionCell6 cellWithTableView:tableView];
-            return cell;
-        }
-            break;
-            
-            
-        default:
-            break;
     }
     static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:

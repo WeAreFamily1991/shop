@@ -121,8 +121,29 @@
         [weakSelf getMsgList];
     }];
     [self.tableView.mj_footer endRefreshing];
-    //   self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
-   
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"select" object:nil];
+    //       self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
+}
+- (void)notificationHandler:(NSNotification *)notification {
+    if ([notification.name isEqualToString:@"select"]) {
+        NSDictionary *dic =notification.userInfo;
+        NSArray * sourceArr =dic[@"array"];
+        NSArray *IDArr =[_classListStr componentsSeparatedByString:@","];
+        NSLog(@"");
+        if (IDArr.count>=3) {
+            [GoodsShareModel sharedManager].level1Id =IDArr[0];
+            [GoodsShareModel sharedManager].level2Id =IDArr[1];
+            
+            NSDictionary *mudic  = @{@"sourceType":@"Wechat",@"queryType":@"normel",@"keyword":@"",@"level1Id":IDArr[0],@"level2Id":IDArr[1],@"cz":@"",@"subType":@"1",@"categoryId":sourceArr[0]?:@"",@"condition":@"",@"serviceType":@"",@"sellerType":@"",@"containzy":@"",@"districtid":[DRBuyerModel sharedManager].locationcode?:@"",@"orderBy":@"",@"onlyqty":@"",@"standardid":@"",@"levelid":sourceArr[5]?:@"",@"surfaceid":sourceArr[6]?:@"",@"lengthid":sourceArr[4]?:@"",@"materialid":sourceArr[2]?:@"",@"toothdistanceid":sourceArr[8]?:@"",@"toothformid":sourceArr[9]?:@"",@"brandid":sourceArr[7]?:@"",@"czid":sourceArr[1]?:@"",@"diameterid":sourceArr[3]?:@""};
+            [_sendDataDictionary addEntriesFromDictionary:mudic];
+            [self.tableView.mj_header beginRefreshing];
+        }
+
+    }
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"select" object:nil];
 }
 - (void)setUpScrollToTopView
 {
@@ -261,6 +282,7 @@
         case 2:
         {
             [DCSildeBarView dc_showSildBarViewController];
+            
         }
             break;
             
@@ -392,8 +414,7 @@
                 
             {
                 if ([self.goodsModel.qty intValue]!=0) {
-                    CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];
-                    
+                    CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];                    
                     [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
                     cell.danweiBtn.tag =indexPath.section;
                     NSString *baseStr;//basicunitid 5千支  6公斤  7吨
@@ -426,7 +447,6 @@
             }
                 break;
             case 3:
-                
             {
                 CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
                 cell.goodsModel =self.goodsModel;

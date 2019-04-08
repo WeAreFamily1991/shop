@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+@class FavoriteModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface GoodsModel : DRBaseModel
@@ -131,3 +131,13 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 NS_ASSUME_NONNULL_END
+@interface FavoriteModel : DRBaseModel
+@property (nonatomic , copy) NSString              * favorite_id;
+@property (nonatomic , copy) NSString              * compName;
+@property (nonatomic , copy) NSString              * sellerId;
+@property (nonatomic , copy) NSString              * kfPhone;
+@property (nonatomic , copy) NSString              * compLog;
+@property (nonatomic , copy) NSString              * storePrdt;
+@property (nonatomic , copy) NSString              * compType;
+
+@end

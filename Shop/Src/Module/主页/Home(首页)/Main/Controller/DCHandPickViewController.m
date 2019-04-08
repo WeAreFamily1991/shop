@@ -224,6 +224,7 @@ static NSString *const DRTopViewID = @"HQTopStopView";
     DRWeakSelf;
     [DCSpeedy dc_callFeedback]; //触动
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ //手动延迟
+        [self setUpGoodsData];
         [weakSelf.collectionView.mj_header endRefreshing];
     });
 }

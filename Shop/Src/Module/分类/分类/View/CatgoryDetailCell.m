@@ -66,7 +66,7 @@
     {
        self.shopCarBtn.selected =NO;
     }
-    
+    self.priceAccountLab.text =[NSString stringWithFormat:@"单价：%.2f",[goodsModel.userprice doubleValue]];
     
     
 }

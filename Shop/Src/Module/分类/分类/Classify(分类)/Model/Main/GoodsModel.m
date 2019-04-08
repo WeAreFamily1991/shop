@@ -15,3 +15,13 @@
              };
 }
 @end
+
+@implementation FavoriteModel
+
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    return @{
+             @"favorite_id" : @"id"
+             };
+}
+
+@end

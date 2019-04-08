@@ -21,8 +21,35 @@
     }
     [cell.collectSelectBtn addTarget:cell action:@selector(collectSelectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
      [cell.phoneBtn addTarget:cell action:@selector(phoneBtnBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [cell.iconImg.layer setBorderColor:BACKGROUNDCOLOR.CGColor];
+    [cell.iconImg.layer setBorderWidth:1.0];
     return cell;
+}
+-(void)setFavoriModel:(FavoriteModel *)favoriModel
+{
+    _favoriModel =favoriModel;
+    //type 0自营 1厂家 2供应商
+    if ([favoriModel.compType intValue]==0) {
+        [self.tagLab setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        [self.tagLab setTitle:@"自营" forState:UIControlStateNormal];
+       
+    }else if ([favoriModel.compType intValue]==1)
+    {
+        [self.tagLab setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
+        [self.tagLab setTitle:@"厂家" forState:UIControlStateNormal];
+        
+    }
+    else if ([favoriModel.compType intValue]==2)
+    {
+        [self.tagLab setBackgroundImage:[UIImage imageNamed:@"blue-bg"] forState:UIControlStateNormal];
+        [self.tagLab setTitle:@"批发商" forState:UIControlStateNormal];
+    }
+    self.addressLab.text =favoriModel.compName;
+    [self.iconImg setImageWithURL:[NSURL URLWithString:favoriModel.compLog] placeholder:[UIImage imageNamed:@"santie_default_img"]];
+    self.contentLab.text =[NSString stringWithFormat:@"现货销售：%@",favoriModel.storePrdt];
+    
+    
+    
 }
 -(void)collectSelectBtnClick:(UIButton *)sender
 {
@@ -32,9 +59,8 @@
 }
 -(void)phoneBtnBtnClick:(UIButton *)sender
 {
-    if (_phoneBlock) {
-        _phoneBlock(sender.tag);
-    }
+    NSString *mobileStr=self.favoriModel.kfPhone;
+   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"telprompt://%@",mobileStr]]];
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
@@ -261,25 +287,44 @@
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-    //    cell.groundView.layer.cornerRadius =5;
-    //    cell.groundView.layer.masksToBounds =5;
-    //    [cell.shopOrderBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-    //    [cell.kaipiaoBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-    //    [cell.shenqingBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-    //    [cell.jiluBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
-    //    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    //    [cell.kaipiaoBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    //    [cell.shenqingBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    //    [cell.jiluBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    //    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    
-    
     return cell;
 }
--(void)BtnClick:(UIButton *)sender
+- (IBAction)tellBtnClick:(id)sender {
+    !_selectlickBlock?:_selectlickBlock();
+}
+
+-(void)setGoodsModel:(GoodsModel *)goodsModel
 {
+    _goodsModel =goodsModel;
+//    if ([goodsModel.serviceType isEqualToString:@"0"]) {
+//        self.cangkuLab.text =@"本地云仓（三铁配送）";
+//        
+//    }
+//    else if ([goodsModel.serviceType isEqualToString:@"st"])
+//    {
+//        self.cangkuLab.text =@"卖家库存（三铁配送）";
+//    }
+//    else if ([goodsModel.serviceType isEqualToString:@"zf"])
+//    {
+//        self.cangkuLab.text =@"卖家库存（卖家直发）";
+//    }
+    if ([goodsModel.sellerTypeCode intValue]==0) {
+        [self.dianpubTN setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        [self.dianpubTN setTitle:@"自营" forState:UIControlStateNormal];
+        self.shopNameLab.textColor =[UIColor redColor];
+    }else if ([goodsModel.sellerTypeCode intValue]==1)
+    {
+        [self.dianpubTN setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
+        [self.dianpubTN setTitle:@"厂家" forState:UIControlStateNormal];
+        self.shopNameLab.textColor =[UIColor blackColor];
+    }
+    else if ([goodsModel.sellerTypeCode intValue]==2)
+    {
+        [self.dianpubTN setBackgroundImage:[UIImage imageNamed:@"blue-bg"] forState:UIControlStateNormal];
+        [self.dianpubTN setTitle:@"批发商" forState:UIControlStateNormal];
+        self.shopNameLab.textColor =[UIColor blackColor];
+    }
+    self.shopNameLab.text =goodsModel.compName;
     
 }
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

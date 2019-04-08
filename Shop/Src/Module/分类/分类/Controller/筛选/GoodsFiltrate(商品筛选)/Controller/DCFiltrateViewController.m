@@ -104,18 +104,48 @@ static NSString * const DCFooterReusableViewID = @"DCFooterReusableView";
 - (void)setUpFiltrateData
 {
     DRWeakSelf;
+    NSString *urlStr;
+    if ([[GoodsShareModel sharedManager].queryType isEqualToString:@"history"]) {
+        urlStr =@"/buyer/getHistoryBuyRelationCondition";
+    }else if ([[GoodsShareModel sharedManager].queryType isEqualToString:@"search"])
+    {
+        urlStr =@"/mainPage/getSearchRelationCondition";
+    }//品牌搜索
+    else if ([[GoodsShareModel sharedManager].queryType isEqualToString:@"searchbrand"])
+    {
+        urlStr =@"/mainPage/getSearchRelationCondition";
+    }
+    //特价
+    else if ([[GoodsShareModel sharedManager].queryType isEqualToString:@"promotion"])
+    {
+        urlStr =@"/mainPage/getPromotionRelationCondition";
+    }
+    else if ([[GoodsShareModel sharedManager].queryType isEqualToString:@"factory"])
+    {
+        urlStr =@"/mainPage/getFactoryRelationCondition";
+    }
+    else
+    {
+        urlStr =@"/mainPage/getCategoryRelationCondition";
+    }
+
     _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[[GoodsShareModel sharedManager].type?:@"",[GoodsShareModel sharedManager].level1Id?:@"",[GoodsShareModel sharedManager].level2Id?:@"",[GoodsShareModel sharedManager].cz?:@"",[GoodsShareModel sharedManager].categoryId?:@"",@"1",[GoodsShareModel sharedManager].jb?:@"",[GoodsShareModel sharedManager].bmcl?:@"",[GoodsShareModel sharedManager].cd?:@"",[GoodsShareModel sharedManager].cl?:@"",[GoodsShareModel sharedManager].yj?:@"",[GoodsShareModel sharedManager].yx?:@"",[GoodsShareModel sharedManager].pp?:@"",[GoodsShareModel sharedManager].zj?:@""] forKeys:@[@"type",@"level1Id",@"level2Id",@"cz",@"categoryId",@"subType",@"jb",@"bmcl",@"cd",@"cl",@"yj",@"yx",@"pp",@"zj"]];
-    [SNIOTTool getWithURL:@"mainPage/getCategoryRelationCondition" parameters:_sendDataDictionary success:^(SNResult *result) {
+    [SNIOTTool getWithURL:urlStr parameters:_sendDataDictionary success:^(SNResult *result) {
 //        NSDictionary *bigDic =@{@"headTitle":@"",@"content":@""};
         NSArray *bigArr =@[@{@"headTitle":@"标准",@"content":result.data[@"bzlist"]},@{@"headTitle":@"材质",@"content":result.data[@"czlist"]},@{@"headTitle":@"材料",@"content":result.data[@"cllist"]},@{@"headTitle":@"直径",@"content":result.data[@"zjlist"]},@{@"headTitle":@"长度",@"content":result.data[@"cdlist"]},@{@"headTitle":@"级别",@"content":result.data[@"jblist"]},@{@"headTitle":@"表面处理",@"content":result.data[@"bmcllist"]},@{@"headTitle":@"品牌",@"content":result.data[@"pplist"]},@{@"headTitle":@"牙距",@"content":result.data[@"yjlist"]},@{@"headTitle":@"牙型",@"content":result.data[@"yxlist"]}];
-        weakSelf.filtrateItem = [DCFiltrateItem mj_objectArrayWithKeyValuesArray:bigArr];
+        NSMutableArray *addSourceArr =[NSMutableArray array];
+        for (NSDictionary *dic in bigArr) {
+            NSArray *nilArr =dic[@"content"];
+            if (nilArr.count!=0) {
+                [addSourceArr addObject:dic];
+            }
+        }
+        weakSelf.filtrateItem = [DCFiltrateItem mj_objectArrayWithKeyValuesArray:addSourceArr];
         [weakSelf.collectionView reloadData];
        
     } failure:^(NSError *error) {
-        
     }];
 }
-
 #pragma mark - 底部重置确定按钮
 - (void)setUpBottomButton
 {

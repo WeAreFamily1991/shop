@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GoodsModel.h"
+
 @class VoucherModel;
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *collectSelectBtn;
 @property (weak, nonatomic) IBOutlet UIButton *phoneBtn;
 @property (copy,nonatomic) void (^phoneBlock) (NSInteger phonetag);
+@property (nonatomic,retain)FavoriteModel *favoriModel;
 @property (copy,nonatomic) void (^collectionSelectBlock) (NSInteger collectionSelectag);
 @end
 
@@ -64,6 +67,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface CollectionCell5 : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIButton *dianpubTN;
+@property (weak, nonatomic) IBOutlet UILabel *shopNameLab;
+@property (weak, nonatomic) IBOutlet UIButton *tellBtn;
+@property (nonatomic, copy) dispatch_block_t selectlickBlock;
+@property (nonatomic,retain)GoodsModel *goodsModel;
 +(instancetype)cellWithTableView:(UITableView *)tableView;
 @end
 

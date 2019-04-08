@@ -212,7 +212,6 @@
             
         {
             FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
-            cell.dataDict = @{};
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             return cell;
         }

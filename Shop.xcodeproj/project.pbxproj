@@ -3449,8 +3449,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LBHAVY374G;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Shop/Src/Common/PrefixHeader.pch";
 				INFOPLIST_FILE = Shop/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -3471,8 +3472,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = LBHAVY374G;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_PREFIX_HEADER = "$(SRCROOT)/Shop/Src/Common/PrefixHeader.pch";
 				INFOPLIST_FILE = Shop/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;

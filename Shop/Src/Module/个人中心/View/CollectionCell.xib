@@ -27,39 +27,39 @@
                                     <constraint firstAttribute="width" secondItem="TsA-Sm-kij" secondAttribute="height" multiplier="1.15:1" id="Clv-c8-Ng4"/>
                                 </constraints>
                             </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7WT-ge-Ofa">
-                                <rect key="frame" x="96.5" y="10" width="50" height="20"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7WT-ge-Ofa">
+                                <rect key="frame" x="96.5" y="10" width="40" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="5sv-yz-xYI"/>
-                                    <constraint firstAttribute="width" secondItem="7WT-ge-Ofa" secondAttribute="height" multiplier="2.5:1" id="AWl-EB-2Xz"/>
+                                    <constraint firstAttribute="width" secondItem="7WT-ge-Ofa" secondAttribute="height" multiplier="2:1" id="AWl-EB-2Xz"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="11"/>
                                 <state key="normal" title="Button"/>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="邯郸市永年区河北铺俊格高强度紧固件门市" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LFk-ja-T41">
-                                <rect key="frame" x="151.5" y="5" width="229.5" height="30"/>
+                                <rect key="frame" x="141.5" y="5" width="239.5" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" tag="200" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cKT-md-X8k">
-                                <rect key="frame" x="315" y="63" width="66" height="39.5"/>
+                                <rect key="frame" x="293" y="63" width="88" height="39.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <state key="normal" title="联系客服" image="back">
+                                <state key="normal" title="联系客服" image="custom-service">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>
                             <button opaque="NO" tag="100" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eXL-Ru-mN1">
-                                <rect key="frame" x="234" y="75" width="66" height="16"/>
+                                <rect key="frame" x="190" y="65" width="88" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                <state key="normal" title="取消收藏" image="back">
+                                <state key="normal" title="取消收藏" image="custom-service">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="现货销售：尼龙自锁螺母，六角螺母， 法兰面螺母，焊接螺母，薄螺母，盖形螺母，K帽，尼龙螺母，英美制螺母，开槽螺母，尼龙锁紧螺母，法兰尼龙螺母，焊接螺母" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wpe-Sl-zYc">
-                                <rect key="frame" x="96.5" y="40" width="291.5" height="22"/>
+                                <rect key="frame" x="96.5" y="32" width="292.5" height="37"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="22" id="RKg-Q0-Vsi"/>
+                                    <constraint firstAttribute="height" constant="37" id="RKg-Q0-Vsi"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <nil key="textColor"/>
@@ -75,15 +75,15 @@
                             <constraint firstItem="TsA-Sm-kij" firstAttribute="centerY" secondItem="O8K-KK-E6m" secondAttribute="centerY" constant="-8" id="BRc-O4-Hop"/>
                             <constraint firstItem="7WT-ge-Ofa" firstAttribute="leading" secondItem="TsA-Sm-kij" secondAttribute="trailing" constant="10" id="FMw-pb-tMJ"/>
                             <constraint firstItem="Wpe-Sl-zYc" firstAttribute="leading" secondItem="7WT-ge-Ofa" secondAttribute="leading" id="FRx-oe-3y6"/>
-                            <constraint firstAttribute="trailing" secondItem="Wpe-Sl-zYc" secondAttribute="trailing" constant="3" id="GtJ-BU-yrN"/>
+                            <constraint firstAttribute="trailing" secondItem="Wpe-Sl-zYc" secondAttribute="trailing" constant="2" id="GtJ-BU-yrN"/>
                             <constraint firstItem="LFk-ja-T41" firstAttribute="top" secondItem="O8K-KK-E6m" secondAttribute="top" constant="5" id="HMt-Nt-KE6"/>
                             <constraint firstAttribute="bottom" secondItem="cKT-md-X8k" secondAttribute="bottom" id="Pm8-Y3-aAc"/>
                             <constraint firstItem="eXL-Ru-mN1" firstAttribute="centerY" secondItem="cKT-md-X8k" secondAttribute="centerY" id="Rtg-oN-9a9"/>
-                            <constraint firstItem="cKT-md-X8k" firstAttribute="top" secondItem="Wpe-Sl-zYc" secondAttribute="bottom" constant="1" id="UhL-c1-Yxy"/>
+                            <constraint firstItem="cKT-md-X8k" firstAttribute="top" secondItem="Wpe-Sl-zYc" secondAttribute="bottom" constant="-6" id="UhL-c1-Yxy"/>
                             <constraint firstItem="7WT-ge-Ofa" firstAttribute="top" secondItem="TsA-Sm-kij" secondAttribute="top" id="WRP-jx-MBZ"/>
                             <constraint firstItem="LFk-ja-T41" firstAttribute="leading" secondItem="7WT-ge-Ofa" secondAttribute="trailing" constant="5" id="mxR-IH-Pbt"/>
                             <constraint firstAttribute="trailing" secondItem="cKT-md-X8k" secondAttribute="trailing" constant="10" id="q5s-mx-ZSd"/>
-                            <constraint firstItem="Wpe-Sl-zYc" firstAttribute="top" secondItem="LFk-ja-T41" secondAttribute="bottom" constant="5" id="vcs-Nh-cqv"/>
+                            <constraint firstItem="Wpe-Sl-zYc" firstAttribute="top" secondItem="LFk-ja-T41" secondAttribute="bottom" constant="-3" id="vcs-Nh-cqv"/>
                             <constraint firstAttribute="trailing" secondItem="LFk-ja-T41" secondAttribute="trailing" constant="10" id="zIG-oV-aTn"/>
                         </constraints>
                     </view>
@@ -399,48 +399,43 @@
         </tableViewCell>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CollectionCell5" rowHeight="44" id="Z2x-P2-hc2" userLabel="CollectionCell5" customClass="CollectionCell5">
             <rect key="frame" x="0.0" y="0.0" width="388" height="30"/>
-            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z2x-P2-hc2" id="YDC-Eg-MyM">
                 <rect key="frame" x="0.0" y="0.0" width="388" height="29.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <button opaque="NO" tag="200" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ri6-r6-FdX">
-                        <rect key="frame" x="250" y="0.0" width="65" height="30"/>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9rg-Rt-sHs">
+                        <rect key="frame" x="9" y="5" width="40" height="20"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <state key="normal" title="咨询" image="back">
-                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </state>
                     </button>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9rg-Rt-sHs">
-                        <rect key="frame" x="9" y="0.0" width="70" height="30"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                        <state key="normal" title="Button"/>
-                    </button>
-                    <button opaque="NO" tag="200" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zaT-F9-Aw6">
-                        <rect key="frame" x="314" y="0.0" width="65" height="30"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                        <state key="normal" title="客服" image="back">
-                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        </state>
-                    </button>
-                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oAQ-QE-m5O">
-                        <rect key="frame" x="-1" y="0.0" width="390" height="1"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" red="0.96862745100000003" green="0.96862745100000003" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                    </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="三铁云仓" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ZS-2H-se3">
-                        <rect key="frame" x="87" y="5" width="66" height="16"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="三铁云仓" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7ZS-2H-se3">
+                        <rect key="frame" x="61" y="0.0" width="251" height="30"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" tag="200" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ri6-r6-FdX">
+                        <rect key="frame" x="315" y="-1" width="65" height="30"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                        <state key="normal" title="咨询" image="telphone">
+                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </state>
+                        <connections>
+                            <action selector="tellBtnClick:" destination="Z2x-P2-hc2" eventType="touchUpInside" id="evf-iV-HuZ"/>
+                        </connections>
+                    </button>
                 </subviews>
-                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             </tableViewCellContentView>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="ggu-yK-yd1"/>
+            <connections>
+                <outlet property="dianpubTN" destination="9rg-Rt-sHs" id="fV4-rh-W77"/>
+                <outlet property="shopNameLab" destination="7ZS-2H-se3" id="ASd-4a-YhL"/>
+                <outlet property="tellBtn" destination="ri6-r6-FdX" id="9gJ-Px-EM9"/>
+            </connections>
             <point key="canvasLocation" x="185.59999999999999" y="902.24887556221893"/>
         </tableViewCell>
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="CollectionCell6" rowHeight="44" id="Bbn-Cz-A8z" userLabel="CollectionCell6" customClass="CollectionCell6">
@@ -533,6 +528,8 @@
         <image name="back" width="16" height="16"/>
         <image name="bg" width="102" height="46"/>
         <image name="bg-store" width="102" height="46"/>
+        <image name="custom-service" width="38" height="36"/>
+        <image name="telphone" width="38" height="36"/>
         <image name="已使用" width="110" height="92"/>
         <image name="已过期" width="110" height="92"/>
     </resources>

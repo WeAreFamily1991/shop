@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface GoodsShareModel : DRBaseModel
 #pragma mark - 单例
 +(instancetype)sharedManager;
+@property (nonatomic , copy) NSString              *queryType;//类型
 @property (nonatomic , copy) NSString              *type;
 @property (nonatomic , copy) NSString              * level1Id;
 @property (nonatomic , copy) NSString              * level2Id;
@@ -27,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * yx;//牙型
 @property (nonatomic , copy) NSString              * pp;//品牌
 @property (nonatomic , copy) NSString              * zj;//直径
+
 @end
 
 NS_ASSUME_NONNULL_END
