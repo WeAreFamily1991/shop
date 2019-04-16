@@ -97,7 +97,13 @@
     self.titleLab.text =vouchModel.topicType?@"店铺抵用券":@"平台抵用券";
     self.titleLab.textColor =vouchModel.topicType?RGBHex(0x0094ec):[UIColor redColor];
     
-    self.conditionLab.text =[NSString stringWithFormat:@"%@",vouchModel.descriptionStr];
+    if (vouchModel.descriptionStr.length==0) {
+        self.conditionLab.text =@"适用于三铁云仓所有商品";
+    }else
+    {
+        
+        self.conditionLab.text =vouchModel.descriptionStr;
+    }
     if (vouchModel.endtime==4102329600000) {
         self.timeLab.text =@"无门槛、无时间限制、无产品限制";
     }
@@ -150,11 +156,38 @@
     //    [cell.shenqingBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
     //    [cell.jiluBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
     //    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    
-    
     return cell;
+}
+-(void)setOrderModel:(OrderModel *)orderModel
+{
+    _orderModel =orderModel;
+    self.orderLAb.text =[NSString stringWithFormat:@"订单号：%@",orderModel.orderNo];
+    self.timeLab.text =[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",orderModel.createTime]];
+    NSArray *statusArr =@[@"已取消", @"待审核", @"待付款", @"待发货", @"待收货",@"已完成",@"退货中",@"已退货"];
+    self.statusLAb.text =statusArr[orderModel.status];
+    if ([orderModel.sellerExpressType intValue]==0) {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"自营" forState:UIControlStateNormal];
+       
+    }else if ([orderModel.sellerExpressType intValue]==1)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"厂家" forState:UIControlStateNormal];
+      
+    }
+    else if ([orderModel.sellerExpressType intValue]==2)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"blue-bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"批发商" forState:UIControlStateNormal];
+        
+    }
+    self.cangkeLab.text =orderModel.sellerName;
+    self.companyLab.text =[NSString stringWithFormat:@"开票方：%@",orderModel.kpName];
+    
+    NSArray *expressTypeArr =@[@"自提",@"物流",@"三铁配送"];
+    self.peisongLab.text =[NSString stringWithFormat:@"%@  %@  %@",orderModel.storeName,[orderModel.payType boolValue]?@"月结":@"现金",expressTypeArr[[orderModel.expressType intValue]]];
+    [SNTool setTextColor:self.peisongLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(orderModel.storeName.length, self.peisongLab.text.length-orderModel.storeName.length) AndColor:[UIColor redColor]];
+    
 }
 -(void)BtnClick:(UIButton *)sender
 {
@@ -234,13 +267,56 @@
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-   
-    
-    
     return cell;
 }
 -(void)BtnClick:(UIButton *)sender
 {
+ 
+}
+-(void)setOrderModel:(OrderModel *)orderModel
+{
+    _orderModel =orderModel;
+    self.allPriceCountLab.text =[NSString stringWithFormat:@"共计：%lu件商品   总价：￥%.3f",(unsigned long)orderModel.goodsList.count,orderModel.goodAmt];
+    if (orderModel.status==0) {
+        self.saleOutBtn.hidden =YES;
+        self.cancelBtn.hidden =YES;
+    }
+   else  if (orderModel.status==1) {
+        self.saleOutBtn.hidden =YES;
+        self.cancelBtn.hidden =NO;
+    }
+   else  if (orderModel.status==2) {
+       self.saleOutBtn.hidden =NO;
+       self.cancelBtn.hidden =NO;
+       [self.saleOutBtn setTitle:@"取消订单" forState:UIControlStateNormal];
+       [self.cancelBtn setTitle:@"去付款" forState:UIControlStateNormal];
+   }
+   else  if (orderModel.status==3) {
+       self.saleOutBtn.hidden =YES;
+       self.cancelBtn.hidden =YES;
+       
+   }
+   else  if (orderModel.status==4) {
+       self.saleOutBtn.hidden =NO;
+       self.cancelBtn.hidden =NO;
+       [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+       [self.cancelBtn setTitle:@"确认收货" forState:UIControlStateNormal];
+   }
+   else  if (orderModel.status==5) {
+       self.saleOutBtn.hidden =NO;
+       self.cancelBtn.hidden =NO;
+       [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+       [self.cancelBtn setTitle:@"去评价" forState:UIControlStateNormal];
+   }
+   else  if (orderModel.status==6) {
+       self.saleOutBtn.hidden =YES;
+       self.cancelBtn.hidden =NO;
+       [self.cancelBtn setTitle:@"取消退货" forState:UIControlStateNormal];
+   }
+   else  if (orderModel.status==7) {
+       self.saleOutBtn.hidden =YES;
+       self.cancelBtn.hidden =YES;
+   }
     
 }
 - (IBAction)btnClick:(id)sender {
@@ -410,6 +486,85 @@
     
     return cell;
 }
+-(void)setOrderModel:(OrderModel *)orderModel
+{
+    _orderModel =orderModel;
+    
+    if ([orderModel.sellerExpressType intValue]==0) {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"自营" forState:UIControlStateNormal];
+        
+    }else if ([orderModel.sellerExpressType intValue]==1)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"厂家" forState:UIControlStateNormal];
+        
+    }
+    else if ([orderModel.sellerExpressType intValue]==2)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"blue-bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"批发商" forState:UIControlStateNormal];
+        
+    }
+    self.cangkeLab.text =orderModel.sellerName;
+    self.companyLab.text =[NSString stringWithFormat:@"开票方：%@",orderModel.kpName];
+    
+    NSArray *expressTypeArr =@[@"自提",@"物流",@"三铁配送"];
+    self.peisongLab.text =[NSString stringWithFormat:@"%@  %@  %@",orderModel.storeName,[orderModel.payType boolValue]?@"月结":@"现金",expressTypeArr[[orderModel.expressType intValue]]];
+    [SNTool setTextColor:self.peisongLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(orderModel.storeName.length, self.peisongLab.text.length-orderModel.storeName.length) AndColor:[UIColor redColor]];
+    
+}
+-(void)BtnClick:(UIButton *)sender
+{
+    
+}
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    // Configure the view for the selected state
+}
+@end
+
+
+
+@implementation CollectionCell8
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+}
++(instancetype)cellWithTableView:(UITableView *)tableView
+{
+    static NSString *identify = @"CollectionCell8";
+    CollectionCell8 *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    if (cell == nil)
+    {
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"CollectionCell" owner:nil options:nil] objectAtIndex:8];
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
+-(void)setSellOutModel:(AskSellOutModel *)sellOutModel
+{
+    _sellOutModel =sellOutModel;
+    if ([sellOutModel.compType intValue]==0) {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"自营" forState:UIControlStateNormal];
+        
+    }else if ([sellOutModel.compType intValue]==1)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"厂家" forState:UIControlStateNormal];
+        
+    }
+    else if ([sellOutModel.compType intValue]==2)
+    {
+        [self.santieBtn setBackgroundImage:[UIImage imageNamed:@"blue-bg"] forState:UIControlStateNormal];
+        [self.santieBtn setTitle:@"批发商" forState:UIControlStateNormal];
+        
+    }
+    self.cangkeLab.text =sellOutModel.sellerName;
+}
+
 -(void)BtnClick:(UIButton *)sender
 {
     

@@ -44,6 +44,7 @@
         _tableView.estimatedSectionFooterHeight = 0;
         self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
+     self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
     [_tableView registerClass:[FirstTableViewCell class] forCellReuseIdentifier:@"FirstTableViewCell"];
     __weak typeof(self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
@@ -239,7 +240,7 @@
                     if ([cell respondsToSelector:@selector(setSeparatorInset:)]) {
                         [cell setSeparatorInset:UIEdgeInsetsMake(0, 0, 0, 0)];
                     }
-                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleSingleLine;
+                cell.selectionStyle =UITableViewCellSelectionStyleNone;
                 }
                 cell.textLabel.text =titleArr[indexPath.row];
                 cell.textLabel.textColor =[UIColor redColor];
@@ -255,7 +256,7 @@
                 if (cell == nil) {
                     cell = [[UITableViewCell alloc] initWithStyle:1
                                                   reuseIdentifier: SimpleTableIdentifier];
-                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
+                   cell.selectionStyle =UITableViewCellSelectionStyleNone;
                 }
                 
                 cell.textLabel.text =titleArr[indexPath.row];
@@ -279,7 +280,7 @@
                 if (cell == nil) {
                     cell = [[UITableViewCell alloc] initWithStyle:1
                                                   reuseIdentifier: SimpleTableIdentifier];
-                    self.tableView.separatorStyle =UITableViewCellSeparatorStyleNone;
+                    cell.selectionStyle =UITableViewCellSelectionStyleNone;
                 }
                 
                 cell.textLabel.text =titleArr[indexPath.row];

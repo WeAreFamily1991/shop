@@ -115,20 +115,7 @@
     //    [cell.shopOrderBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
     
     
-    cell.contentBtn.layer.borderWidth =1;
-    cell.contentBtn.layer.borderColor =BACKGROUNDCOLOR.CGColor;
-    cell.contentBtn.layer.cornerRadius=cell.contentBtn.dc_height/2;
-    cell.contentBtn.layer.masksToBounds =cell.contentBtn.dc_height/2;
-    
-    cell.returnBackBtn.layer.borderWidth =1;
-    cell.returnBackBtn.layer.borderColor =BACKGROUNDCOLOR.CGColor;
-    cell.returnBackBtn.layer.cornerRadius=cell.returnBackBtn.dc_height/2;
-    cell.returnBackBtn.layer.masksToBounds =cell.returnBackBtn.dc_height/2;
-    
-    cell.detailBtn.layer.borderWidth =1;
-    cell.detailBtn.layer.borderColor =[UIColor redColor].CGColor;
-    cell.detailBtn.layer.cornerRadius=cell.detailBtn.dc_height/2;
-    cell.detailBtn.layer.masksToBounds =cell.detailBtn.dc_height/2;
+   
     
     return cell;
 }

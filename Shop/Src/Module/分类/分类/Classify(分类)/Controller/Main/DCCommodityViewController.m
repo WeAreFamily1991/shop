@@ -325,7 +325,7 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 #pragma mark - item宽高
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return CGSizeMake(ScreenW - tableViewH  - DCMargin, HScale(70));
+    return CGSizeMake(ScreenW - tableViewH  - DCMargin, HScale(80));
 }
 #pragma mark - head宽高
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {

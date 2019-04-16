@@ -72,6 +72,7 @@
     _numberText.textColor=[UIColor darkGrayColor];
     _numberText.keyboardType = UIKeyboardTypeNumberPad;
     _numberText.textAlignment = NSTextAlignmentCenter;
+    _numberText.font =DR_FONT(12);
     _numberText.delegate=self;
     [_numberText addTarget:self action:@selector(textNumberChange:) forControlEvents:UIControlEventEditingChanged];//
     [self addSubview:_numberText];
@@ -91,9 +92,9 @@
             _numberText.layer.borderColor=_numborderColor.CGColor;
             _addBtn.layer.borderColor=_numborderColor.CGColor;
         }else{
-            _reduceBtn.layer.borderColor=[UIColor lightGrayColor].CGColor;
-            _numberText.layer.borderColor=[UIColor lightGrayColor].CGColor;
-            _addBtn.layer.borderColor=[UIColor lightGrayColor].CGColor;
+            _reduceBtn.layer.borderColor=BACKGROUNDCOLOR.CGColor;
+            _numberText.layer.borderColor=BACKGROUNDCOLOR.CGColor;
+            _addBtn.layer.borderColor=BACKGROUNDCOLOR.CGColor;
         }
     }
     
@@ -107,12 +108,12 @@
 - (void)reduceNumberClick{
     [_numberText resignFirstResponder];
     
-    if ([_numberText.text integerValue]<= _minNum){
+    if ([_numberText.text doubleValue]<= _minNum){
         [self shakeAnimation];
         return;
     }
     
-    _numberText.text=[NSString stringWithFormat:@"%ld",(long)[_numberText.text integerValue]-_multipleNum];
+    _numberText.text=[NSString stringWithFormat:@"%.3f",[_numberText.text doubleValue]-_multipleNum];
     
     [self callBackResultNumber:_numberText.text];
 }
@@ -121,10 +122,11 @@
 - (void)addNumberClick{
     [_numberText resignFirstResponder];
     
-    if (_numberText.text.integerValue < _maxNum) {
-        _numberText.text=[NSString stringWithFormat:@"%ld",(long)[_numberText.text integerValue]+_multipleNum];
+    if (_numberText.text.doubleValue < _maxNum) {
+        _numberText.text=[NSString stringWithFormat:@"%.3f",[_numberText.text doubleValue]+_multipleNum];
     }else{
         [self shakeAnimation];
+        [MBProgressHUD showError:@"已是最大可退数量！"];
     }
     
     [self callBackResultNumber:_numberText.text];
@@ -132,12 +134,12 @@
 
 /** 数值变化 */
 - (void)textNumberChange:(UITextField *)textField{
-    if (textField.text.integerValue < _minNum) {
+    if (textField.text.doubleValue < _minNum) {
         [self alertMessage:@"您输入的数量小于最小值，请重新输入"];
         textField.text=@"";
     }
     
-    if (textField.text.integerValue > _maxNum) {
+    if (textField.text.doubleValue > _maxNum) {
         [self alertMessage:@"您输入的数量大于最大值，请重新输入"];
         textField.text = @"";
         return;
@@ -156,9 +158,9 @@
     }
     
     if (textField.text.integerValue/_multipleNum == 0) {//输入小于基本倍数值 更改为倍数数值/若想在minNum为0的情况下输入小于倍数值的时候 更改为0 增加为0时的else内判断即可（如 倍数值为3，键入1 需求更改为0数值的情况下）
-        textField.text=[NSString stringWithFormat:@"%ld",_multipleNum];
+        textField.text=[NSString stringWithFormat:@"%.3f",_multipleNum];
     }else{
-        textField.text=[NSString stringWithFormat:@"%ld",(long)(textField.text.integerValue/_multipleNum)*_multipleNum];
+        textField.text=[NSString stringWithFormat:@"%.3f",(textField.text.doubleValue/_multipleNum)*_multipleNum];
     }
     
     [self callBackResultNumber:textField.text];
@@ -230,7 +232,7 @@
     [self setView];
 }
 
-- (void)setMultipleNum:(NSInteger)multipleNum{
+- (void)setMultipleNum:(double)multipleNum{
     _multipleNum=multipleNum;
 }
 
@@ -258,14 +260,14 @@
     _isShake=isShake;
 }
 
-- (void)setMinNum:(NSInteger)minNum{
+- (void)setMinNum:(double)minNum{
     if (minNum<0) {
         minNum=0;
     }
     _minNum=minNum;
 }
 
-- (void)setMaxNum:(NSInteger)maxNum{
+- (void)setMaxNum:(double)maxNum{
     _maxNum=maxNum;
 }
 

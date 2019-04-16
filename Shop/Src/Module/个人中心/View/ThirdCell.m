@@ -22,20 +22,101 @@
     [super awakeFromNib];
     
 }
--(void)setDataDict:(NSDictionary *)dataDict
+//-(void)setDataDict:(NSDictionary *)dataDict
+//{
+//    self.productImg.image = [UIImage imageNamed:@"product"];
+//    self.productName.text = @"哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
+//
+//    NSArray * array = @[@"M1.6-0.35*2",@"12.9级",@"35CrMo(合金钢)",@"淬黑",@"哈哈",@"紧固之星"];
+//    Height = WScale(30);
+//    [self setStandWithArray:array];
+//
+//    self.parameterLabel.text = @"包装参数：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
+//    self.cellLabel.text = @"最小销售单位：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
+//    self.countLabel.text = @"库存数：72.0000支 华东仓";
+//    self.allCountLabel.text =@"小计:0.00";
+//     [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+//}
+
+
+-(void)setGoodListModel:(GoodsListModel *)goodListModel
 {
-    self.productImg.image = [UIImage imageNamed:@"product"];
-    self.productName.text = @"哈哈哈哈哈哈哈啊哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈";
-    
-    NSArray * array = @[@"M1.6-0.35*2",@"12.9级",@"35CrMo(合金钢)",@"淬黑",@"哈哈",@"紧固之星"];
+    _goodListModel =goodListModel;
+    [self.productImg sd_setImageWithURL:[NSURL URLWithString:goodListModel.imgUrl] placeholderImage:[UIImage imageNamed:@"santie_default_img"]];
+    self.productName.text =goodListModel.itemName;
+    NSArray * array = @[goodListModel.spec?:@"",goodListModel.levelname?:@"",goodListModel.materialname?:@"",goodListModel.surfacename?:@"",goodListModel.brandname?:@""];
+    NSMutableArray *titArr =[NSMutableArray array];
+    for (NSString *str in array) {
+        if (str.length!=0) {
+            [titArr addObject:str];
+        }
+    }
     Height = WScale(30);
-    [self setStandWithArray:array];
+    [self setStandWithArray:titArr];
+    NSString *baseStr;//basicunitid 5千支  6公斤  7吨
+    if ([goodListModel.basicUnitId intValue]==5) {
+        baseStr =@"千支";
+    }
+    if ([goodListModel.basicUnitId intValue]==6) {
+        baseStr =@"公斤";
+    }
+    if ([goodListModel.basicUnitId intValue]==7) {
+        baseStr =@"吨";
+    }
+    NSString *nameStr,*cellStr;
+    if (goodListModel.unitConversion1.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%.3f%@/%@",[goodListModel.unitConversion1 doubleValue],baseStr,goodListModel.unitName1];
+        cellStr =goodListModel.unitName1;
+    }
+    if ([NSString stringWithFormat:@"%f",goodListModel.unitConversion2].length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",goodListModel.unitConversion2] doubleValue],baseStr,goodListModel.unitName2];
+        if (cellStr.length==0) {
+            cellStr =goodListModel.unitName2;
+            
+        }
+    }
+    if ([NSString stringWithFormat:@"%f",goodListModel.unitConversion3].length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",goodListModel.unitConversion3] doubleValue],baseStr,goodListModel.unitName3];
+        if (cellStr.length==0) {
+            cellStr =goodListModel.unitName3;
+            
+        }
+    }
+    if (goodListModel.unitConversion4.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodListModel.unitConversion4 doubleValue],baseStr,goodListModel.unitName4];
+        if (cellStr.length==0) {
+            cellStr =goodListModel.unitName4;
+            
+        }
+    }
+    if (goodListModel.unitConversion5.length!=0) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodListModel.unitConversion5 doubleValue],baseStr,goodListModel.unitName5];
+        if (cellStr.length==0) {
+            cellStr =goodListModel.unitName5;
+            
+        }
+    }
+     self.parameterLabel.text =[NSString stringWithFormat:@"包装参数：%@",nameStr];
+    self.cellLabel.text =[NSString stringWithFormat:@"订单数量(%@)：%.3f",baseStr,goodListModel.qty];
+    self.countLabel.text = [NSString stringWithFormat:@"单价：￥%.3f",goodListModel.price];
+    self.allCountLabel.text =[NSString stringWithFormat:@"小计：%.3f",goodListModel.realAmt];
     
-    self.parameterLabel.text = @"包装参数：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
-    self.cellLabel.text = @"最小销售单位：哈哈哈哈哈 哈哈哈哈哈 或或或或或或或或 哈哈哈";
-    self.countLabel.text = @"库存数：72.0000支 华东仓";
-    self.allCountLabel.text =@"小计:0.00";
-     [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+   
+    [SNTool setTextColor:self.cellLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(self.cellLabel.text.length-[NSString stringWithFormat:@"%.3f",goodListModel.qty].length, [NSString stringWithFormat:@"%.3f",goodListModel.qty].length) AndColor:[UIColor redColor]];
+    
+    [SNTool setTextColor:self.countLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(3, [NSString stringWithFormat:@"%.3f",goodListModel.price].length+1) AndColor:[UIColor redColor]];
+}
+-(void)setOrderModel:(OrderModel *)orderModel
+{
+    _orderModel =orderModel;
+    if (orderModel.status==4||orderModel.status==5) {
+        [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+        [self.saleOutBtn addTarget:self action:@selector(saleOutBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    }
+}
+-(void)saleOutBtnClick:(UIButton *)sender
+{
+     !_saleOutClickBlock ? : _saleOutClickBlock();
 }
 -(UIImageView *)productImg
 {
@@ -181,9 +262,9 @@
     if (!_saleOutBtn) {
         _saleOutBtn =[UIButton buttonWithType:UIButtonTypeCustom];
         [self addSubview:_saleOutBtn];
-        _saleOutBtn.layer.cornerRadius =10;
-        _saleOutBtn.layer.masksToBounds =10;
-//        [_saleOutBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
+        _saleOutBtn.layer.cornerRadius =HScale(10);
+        _saleOutBtn.layer.masksToBounds =HScale(10);
+//        [_saleOutBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_16"] forState:UIControlStateNormal];
         _saleOutBtn.backgroundColor =[UIColor redColor];
         [_saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
         [_saleOutBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];

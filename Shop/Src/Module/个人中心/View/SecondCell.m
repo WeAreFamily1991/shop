@@ -62,22 +62,22 @@
     }
     NSString *nameStr;
     if (goodsModel.unitconversion1.length!=0) {
-        nameStr =[NSString stringWithFormat:@"包装参数：%.3f%@/%@",[goodsModel.unitconversion1 doubleValue],baseStr,goodsModel.unitname1];
+        nameStr =[NSString stringWithFormat:@"%.3f%@/%@",[goodsModel.unitconversion1 doubleValue],baseStr,goodsModel.unitname1];
     }
     if (goodsModel.unitconversion2.length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion2 doubleValue],baseStr,goodsModel.unitname2];
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion2 doubleValue],baseStr,goodsModel.unitname2];
     }
     if (goodsModel.unitconversion3.length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion3 doubleValue],baseStr,goodsModel.unitname3];
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion3 doubleValue],baseStr,goodsModel.unitname3];
     }
     if (goodsModel.unitconversion4.length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion4 doubleValue],baseStr,goodsModel.unitname4];
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion4 doubleValue],baseStr,goodsModel.unitname4];
     }
     if (goodsModel.unitconversion5.length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr,[goodsModel.unitconversion5 doubleValue],baseStr,goodsModel.unitname5];
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion5 doubleValue],baseStr,goodsModel.unitname5];
     }
    
-    self.parameterLabel.text =nameStr;
+    self.parameterLabel.text =[NSString stringWithFormat:@"包装参数：%@",nameStr];
     self.cellLabel.text = nil;
     self.countLabel.text =[NSString stringWithFormat:@"库存数(%@)：%.3f  %@",baseStr,[goodsModel.qty doubleValue],goodsModel.storeName] ;
 }

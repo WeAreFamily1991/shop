@@ -74,7 +74,8 @@
                         [self.mudic  setValue:@"" forKey:@"startTime"];
                         
                         [self.mudic  setValue:@"" forKey:@"endTime"];
-                        
+                        [self.buttonView setTitleButton:@"起始时间" index:0];
+                        [self.buttonView setTitleButton:@"截止时间" index:1];
                     }
                     else if ([selectRow intValue]==1)
                     {
@@ -94,7 +95,7 @@
                         
                         
                     }
-                    [[NSNotificationCenter defaultCenter] postNotificationName:@"record" object:nil userInfo:self.mudic ];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"message" object:nil userInfo:self.mudic ];
                 }];
                 
             }
@@ -157,8 +158,7 @@
     
     [CGXPickerView showDatePickerWithTitle:selectIndex?@"截止时间":@"起始时间" DateType:UIDatePickerModeDate DefaultSelValue:nowStr MinDateStr:@"1900-01-01 00:00:00" MaxDateStr:nowStr IsAutoSelect:NO Manager:nil ResultBlock:^(NSString *selectValue) {
         if (selectIndex==0) {
-            [self.mudic setValue:selectValue forKey:@"startTime"];
-            
+            [self.mudic setValue:selectValue forKey:@"startTime"];            
         }else
         {
             [self.mudic setValue:selectValue forKey:@"endTime"];

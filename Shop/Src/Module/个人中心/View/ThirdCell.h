@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "OrderModel.h"
+#import "AskSellOutModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThirdCell : UITableViewCell
@@ -22,7 +23,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
 @property(nonatomic,strong)UILabel *allCountLabel;      ///小计
 @property(nonatomic,strong)UIButton *saleOutBtn;      ///售后
-@property(nonatomic,strong)NSDictionary *dataDict;      ///<数据
+@property (nonatomic,retain)GoodsListModel *goodListModel;
+@property (nonatomic,retain)OrderModel *orderModel;
+@property (nonatomic,retain)GoodModel *goodModel;
+@property (nonatomic,retain)AskSellOutModel *sellOutModel;
+@property (nonatomic, copy) dispatch_block_t saleOutClickBlock;
 @end
 
 NS_ASSUME_NONNULL_END

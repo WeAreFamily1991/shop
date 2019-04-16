@@ -179,9 +179,17 @@
     }
 }
 -(void)createSubViews{
-    UIView *bottomView =[[UIView alloc]initWithFrame:CGRectMake(0, self.tableView.height-60, SCREEN_WIDTH, 50)];
+    UIView *bottomView =[[UIView alloc]init];
     bottomView.backgroundColor =[UIColor whiteColor];
     [self.view addSubview:bottomView];
+    [bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.mas_equalTo(WScale(0));
+
+        make.bottom.mas_equalTo(WScale(0));
+        make.width.mas_equalTo(SCREEN_WIDTH);
+        make.height.mas_equalTo(50);
+        
+    }];
     self.selectAllBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.selectAllBtn.frame = CGRectMake(10,(50-20)/2.0, 60, 20);
     [self.selectAllBtn setImage:IMAGENAMED(@"Unchecked") forState:UIControlStateNormal];
@@ -342,7 +350,7 @@
     if (indexPath.row==2) {
         return 120;
     }
-    return 40;
+    return HScale(30);
 }
 //单元格选中事件
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

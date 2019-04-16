@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "OrderModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailOrdervc : UIViewController
-
+@property (nonatomic,retain)OrderModel *orderModel;
 @end
 
 NS_ASSUME_NONNULL_END

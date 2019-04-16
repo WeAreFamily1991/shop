@@ -118,7 +118,7 @@
 ////        token.visit_token =
 //        [token setVisit_token:result.data];
 //           [DEFAULTS setObject:result.data forKey:@"token"];
-        
+       // visiteStr    __NSCFString *    @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiZ3Vlc3QiLCJqdGkiOiJEQUREQkFBNzdGNzc0QjY4QjJCNDlEMUNDQjE1NzY5NiIsInVzZXJuYW1lIjoiaW9zIn0.cjg9vMX4LF3Wx7ug0n952P0eZtLCy0DyJruAERnY2C0"    0x0000000280ae5e10
         
     
         

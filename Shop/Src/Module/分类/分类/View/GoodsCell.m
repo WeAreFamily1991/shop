@@ -82,7 +82,7 @@
             sellTypeCodeStr =[NSString stringWithFormat:@"%@不含运",sellTypeCodeStr];
         }
     }
-    self.jiesuanLab.text =[NSString stringWithFormat:@"%@ |%@",goodsModel.payType?@"月结":@"现金",sellTypeCodeStr];//未完待续
+    self.jiesuanLab.text =[NSString stringWithFormat:@"%@ |%@",[goodsModel.payType boolValue]?@"月结":@"现金",sellTypeCodeStr];//未完待续
     
     
 }

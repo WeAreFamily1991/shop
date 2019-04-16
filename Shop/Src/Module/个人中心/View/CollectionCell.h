@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "GoodsModel.h"
-
+#import "OrderModel.h"
+#import "AskSellOutModel.h"
 @class VoucherModel;
 NS_ASSUME_NONNULL_BEGIN
 
@@ -48,6 +49,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCell2 : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UILabel *orderLAb;
+@property (weak, nonatomic) IBOutlet UILabel *timeLab;
+@property (weak, nonatomic) IBOutlet UILabel *statusLAb;
+@property (weak, nonatomic) IBOutlet UIButton *santieBtn;
+@property (weak, nonatomic) IBOutlet UILabel *cangkeLab;
+@property (weak, nonatomic) IBOutlet UIButton *tellBtn;
+@property (weak, nonatomic) IBOutlet UILabel *companyLab;
+@property (weak, nonatomic) IBOutlet UILabel *peisongLab;
+@property (nonatomic,retain)OrderModel *orderModel;
+
 @end
 
 
@@ -62,8 +73,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UIButton *againBuyBtn;
 @property (weak, nonatomic) IBOutlet UIButton *detailOrderBtn;
+@property (weak, nonatomic) IBOutlet UILabel *allPriceCountLab;
 @property (copy,nonatomic) void (^BtnBlock) (NSInteger btnag);
 @property(nonatomic,assign)NSInteger status;
+@property (nonatomic,retain)OrderModel *orderModel;
 @end
 
 @interface CollectionCell5 : UITableViewCell
@@ -81,5 +94,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCell7 : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UIButton *santieBtn;
+@property (weak, nonatomic) IBOutlet UILabel *cangkeLab;
+@property (weak, nonatomic) IBOutlet UIButton *tellBtn;
+@property (weak, nonatomic) IBOutlet UILabel *companyLab;
+@property (weak, nonatomic) IBOutlet UILabel *peisongLab;
+@property (nonatomic,retain)OrderModel *orderModel;
+@end
+
+@interface CollectionCell8 : UITableViewCell
++(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UIButton *santieBtn;
+@property (weak, nonatomic) IBOutlet UILabel *cangkeLab;
+@property (weak, nonatomic) IBOutlet UIButton *tellBtn;
+@property (nonatomic,retain)AskSellOutModel *sellOutModel;
 @end
 NS_ASSUME_NONNULL_END

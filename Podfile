@@ -38,6 +38,6 @@ target 'Shop' do
   pod 'FMDB'
   pod 'KSCrash'
   pod 'JSONModel'
- 
+  pod 'JPush' 
   pod 'CDDPagerController'
 end

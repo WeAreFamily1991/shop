@@ -102,6 +102,7 @@
         UITableViewCell *cell =[tableView dequeueReusableCellWithIdentifier:index];
         if (cell==nil) {
             cell =[[UITableViewCell alloc]initWithStyle:1 reuseIdentifier:index];
+            cell.selectionStyle =UITableViewCellSelectionStyleNone;
         }
         if (indexPath.section==0) {
            

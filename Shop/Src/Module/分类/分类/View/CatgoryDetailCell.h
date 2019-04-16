@@ -18,10 +18,14 @@ NS_ASSUME_NONNULL_BEGIN
 +(instancetype)cellWithTableView:(UITableView *)tableView;
 @property (weak, nonatomic) IBOutlet UIButton *shopCarBtn;
 @property (weak, nonatomic) IBOutlet UIButton *shoucangBtn;
+@property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
 @property (weak, nonatomic) IBOutlet UILabel *priceAccountLab;
 @property (nonatomic,retain)GoodsModel *goodsModel;
+@property (copy,nonatomic) void (^cancelBlock) (NSInteger canceltag);
 @property (copy,nonatomic) void (^shoucangBlock) (NSInteger shoucangtag);
 @property (copy,nonatomic) void (^shopCarBlock) (NSInteger shopCartag);
+@property (copy,nonatomic) void (^noticeBlock) (NSInteger noticeTag);
+@property (nonatomic,strong)NSArray *itemListArr;
 @end
 
 @protocol CatgoryDetailCellSelectDelegate <NSObject>
@@ -46,6 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy,nonatomic) void (^danweiBtnBlock) (NSInteger danweiBtntag);
 @property (nonatomic, weak) id<CatgoryDetailCellSelectDelegate>delegate;
 @property (nonatomic,retain)GoodsModel *goodsModel;
+@property (nonatomic,strong)NSMutableArray *selectNameArr,*selectCodeArr;
+@property (assign,nonatomic)double selectcode;
+@property (assign,nonatomic)NSString * selectName;
+@property (nonatomic,retain)NSString *countNumStr;
 @end
 
 NS_ASSUME_NONNULL_END

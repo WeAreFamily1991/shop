@@ -252,6 +252,18 @@
                 {
                     cell.shoucangBtn.selected =YES;
                 }
+                cell.cancelBtn.hidden =NO;
+                cell.cancelBlock = ^(NSInteger canceltag) {
+                    NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObject:self.goodsModel.recordid forKey:@"id"];
+                    [SNIOTTool deleteWithURL:@"buyer/deleteArrivalNotice" parameters:mudic success:^(SNResult *result) {
+                        if (result.state==200) {
+                            [self.tableView.mj_header beginRefreshing];
+                        }
+                        
+                    } failure:^(NSError *error) {
+                        
+                    }];
+                };
                 cell.shoucangBlock = ^(NSInteger shoucangtag) {
                     NSDictionary *dic =@{@"id":self.goodsModel.goods_id};
                     

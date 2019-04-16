@@ -51,13 +51,13 @@
     _goodsImageView.contentMode = UIViewContentModeScaleAspectFit;
     [self addSubview:_goodsImageView];
     _goodsTitleLabel = [[UILabel alloc] init];
-    _goodsTitleLabel.font = DR_FONT(13);
+    _goodsTitleLabel.font = DR_FONT(14);
     _goodsTitleLabel.textColor =[UIColor blackColor];
     _goodsTitleLabel.textAlignment = 0;
     [self addSubview:_goodsTitleLabel];
     _goodsContentLabel = [[UILabel alloc] init];
     _goodsContentLabel.font = DR_FONT(13);
-    _goodsContentLabel.textColor =[UIColor blackColor];
+    _goodsContentLabel.textColor =[UIColor darkGrayColor];
     _goodsContentLabel.textAlignment = 0;
     _goodsContentLabel.numberOfLines =0;
     [self addSubview:_goodsContentLabel];
@@ -69,20 +69,21 @@
 //    DRWeakSelf;
     [_goodsImageView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_equalTo(self);
-        make.left.mas_equalTo(self);
+        make.left.mas_equalTo(self).offset(10);
         make.bottom.mas_equalTo(self);
         make.width.mas_offset(HScale(70));
     }];
     [_goodsTitleLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_offset(HScale(20));
-        make.left.mas_offset(HScale(80));
+        make.left.mas_offset(HScale(90));
         //make.right.mas_equalTo(self);
-        make.height.mas_offset(@20);
+        make.height.mas_offset(HScale(20));
     }];
     [_goodsContentLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.mas_offset(HScale(40));
-        make.left.mas_offset(HScale(80));
+        make.left.mas_offset(HScale(90));
         make.right.mas_equalTo(self).offset(5);
+        make.height.mas_offset(HScale(20));
 //        make.bottom.mas_offset(weakSelf.goodsImageView).offset(-5);
     }];
 }

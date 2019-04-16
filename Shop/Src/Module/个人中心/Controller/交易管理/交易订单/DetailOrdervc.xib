@@ -11,9 +11,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailOrdervc">
             <connections>
-                <outlet property="againBtn" destination="2kR-ly-CkQ" id="aXm-Ye-cOQ"/>
-                <outlet property="detailBtn" destination="ehf-4O-3Ky" id="IKL-Yq-Nui"/>
-                <outlet property="saleOutBtn" destination="K0t-Vw-H5q" id="BfI-Q0-3VQ"/>
+                <outlet property="againBuyBtn" destination="b61-dw-KEm" id="jfb-Ls-AdS"/>
+                <outlet property="cancelBtn" destination="mLs-ZF-MZh" id="NSj-l6-DFx"/>
+                <outlet property="saleOutBtn" destination="r8O-DX-oj7" id="OMA-MA-ziF"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -25,43 +25,50 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xvb-n3-Yyg">
                     <rect key="frame" x="0.0" y="617" width="375" height="50"/>
                     <subviews>
-                        <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2kR-ly-CkQ">
-                            <rect key="frame" x="205" y="5" width="80" height="39"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                            <state key="normal" title="再次购买">
+                        <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mLs-ZF-MZh">
+                            <rect key="frame" x="204" y="12.5" width="73" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="mLs-ZF-MZh" secondAttribute="height" multiplier="35:12" id="19T-af-x7M"/>
+                                <constraint firstAttribute="height" constant="25" id="NV3-c2-PIz"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <state key="normal" title="取消订单" backgroundImage="分类购买_16">
                                 <color key="titleColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
-                            <connections>
-                                <action selector="btnClick:" destination="-1" eventType="touchUpInside" id="UKb-YM-8mo"/>
-                            </connections>
+                            <state key="selected" title="确认收货"/>
                         </button>
-                        <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K0t-Vw-H5q">
-                            <rect key="frame" x="120" y="5" width="80" height="39"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                            <state key="normal" title="整单申请售后">
+                        <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b61-dw-KEm">
+                            <rect key="frame" x="287" y="12.5" width="73" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="25" id="8XB-nh-dSY"/>
+                                <constraint firstAttribute="width" secondItem="b61-dw-KEm" secondAttribute="height" multiplier="35:12" id="IqW-Mo-YL6"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <state key="normal" title="再次购买" backgroundImage="分类购买_16">
                                 <color key="titleColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
-                            <connections>
-                                <action selector="btnClick:" destination="-1" eventType="touchUpInside" id="p9s-TG-ZHw"/>
-                            </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ehf-4O-3Ky">
-                            <rect key="frame" x="290" y="5" width="80" height="39"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                            <state key="normal" title="订单详情">
+                        <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r8O-DX-oj7">
+                            <rect key="frame" x="121.5" y="12.5" width="72.5" height="25"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="r8O-DX-oj7" secondAttribute="height" multiplier="35:12" id="NAJ-jB-8VY"/>
+                                <constraint firstAttribute="height" constant="25" id="UTt-kB-Pt4"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <state key="normal" title="申请售后" backgroundImage="分类购买_16">
                                 <color key="titleColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
-                            <connections>
-                                <action selector="btnClick:" destination="-1" eventType="touchUpInside" id="fUm-YD-xAG"/>
-                            </connections>
                         </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="mLs-ZF-MZh" firstAttribute="centerY" secondItem="b61-dw-KEm" secondAttribute="centerY" id="9wl-wt-meX"/>
                         <constraint firstAttribute="height" constant="50" id="CTF-Tm-NA9"/>
+                        <constraint firstItem="b61-dw-KEm" firstAttribute="centerY" secondItem="xvb-n3-Yyg" secondAttribute="centerY" id="Ofd-WU-mB5"/>
+                        <constraint firstItem="b61-dw-KEm" firstAttribute="leading" secondItem="mLs-ZF-MZh" secondAttribute="trailing" constant="10" id="a8J-cz-Pvt"/>
+                        <constraint firstAttribute="trailing" secondItem="b61-dw-KEm" secondAttribute="trailing" constant="15" id="apn-Ic-yC4"/>
+                        <constraint firstItem="r8O-DX-oj7" firstAttribute="centerY" secondItem="mLs-ZF-MZh" secondAttribute="centerY" id="fDy-x4-xp7"/>
+                        <constraint firstItem="mLs-ZF-MZh" firstAttribute="leading" secondItem="r8O-DX-oj7" secondAttribute="trailing" constant="10" id="x3e-08-rgW"/>
                     </constraints>
                 </view>
             </subviews>
@@ -74,4 +81,7 @@
             <point key="canvasLocation" x="132" y="154.27286356821591"/>
         </view>
     </objects>
+    <resources>
+        <image name="分类购买_16" width="250" height="73"/>
+    </resources>
 </document>

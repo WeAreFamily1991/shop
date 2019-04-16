@@ -11,8 +11,14 @@
 #import "DCTabBarController.h"
 #import "DCAppVersionTool.h"
 #import "STRootNavigationController.h"
-
-#import "HomeViewController.h"                  // 首页
+// 引入JPush功能所需头文件
+#import "JPUSHService.h"
+// iOS10注册APNs所需头文件
+#ifdef NSFoundationVersionNumber_iOS_9_x_Max
+#import <UserNotifications/UserNotifications.h>
+#endif
+// 如果需要使用idfa功能所需要引入的头文件（可选）
+               // 首页
 //#import "CategoryPurchaseViewController.h"      // 分类购买
 #import "ShoppingCartViewController.h"          // 购物车
 #import "MineViewController.h"                  // 个人中心
@@ -20,7 +26,7 @@
 #import "DCNewFeatureViewController.h"
 
 
-@interface AppDelegate ()
+@interface AppDelegate ()<JPUSHRegisterDelegate>
 
 @end
 
@@ -28,6 +34,7 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self getJpush:launchOptions];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     BOOL serverFlag = ![version hasSuffix:@"_T"];
    
@@ -44,6 +51,23 @@
     [self setUpFixiOS11]; //适配IOS 11
     
     return YES;
+}
+-(void)getJpush:(NSDictionary *)launchOptions
+{
+    JPUSHRegisterEntity * entity = [[JPUSHRegisterEntity alloc] init];
+    entity.types = JPAuthorizationOptionAlert|JPAuthorizationOptionBadge|JPAuthorizationOptionSound;
+    if ([[UIDevice currentDevice].systemVersion floatValue] >= 8.0) {
+        // 可以添加自定义categories
+        // NSSet<UNNotificationCategory *> *categories for iOS10 or later
+        // NSSet<UIUserNotificationCategory *> *categories for iOS8 and iOS9
+    }
+    [JPUSHService registerForRemoteNotificationConfig:entity delegate:self];
+    [JPUSHService setupWithOption:launchOptions appKey:JPushAppKey
+                          channel:@"App Store"
+                 apsForProduction:NO
+            advertisingIdentifier:nil];
+    //    [AMapServices sharedServices].apiKey = @"9b0881587fbefad0e4f253b525ce1597";
+   
 }
 #pragma mark - 根控制器
 - (void)setUpRootVC
@@ -77,7 +101,84 @@
         UITableView.appearance.estimatedSectionHeaderHeight = 0;
     }
 }
+// iOS 10 Support
+- (void)jpushNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)())completionHandler {
+    // Required
+//    DFCNotificationVC *NotificationVC = [[UIStoryboard storyboardWithName:@"DFCMe" bundle:nil] instantiateViewControllerWithIdentifier:@"DFCNotificationVC"];
+//    NotificationVC.title =@"消息通知";
+//    
+//    SNTabBarController *tabBar = (SNTabBarController *)self.window.rootViewController;//获取window的跟视图,并进行强制转换
+//    
+//    if ([tabBar isKindOfClass:[UITabBarController class]]) {//判断是否是当前根视图
+//        
+//        DFCNavigationController *nav = tabBar.selectedViewController;//获取到当前视图的导航视图
+//        
+//        [nav.topViewController.navigationController pushViewController:NotificationVC animated:YES];//获取当前跟视图push到的最高视图层,然后进行push到目的页面
+//        
+//    }
+    NSDictionary * userInfo = response.notification.request.content.userInfo;
+    //    switch ([userInfo[@"c_type"] integerValue]) {
+    //        case 1:
+    //        case 4:
+    //        case 5:
+    //        {
+    //            CarServeVC *selectedVC = [[UIStoryboard storyboardWithName:@"DFCHome" bundle:nil] instantiateViewControllerWithIdentifier:@"CarServeVC"];
+    //            SNTabBarController *tabBar = (SNTabBarController *)self.window.rootViewController;//获取window的跟视图,并进行强制转换
+    //            selectedVC.sourceDic =userInfo;
+    //            selectedVC.title =@"农地详情";
+    //            selectedVC.statusStr =@"";
+    //            if ([tabBar isKindOfClass:[UITabBarController class]])
+    //            {//判断是否是当前根视图
+    //                DFCNavigationController *nav = tabBar.selectedViewController;//获取到当前视图的导航视图
+    //                [nav.topViewController.navigationController pushViewController:selectedVC animated:YES];//获取当前跟视图push到的最高视图层,然后进行push到目的页面
+    //            }
+    //        }
+    //            break;
+    //        case 2:
+    //        case 3:
+    //        {
+    //            CarServeVC *selectedVC = [[UIStoryboard storyboardWithName:@"DFCHome" bundle:nil] instantiateViewControllerWithIdentifier:@"CarServeVC"];
+    //            SNTabBarController *tabBar = (SNTabBarController *)self.window.rootViewController;//获取window的跟视图,并进行强制转换
+    //            selectedVC.sourceDic =userInfo;
+    //            selectedVC.title =@"指派详情";
+    //            selectedVC.statusStr =@"1";
+    //            if ([tabBar isKindOfClass:[UITabBarController class]])
+    //            {//判断是否是当前根视图
+    //                DFCNavigationController *nav = tabBar.selectedViewController;//获取到当前视图的导航视图
+    //                [nav.topViewController.navigationController pushViewController:selectedVC animated:YES];//获取当前跟视图push到的最高视图层,然后进行push到目的页面
+    //
+    //            }
+    //        }
+    //            break;
+    //        case 6:
+    //        case 7:
+    //        {
+    //            SNTabBarController *tabBarController = [[SNTabBarController alloc] init];
+    //            tabBarController.selectedIndex =1;
+    //            [UIApplication sharedApplication].keyWindow.rootViewController = tabBarController;
+    //        }
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    if([response.notification.request.trigger isKindOfClass:[UNPushNotificationTrigger class]]) {
+        [JPUSHService handleRemoteNotification:userInfo];
+    }
+    completionHandler();  // 系统要求执行这个方法
+}
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
+    // Required, iOS 7 Support
+    [JPUSHService handleRemoteNotification:userInfo];
+    completionHandler(UIBackgroundFetchResultNewData);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    
+    // Required,For systems with less than or equal to iOS6
+    [JPUSHService handleRemoteNotification:userInfo];
+}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
@@ -85,6 +186,7 @@
 
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+     [application setApplicationIconBadgeNumber:0];
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }

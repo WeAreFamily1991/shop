@@ -24,13 +24,13 @@
 @property (nonatomic, copy) NSString *baseNum;
 
 /** 数值增减基数（倍数增减） 默认1的倍数增减 */
-@property (nonatomic, assign) NSInteger multipleNum;
+@property (nonatomic, assign) double multipleNum;
 
 /** 最小值 默认且最小为0*/
-@property (nonatomic, assign) NSInteger minNum;
+@property (nonatomic, assign) double minNum;
 
 /** 最大值  默认99999 */
-@property (nonatomic, assign) NSInteger maxNum;
+@property (nonatomic, assign) double maxNum;
 
 
 /** 数字框是否可以手动输入  默认可以 */

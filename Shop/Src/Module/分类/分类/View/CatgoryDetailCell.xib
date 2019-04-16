@@ -20,11 +20,11 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9Cf-ga-dBm">
-                        <rect key="frame" x="0.0" y="1" width="375" height="39"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L9a-cN-Qaw">
-                                <rect key="frame" x="215" y="9" width="70" height="25"/>
+                                <rect key="frame" x="218" y="10" width="70" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="收藏" backgroundImage="分类购买_14">
@@ -35,14 +35,14 @@
                                 </state>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="单价：¥0.00元/公斤" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggY-1d-2S5">
-                                <rect key="frame" x="15" y="0.0" width="192" height="42"/>
+                                <rect key="frame" x="13" y="-1" width="145" height="47"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DmA-j7-CFW">
-                                <rect key="frame" x="292" y="9" width="70" height="25"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DmA-j7-CFW">
+                                <rect key="frame" x="294" y="10" width="70" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="加入购物车" backgroundImage="分类购买_16">
@@ -50,6 +50,17 @@
                                 </state>
                                 <state key="selected" title="到货通知" backgroundImage="分类购买列表-03_03">
                                     <color key="titleColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UhH-xE-zAV">
+                                <rect key="frame" x="142" y="10" width="70" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <state key="normal" title="取消" backgroundImage="border-bg">
+                                    <color key="titleColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <state key="selected" title="取消收藏" backgroundImage="分类购买_14">
+                                    <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                             </button>
                         </subviews>
@@ -61,6 +72,7 @@
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <viewLayoutGuide key="safeArea" id="yM2-OS-NUL"/>
             <connections>
+                <outlet property="cancelBtn" destination="UhH-xE-zAV" id="mfV-c4-tqA"/>
                 <outlet property="priceAccountLab" destination="ggY-1d-2S5" id="A9q-pi-ZFB"/>
                 <outlet property="shopCarBtn" destination="DmA-j7-CFW" id="s7C-ty-T8v"/>
                 <outlet property="shoucangBtn" destination="L9a-cN-Qaw" id="nXA-Uj-H45"/>
@@ -77,14 +89,17 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9UJ-AK-FLq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vQP-Po-GfS">
-                                <rect key="frame" x="277" y="10" width="8" height="23.5"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="center" clearsOnBeginEditing="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vQP-Po-GfS">
+                                <rect key="frame" x="232" y="10" width="60" height="23.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="7LD-VR-5Vr"/>
+                                </constraints>
                                 <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="单位" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgT-wg-iHi">
-                                <rect key="frame" x="293" y="7.5" width="55" height="29"/>
+                                <rect key="frame" x="300" y="7.5" width="55" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="55" id="AD7-OK-XOs"/>
                                 </constraints>
@@ -93,18 +108,18 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="phM-nz-lmA">
-                                <rect key="frame" x="222" y="7.5" width="50" height="29"/>
+                                <rect key="frame" x="177" y="7.5" width="50" height="29"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="R84-7E-t6F"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <state key="normal" title="袋" image="accessoryArrow_down">
-                                    <color key="titleColor" red="1" green="0.0" blue="0.0039215686269999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <state key="selected" title="取消收藏"/>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sof-yc-Tli" customClass="NumberCalculate">
-                                <rect key="frame" x="117" y="7.5" width="100" height="29"/>
+                                <rect key="frame" x="72" y="7.5" width="100" height="29"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="qVj-i4-Y7j"/>
@@ -113,10 +128,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="dgT-wg-iHi" firstAttribute="centerY" secondItem="vQP-Po-GfS" secondAttribute="centerY" id="0ws-SD-gXI"/>
                             <constraint firstAttribute="bottom" secondItem="vQP-Po-GfS" secondAttribute="bottom" constant="10" id="1j5-uG-Prq"/>
                             <constraint firstItem="phM-nz-lmA" firstAttribute="leading" secondItem="Sof-yc-Tli" secondAttribute="trailing" constant="5" id="3OJ-DI-puo"/>
-                            <constraint firstAttribute="trailing" secondItem="dgT-wg-iHi" secondAttribute="trailing" constant="27" id="AwV-mK-PaN"/>
+                            <constraint firstAttribute="trailing" secondItem="dgT-wg-iHi" secondAttribute="trailing" constant="20" id="AwV-mK-PaN"/>
                             <constraint firstItem="Sof-yc-Tli" firstAttribute="height" secondItem="9UJ-AK-FLq" secondAttribute="height" multiplier="1:1.5" id="CyC-5f-lai"/>
                             <constraint firstItem="dgT-wg-iHi" firstAttribute="bottom" secondItem="phM-nz-lmA" secondAttribute="bottom" id="EYK-VX-cbc"/>
                             <constraint firstItem="phM-nz-lmA" firstAttribute="top" secondItem="Sof-yc-Tli" secondAttribute="top" id="JHL-nf-n7m"/>
@@ -151,6 +165,7 @@
     </objects>
     <resources>
         <image name="accessoryArrow_down" width="8" height="5"/>
+        <image name="border-bg" width="180" height="58"/>
         <image name="分类购买_14" width="199" height="73"/>
         <image name="分类购买_16" width="250" height="73"/>
         <image name="分类购买列表-03_03" width="220" height="73"/>

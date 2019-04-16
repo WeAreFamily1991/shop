@@ -84,9 +84,9 @@
     if (dictionary) {
         [dic addEntriesFromDictionary:dictionary];
     }
-    if (self.status==0) {
-        [dic setObject:@"" forKey:@"status"];
-    }
+//    if (self.status==0) {
+//        [dic setObject:@"" forKey:@"status"];
+//    }
     DRWeakSelf;
     [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         NSLog(@"data=%@",result.data[@"list"]);
@@ -133,7 +133,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
    
-    return SCREEN_HEIGHT/9;
+    return SCREEN_HEIGHT/8;
 }
 - (DCUpDownButton *)bgTipButton
 {

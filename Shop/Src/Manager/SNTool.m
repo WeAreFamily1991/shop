@@ -268,6 +268,34 @@
     
     return calculateStr;
 }
+//NSDate转NSString
++ (NSString *)stringFromDate:(NSDate *)date
+{
+    //获取系统当前时间
+//    NSDate *currentDate = [NSDate date];
+    //用于格式化NSDate对象
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    //设置格式：zzz表示时区
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    //NSDate转NSString
+    NSString *currentDateString = [dateFormatter stringFromDate:date];
+    //输出currentDateString
+    NSLog(@"%@",currentDateString);
+    return currentDateString;
+}
+
+//NSString转NSDate
++ (NSDate *)dateFromString:(NSString *)string
+{
+//    //需要转换的字符串
+//    NSString *dateString = @"2015-06-26 08:08:08";
+    //设置转换格式
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init] ;
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    //NSString转NSDate
+    NSDate *date=[formatter dateFromString:string];
+    return date;
+}
 +(NSString *)yearMonthTimeFormat:(NSString *)format
 {
     NSTimeInterval interval    =[format doubleValue] / 1000.0;
@@ -294,5 +322,71 @@
     //设置文字颜色
     [str addAttribute:NSForegroundColorAttributeName value:vaColor range:range];
     label.attributedText = str;
+}
++(int)compareOneDay:(NSDate *)oneDay withAnotherDay:(NSDate *)anotherDay
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    NSString *oneDayStr = [dateFormatter stringFromDate:oneDay];
+    
+    NSString *anotherDayStr = [dateFormatter stringFromDate:anotherDay];
+    
+    NSDate *dateA = [dateFormatter dateFromString:oneDayStr];
+    
+    NSDate *dateB = [dateFormatter dateFromString:anotherDayStr];
+    
+    NSComparisonResult result = [dateA compare:dateB];
+    
+    if (result == NSOrderedDescending) {
+        //NSLog(@"oneDay比 anotherDay时间晚");
+        return 1;
+    }
+    else if (result == NSOrderedAscending){
+        //NSLog(@"oneDay比 anotherDay时间早");
+        return -1;
+    }
+    //NSLog(@"两者时间是同一个时间");
+    return 0;
+}
+///< 获取当前时间的: 前一周(day:-7)丶前一个月(month:-30)丶前一年(year:-1)的时间戳
++ (NSString *)laterGetExpectTimestamp:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day {
+    
+    ///< 当前时间
+    NSDate *currentdata = [NSDate date];
+    
+    ///< NSCalendar -- 日历类，它提供了大部分的日期计算接口，并且允许您在NSDate和NSDateComponents之间转换
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    
+    /*
+     ///<  NSDateComponents：时间容器，一个包含了详细的年月日时分秒的容器。
+     ///< 下例：获取指定日期的年，月，日
+     NSDateComponents *comps = nil;
+     comps = [calendar components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:currentdata];
+     NSLog(@"年 year = %ld",comps.year);
+     NSLog(@"月 month = %ld",comps.month);
+     NSLog(@"日 day = %ld",comps.day);*/
+    
+    
+    NSDateComponents *datecomps = [[NSDateComponents alloc] init];
+    [datecomps setYear:year?:0];
+    [datecomps setMonth:month?:0];
+    [datecomps setDay:day?:0];
+    
+    ///< dateByAddingComponents: 在参数date基础上，增加一个NSDateComponents类型的时间增量
+    NSDate *calculatedate = [calendar dateByAddingComponents:datecomps toDate:currentdata options:0];
+    
+    ///< 打印推算时间
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *calculateStr = [formatter stringFromDate:calculatedate];
+    
+    NSLog(@"calculateStr 推算时间: %@",calculateStr );
+    
+    ///< 预期的推算时间
+    //    NSString *result = [NSString stringWithFormat:@"%ld", (long)[calculatedate timeIntervalSince1970]];
+    
+    return calculateStr;
 }
 @end

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "GoodsModel.h"
+#import "OrderModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FirstTableViewCell : UITableViewCell
@@ -20,8 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *parameterLabel;  ///<产品参数
 @property(nonatomic,strong)UILabel *cellLabel;       ///<销售单位
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
-
+@property (nonatomic,retain)GoodsListModel *goodListModel;
 @property (nonatomic,retain)GoodsModel *goodsModel;
+@property(nonatomic,strong)NSDictionary *dataDict;      ///<数据
+@property(nonatomic,assign)NSInteger selectRow;
 @end
 
 NS_ASSUME_NONNULL_END

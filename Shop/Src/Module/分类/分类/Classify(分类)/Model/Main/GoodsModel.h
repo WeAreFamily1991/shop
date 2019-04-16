@@ -128,6 +128,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * minquantity;
 @property (nonatomic , copy) NSString              * leftCount;
 @property (nonatomic , copy) NSString              * payType;
+@property (nonatomic , copy) NSString              * recordid;
+@property (nonatomic , copy) NSString              * baseName;
 @end
 
 NS_ASSUME_NONNULL_END

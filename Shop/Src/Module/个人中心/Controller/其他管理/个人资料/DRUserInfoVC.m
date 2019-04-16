@@ -489,14 +489,11 @@
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
     }
 //    [self.avatarBtn setImage:image forState:UIControlStateNormal];
-    DRWeakSelf;
+//    DRWeakSelf;
     
     [SNAPI userAvatar:image nickName:nil success:^(SNResult *result){
         [MBProgressHUD showSuccess:SNStandardString(@"上传成功")];
         [DRBuyerModel sharedManager].logo =result.data[@"src"];
-        if (weakSelf.changeInfo) {
-            weakSelf.changeInfo();
-        }
         [self.tableView reloadData];
     } failure:^(NSError *error) {
         

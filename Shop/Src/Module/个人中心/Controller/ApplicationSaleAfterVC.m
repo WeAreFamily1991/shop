@@ -69,7 +69,7 @@
     self.tableView.dataSource=self;
     [self.view addSubview:self.tableView];
     self.commitBtn.layer.masksToBounds =self.commitBtn.dc_height/2;
-     self.commitBtn.layer.cornerRadius =self.commitBtn.dc_height/2;
+    self.commitBtn.layer.cornerRadius =self.commitBtn.dc_height/2;
     
     self.tableView.tableFooterView =self.footerView;
     

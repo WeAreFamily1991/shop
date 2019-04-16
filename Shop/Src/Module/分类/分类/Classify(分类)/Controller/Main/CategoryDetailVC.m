@@ -19,6 +19,7 @@
 #import "StoreVC.h"
 #import "GoodsModel.h"
 #import "GoodsShareModel.h"
+#import "CustomAlertView.h"
 #define DIC_EXPANDED @"expanded" //是否是展开 0收缩 1展开
 
 #define DIC_ARARRY @"array" //存放数组
@@ -35,8 +36,9 @@
 @property (nonatomic,retain)GoodsModel *goodsModel;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic,strong)SYTypeButtonView *buttonView;
-@property (nonatomic,strong)NSMutableArray *MsgListArr;
+@property (nonatomic,strong)NSMutableArray *MsgListArr,*selectNameArr,*selectCodeArr;
 @property (assign,nonatomic)NSInteger selectYes;
+@property (assign,nonatomic)NSInteger selectcode;
 @property (strong , nonatomic)UIButton *selectBtn;
 /* 滚回顶部按钮 */
 @property (strong , nonatomic)UIButton *backTopButton;
@@ -84,6 +86,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     [self.view addSubview:self.bgTipButton];
     self.selectYes =NO;
      [self initDataSource];
@@ -386,175 +389,159 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.MsgListArr.count!=0) {
+    DRWeakSelf;
+    if (self.MsgListArr.count!=0)
+    {
         self.goodsModel =self.MsgListArr[indexPath.section];
-        switch (indexPath.row) {
-            case 0:
-                
+       
+        if (indexPath.row==0)
+        {
+            GoodsCell *cell =[GoodsCell cellWithTableView:tableView];
+            cell.goodsModel =self.goodsModel;
+            return cell;
+        }
+        else if (indexPath.row==1)
+        {
+            SecondCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SecondCell"];
+            cell.moreBtn.tag =indexPath.section;
+            cell.moreBtn.selected =self.selectYes;
+            [cell.moreBtn addTarget:self action:@selector(moreBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+            cell.goodsModel =self.goodsModel;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            return cell;
+        }
+        else if (indexPath.row==2)
+        {
+            if ([self.goodsModel.qty intValue]!=0)
             {
-                GoodsCell *cell =[GoodsCell cellWithTableView:tableView];
+                CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];
+                [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
                 cell.goodsModel =self.goodsModel;
-                return cell;
-            }
-                break;
-            case 1:
-                
-            {
-                SecondCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SecondCell"];
-                cell.moreBtn.tag =indexPath.section;
-                cell.moreBtn.selected =self.selectYes;
-                [cell.moreBtn addTarget:self action:@selector(moreBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-                cell.goodsModel =self.goodsModel;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-                
-                return cell;
-            }
-                break;
-            case 2:
-                
-            {
-                if ([self.goodsModel.qty intValue]!=0) {
-                    CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];                    
-                    [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
-                    cell.danweiBtn.tag =indexPath.section;
-                    NSString *baseStr;//basicunitid 5千支  6公斤  7吨
-                    if ([_goodsModel.basicunitid intValue]==5) {
-                        baseStr =@"千支";
-                    }
-                    if ([_goodsModel.basicunitid intValue]==6) {
-                        baseStr =@"公斤";
-                    }
-                    if ([_goodsModel.basicunitid intValue]==7) {
-                        baseStr =@"吨";
-                    }
-                    cell.danweiLab.text =baseStr;
-                    cell.danweiBtnBlock = ^(NSInteger danweiBtntag) {
-                        
-                        [CGXPickerView showStringPickerWithTitle:@"单位" DataSource:@[ @"袋",@"盒", @"箱"] DefaultSelValue:@"袋" IsAutoSelect:NO Manager:nil ResultBlock:^(id selectValue, id selectRow) {
-                            [cell.danweiBtn setTitle:selectValue forState:UIControlStateNormal];
-                            NSLog(@"%@",selectValue);
-                            
-                        }];
-                    };
-                    cell.countTF.text =@"0.00";
-                    
-                    
-                    
-                    
-                    return cell;
-                }
+                cell.danweiBtn.tag =indexPath.section;
                
-            }
-                break;
-            case 3:
-            {
-                CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
-                cell.goodsModel =self.goodsModel;
-                if (self.goodsModel.favariteId.length==0)
-                {
-                    cell.shoucangBtn.selected =NO;
-                }
-                else
-                {
-                    cell.shoucangBtn.selected =YES;
-                }
-                cell.shoucangBlock = ^(NSInteger shoucangtag) {
-//                    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
-//                    NSString *urlStr;
-//                    if (cell.shoucangBtn.selected) {
-//                        urlStr =@"buyer/cancelItemFavorite";
-//
-//                        mudic =[NSMutableDictionary dictionaryWithObject:self.goodsModel.favariteId forKey:@"id"];
-//                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-//                            if (result.state==200) {
-//                                NSLog(@"result=%@",result.data);
-//
-//                                self.goodsModel.favariteId =@"";
-//                                [MBProgressHUD showSuccess:result.data];
-//                                //刷新当前行
-//                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-////                                [self.tableView reloadData];
-//                            }
-//                        } failure:^(NSError *error) {
-//
-//                        }];
-//                    }
-//                    else
-//                    {
-//                        urlStr =@"buyer/favoriteItem";
-//                        NSDictionary *dic =@{@"itemId":self.goodsModel.goods_id,@"sellerId":self.goodsModel.sellerid,@"storeId":self.goodsModel.storeId,@"branchId":self.goodsModel.branchId,@"areaId":self.goodsModel.areaId};
-//                        mudic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"item"];
-//                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-//                            if (result.state==200) {
-//                                NSLog(@"result=%@",result.data);
-//
-//
-//                                self.goodsModel.favariteId =result.data;
-//
-//
-//                                //刷新当前行
-//                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-//
-////
-//                            }
-//                        } failure:^(NSError *error) {
-//
-//                        }];
-//                    }
-//
-                  
-                };
-                cell.shopCarBlock = ^(NSInteger shopCartag) {
-//                    [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-//                        if (result.state==200) {
-//                            NSLog(@"result=%@",result.data);
-//                            
-//                           
-//                            //                                [self.tableView reloadData];
-//                        }
-//                    } failure:^(NSError *error) {
-//                        
-//                    }];
-                };
-                return cell;
-            }
+                cell.countTF.placeholder =@"0.00";
+
                 
-                break;
-            default:
-                break;
-        }
-        if (self.selectYes) {
-            if (indexPath.row==4||indexPath.row==5||indexPath.row==6) {
-                static NSString *SimpleTableIdentifier = @"selectCell";
-                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                         SimpleTableIdentifier];
-                if (cell == nil) {
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault                                              reuseIdentifier: SimpleTableIdentifier];
-                }
-                NSArray *titleArr =@[@"最小销售单位：箱",@"单规格起订量：1.000箱",@"预计发货时间：当日发货"];
-                cell.textLabel.text = titleArr[indexPath.row-4];
-                cell.textLabel.font =DR_FONT(12);
                 return cell;
             }
         }
+        else if (indexPath.row==3)
+        {
+            CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
+            cell.goodsModel =self.goodsModel;
+            if (self.goodsModel.favariteId.length==0)
+            {
+                cell.shoucangBtn.selected =NO;
+            }
+            else
+            {
+                cell.shoucangBtn.selected =YES;
+            }
+            cell.shoucangBlock = ^(NSInteger shoucangtag) {
+                //                    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
+                //                    NSString *urlStr;
+                //                    if (cell.shoucangBtn.selected) {
+                //                        urlStr =@"buyer/cancelItemFavorite";
+                //
+                //                        mudic =[NSMutableDictionary dictionaryWithObject:self.goodsModel.favariteId forKey:@"id"];
+                //                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
+                //                            if (result.state==200) {
+                //                                NSLog(@"result=%@",result.data);
+                //
+                //                                self.goodsModel.favariteId =@"";
+                //                                [MBProgressHUD showSuccess:result.data];
+                //                                //刷新当前行
+                //                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                ////                                [self.tableView reloadData];
+                //                            }
+                //                        } failure:^(NSError *error) {
+                //
+                //                        }];
+                //                    }
+                //                    else
+                //                    {
+                //                        urlStr =@"buyer/favoriteItem";
+                //                        NSDictionary *dic =@{@"itemId":self.goodsModel.goods_id,@"sellerId":self.goodsModel.sellerid,@"storeId":self.goodsModel.storeId,@"branchId":self.goodsModel.branchId,@"areaId":self.goodsModel.areaId};
+                //                        mudic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"item"];
+                //                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
+                //                            if (result.state==200) {
+                //                                NSLog(@"result=%@",result.data);
+                //
+                //
+                //                                self.goodsModel.favariteId =result.data;
+                //
+                //
+                //                                //刷新当前行
+                //                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                //
+                ////
+                //                            }
+                //                        } failure:^(NSError *error) {
+                //
+                //                        }];
+                //                    }
+                //
+                
+            };
+            cell.shopCarBlock = ^(NSInteger shopCartag) {
+                //                    [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
+                //                        if (result.state==200) {
+                //                            NSLog(@"result=%@",result.data);
+                //
+                //
+                //                            //                                [self.tableView reloadData];
+                //                        }
+                //                    } failure:^(NSError *error) {
+                //
+                //                    }];
+                
+                
+            };
+            
+            cell.noticeBlock = ^(NSInteger noticeTag) {
+                
+                
+              
+            };
+            return cell;
+        }
     }
-    
-    static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                             SimpleTableIdentifier];
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                      reuseIdentifier: SimpleTableIdentifier];
-    }
-    
-//    cell.textLabel.text = [_titleStr stringByAppendingString:[NSString stringWithFormat:@"-%d",(int)indexPath.row]];
-    return cell;
+//        if (self.selectYes)
+//        {
+//            if (indexPath.row==4||indexPath.row==5||indexPath.row==6)
+//            {
+//                static NSString *SimpleTableIdentifier = @"selectCell";
+//                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+//                                         SimpleTableIdentifier];
+//                if (cell == nil)
+//                {
+//                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault                                              reuseIdentifier: SimpleTableIdentifier];
+//                }
+//                NSArray *titleArr =@[@"最小销售单位：箱",@"单规格起订量：1.000箱",@"预计发货时间：当日发货"];
+//                cell.textLabel.text = titleArr[indexPath.row-4];
+//                cell.textLabel.font =DR_FONT(12);
+//                return cell;
+//            }
+//        }
+  
+        
+        static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                                 SimpleTableIdentifier];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                          reuseIdentifier: SimpleTableIdentifier];
+        }
+        
+        return cell;
     
 }
--(void)saveWithTag:(NSInteger)tag
-{
-    
-}
+//-(void)saveWithTag:(NSInteger)tag
+//{
+//
+//}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self.navigationController pushViewController:[StoreVC new] animated:YES];

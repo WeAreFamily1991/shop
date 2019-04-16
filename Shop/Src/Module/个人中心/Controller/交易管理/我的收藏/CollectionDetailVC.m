@@ -11,23 +11,27 @@
 #import "FirstTableViewCell.h"
 #import "GoodsModel.h"
 #import "CatgoryDetailCell.h"
+#import "DRAddShopModel.h"
 @interface CollectionDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
 }
 @property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @property (nonatomic,strong)NSMutableArray *MsgListArr;
+
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, copy) NSString *titleStr;
 @property (nonatomic,assign)NSInteger selectIndex;
 @property (nonatomic,retain)GoodsModel *goodsModel;
 @property (nonatomic,retain)FavoriteModel *favoriModel;
+@property (nonatomic,retain)DRAddShopModel *addShopModel;
 
 @property (nonatomic,retain)DCUpDownButton *bgTipButton;
 @end
 
 @implementation CollectionDetailVC
+
 -(NSMutableArray *)MsgListArr
 {
     if (!_MsgListArr) {
@@ -70,6 +74,15 @@
     }];
     [self.tableView.mj_footer endRefreshing];
     //   self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
+}
+-(void)getSingleItem
+{
+    NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObjects:@[self.goodsModel.sellerid,self.goodsModel.goods_id,self.goodsModel.storeId] forKeys:@[@"sellerId",@"id",@"storeId"]];
+    [SNIOTTool getWithURL:@"mainPage/getSingleItem" parameters:mudic success:^(SNResult *result) {
+        
+    } failure:^(NSError *error) {
+        
+    }];
 }
 -(void)getMsgList
 {

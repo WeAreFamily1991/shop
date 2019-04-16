@@ -25,7 +25,7 @@
 #define DEBUGAPI_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", DEBUGSERVER_ROOT]
 
  // 线上环境
-#define SERVER_ROOT             @"192.168.31.195:8081"
+#define SERVER_ROOT             @"192.168.31.140:8888"
 #define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/", SERVER_ROOT]
 #pragma mark - 状态码
 typedef NS_ENUM(NSUInteger, NetWorkStatus) {
@@ -48,3 +48,17 @@ static NSString * const API_SellerRecommend                     = @"mainPage/sel
 static NSString * const API_ItemCagetory                        = @"mainPage/itemCagetory";
 static NSString * const DRLogoutNotification                    = @"DRLogoutNotification";
 #endif /* NetworkConstants_h */
+//微信
+#define KWXAppId @"wx350d19445359cef6"
+#define  googleSatellite @"http://mt0.google.cn/vt/lyrs=y&hl=zh-CN&gl=cn&x={x}&y={y}&z={z}"
+//极光推送Key
+#define JPushAppKey @"84f6f23a53edcc38a5f26517"
+
+//高德地图Key
+//#define AMapAppKey @"cbde0886d07c0677dffbd5475f18ccdc"
+
+//QQ
+#define KQQAppId @"1105540359"
+
+//新浪微博
+#define KSinaAppKey @"531503743"

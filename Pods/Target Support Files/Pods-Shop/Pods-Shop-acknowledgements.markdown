@@ -285,6 +285,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+## JCore
+
+Copyright jpush.cn
+
+## JPush
+
+Copyright jiguang.cn
+
 ## JSONModel
 
 Copyright (c) 2012-2016 Marin Todorov and JSONModel contributors
