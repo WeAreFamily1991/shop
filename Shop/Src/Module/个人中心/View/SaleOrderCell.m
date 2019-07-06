@@ -32,7 +32,10 @@
     self.getTimeLab.text =[NSString stringWithFormat:@"生成日期：%@",[SNTool StringTimeFormat:saleModel.createTime]];
     self.saleTimeLab.text =[NSString stringWithFormat:@"对账账期：%@",saleModel.dzPeriod];
     self.saleCountLab.text =[NSString stringWithFormat:@"对账数量：%.2f",[saleModel.qty doubleValue]];
-    self.moneyCountLab.text =[NSString stringWithFormat:@"对账金额：%.2f",[saleModel.totalOrderAmt doubleValue]];
+    self.moneyCountLab.text =[NSString stringWithFormat:@"对账金额：￥%.2f",[saleModel.totalOrderAmt doubleValue]];
+    [SNTool setTextColor:self.moneyCountLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5, self.moneyCountLab.text.length-5) AndColor:REDCOLOR];
+    self.yunfeiLab.text =[NSString stringWithFormat:@"运费：￥%.2f",[saleModel.expressFeeTotal doubleValue]];
+     [SNTool setTextColor:self.yunfeiLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(3, self.yunfeiLab.text.length-3) AndColor:REDCOLOR];
 }
 
 - (IBAction)detailBtnClick:(id)sender {
@@ -72,9 +75,11 @@
 {
     
     self.orderLab.text =[NSString stringWithFormat:@"对账单号：%@",saleModel.dzNo];
-    self.getTimeLab.text =[NSString stringWithFormat:@"生成日期：%@",[SNTool StringTimeFormat:saleModel.createTime]];
-    self.saleTimeLab.text =[NSString stringWithFormat:@"对账账期：%@",saleModel.dzPeriod];
-    self.saleCountLab.text =[NSString stringWithFormat:@"对账数量：%.2f",[saleModel.qty doubleValue]];
+    self.getTimeLab.text =[NSString stringWithFormat:@"费用账期：%@",saleModel.dzPeriod];
+    self.saleTimeLab.text =[NSString stringWithFormat:@"退货金额：￥%.2f",[saleModel.returnOrderAmt doubleValue]];
+    [SNTool setTextColor:self.saleTimeLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5, self.saleTimeLab.text.length-5) AndColor:REDCOLOR];
+    self.saleCountLab.text =[NSString stringWithFormat:@"费用金额：￥%.2f",[saleModel.qty doubleValue]];
+     [SNTool setTextColor:self.saleCountLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5, self.saleCountLab.text.length-5) AndColor:REDCOLOR];
 }
 - (IBAction)detailBtnClick:(id)sender {
      !_detailClickBlock ? : _detailClickBlock();

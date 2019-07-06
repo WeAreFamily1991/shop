@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ApplicationSaleAfterVC : UIViewController
+@interface ApplicationSaleAfterVC : STBaseViewController
 @property(nonatomic,retain)NSDictionary *sourDic;
 /**
  表单数据源，数据源格式应为 @[JhFormSection..]，否则断言会直接崩溃

@@ -19,6 +19,8 @@
 
 @property (weak, nonatomic) IBOutlet DCPlaceholderTextView *detailTextView;
 @property (weak, nonatomic) IBOutlet UITextField *rePersonField;
+@property (weak, nonatomic) IBOutlet UITextField *mobileTF;
+
 @property (weak, nonatomic) IBOutlet UITextField *rePhoneField;
 
 @property (weak, nonatomic) IBOutlet UIButton *selectBtn;

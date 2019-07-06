@@ -14,7 +14,8 @@
 #import "HeadView.h"
 #import "AskSellOutVC.h"
 #import "ApplicationSaleAfterVC.h"
-#import "EvaluateViewController.h"
+#import "LSXAlertInputView.h"
+#import "CRDetailController.h"
 @interface DetailOrdervc ()<UITableViewDelegate,UITableViewDataSource,HeadViewDelegate>
 {
     int pageCount;
@@ -83,9 +84,8 @@
     //for (int i=0; i<self.dataDict.allKeys.count; i++) {
 
     [self.isOpenArr addObject:@"close"];
-    
     [self loadTableView];
-    [self addHeadView];
+    [self addHeadView];    
     [self getMsgList];
 
 }
@@ -100,12 +100,20 @@
 -(void)getMsgList
 {
     DRWeakSelf;
-    NSDictionary *muDIC =@{@"id":self.orderModel.order_id};
-    [SNIOTTool getWithURL:@"buyer/orderDetails" parameters:muDIC.mutableCopy success:^(SNResult *result) {
+    NSDictionary *muDIC =[NSDictionary dictionary];
+    if (self.orderID.length!=0) {
+        
+        muDIC =@{@"id":self.orderID};
+    }else
+    {
+         muDIC =@{@"id":self.orderModel.order_id};
+    }
+    [SNAPI getWithURL:@"buyer/orderDetails" parameters:muDIC.mutableCopy success:^(SNResult *result) {
         
         if (result.state==200) {
             NSArray *statusArr =@[@"已取消", @"待审核", @"待付款", @"待发货", @"待收货",@"已完成",@"退货中",@"已退货"];
              weakSelf.orderModel =[OrderModel mj_objectWithKeyValues:result.data];
+            
             weakSelf.messageArr=[NSMutableArray array];
             weakSelf.resoverArr=[NSMutableArray array];
             weakSelf.peisongArr=[NSMutableArray array];
@@ -135,13 +143,13 @@
             else  if (weakSelf.orderModel.status==4) {
                 self.saleOutBtn.hidden =NO;
                 self.cancelBtn.hidden =NO;
-                [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+                [self.saleOutBtn setTitle:@"整单申请售后" forState:UIControlStateNormal];
                 [self.cancelBtn setTitle:@"确认收货" forState:UIControlStateNormal];
             }
             else  if (weakSelf.orderModel.status==5) {
                 self.saleOutBtn.hidden =NO;
                 self.cancelBtn.hidden =NO;
-                [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+                [self.saleOutBtn setTitle:@"整单申请售后" forState:UIControlStateNormal];
                 [self.cancelBtn setTitle:@"去评价" forState:UIControlStateNormal];
             }
             else  if (weakSelf.orderModel.status==6) {
@@ -153,7 +161,26 @@
                 self.saleOutBtn.hidden =YES;
                 self.cancelBtn.hidden =YES;
             }
-            NSArray * resArr =@[[NSString stringWithFormat:@"收货人：%@",self.orderModel.consignee?:@""],[NSString stringWithFormat:@"收货地址：%@",self.orderModel.address?:@""],[NSString stringWithFormat:@"手机号码：%@",self.orderModel.mobile?:@""]];
+            if (self.orderModel.isReturn==1) {
+                self.saleOutBtn.hidden =YES;
+                self.cancelBtn.hidden =YES;
+            }
+            if (weakSelf.orderModel.status==101) {
+                self.saleOutBtn.hidden =YES;
+                self.cancelBtn.hidden =YES;
+            }
+            if (weakSelf.orderModel.status ==5) {
+                
+                
+                self.saleOutBtn.hidden = !weakSelf.orderModel.orderpaytype;
+                self.cancelBtn.hidden = !weakSelf.orderModel.orderpaytype;
+                
+                [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
+                [self.cancelBtn setTitle:@"去评价" forState:UIControlStateNormal];
+            }
+            NSString *mobileStr =[NSString stringWithFormat:@"%@",self.orderModel.mobile?:@""];
+            NSString *phoneStr =[NSString stringWithFormat:@"%@",self.orderModel.phone?:@""];
+            NSArray * resArr =@[[NSString stringWithFormat:@"收货人：%@",self.orderModel.consignee?:@""],[NSString stringWithFormat:@"收货地址：%@",self.orderModel.address?:@""],[NSString stringWithFormat:@"手机号码：%@ %@",mobileStr?:@"",phoneStr?:@""]];
             for (NSString *str in resArr) {
                 NSArray *titArr =[str componentsSeparatedByString:@"："];
                 if (![titArr[1] isEqualToString:@""]) {
@@ -187,7 +214,7 @@
                         {
                             [weakSelf.peisongArr addObject:str];
                         }
-                    }
+                    }        
                 }
                 else
                 {
@@ -203,7 +230,6 @@
             }
             else
             {
-                
                 peititleArr=@[@"配送方式：",@"预计发货时间：",@"物流公司：",@"物流单号："];
                 NSString *titleStr;
                 if ([ self.orderModel.orderservicetype isEqualToString:@"st"]) {
@@ -212,8 +238,9 @@
                 else if ([ self.orderModel.orderservicetype isEqualToString:@"wl"]) {
                     titleStr =@"物流配送";
                 }
-                else if ([ self.orderModel.orderservicetype isEqualToString:@"zt"]) {
-                    titleStr =@"自己提取";
+                else if ([ self.orderModel.orderservicetype isEqualToString:@"zt"])
+                {
+                    titleStr =@"自提";
                 }
                 else
                 {
@@ -230,19 +257,37 @@
                 }
                 
             }
-            NSArray *paytittleArr =@[@"付款方式：",@"付款时间：",@"订单总额：",@"实付总额："];
-            NSArray *paArr =@[[NSString stringWithFormat:@"%@%@",paytittleArr[0],self.orderModel.payTypeName?:@""],[NSString stringWithFormat:@"%@%@",paytittleArr[1],self.orderModel.payTime?:@""],[NSString stringWithFormat:@"%@%@",paytittleArr[2],[NSString stringWithFormat:@"%.3f",self.orderModel.orderAmt]?:@""],[NSString stringWithFormat:@"%@%@",paytittleArr[3],[NSString stringWithFormat:@"%.3f",self.orderModel.realAmt]?:@""]];
-            for (NSString *str in paArr)
-            {
-                NSArray *titArr =[str componentsSeparatedByString:@"："];
-                if (![titArr[1] isEqualToString:@""])
-                {
-                    [weakSelf.payArr addObject:str];
-                }
+            
+            if (self.orderModel.logphone.length!=0) {
+                [self.peisongArr addObject:[NSString stringWithFormat:@"物流联系方式：%@",self.orderModel.logphone]];
             }
-            self.customHeadView.statusLab.text =statusArr[weakSelf.orderModel.status];
+            NSArray *paytittleArr =@[@"付款方式：",@"数量总计：",@"订单总额：￥"];
+            //,,@"实付总额："[NSString stringWithFormat:@"%@%@",paytittleArr[4],[NSString stringWithFormat:@"%.3f",self.orderModel.realAmt]?:@""]
+            NSArray *paArr =@[[NSString stringWithFormat:@"%@%@",paytittleArr[0],[self.orderModel.payType intValue]?@"在线支付":@"线下支付"],[NSString stringWithFormat:@"%@%@",paytittleArr[1],[NSString stringWithFormat:@"%.3f",self.orderModel.totalqty]?:@""],[NSString stringWithFormat:@"%@%@",paytittleArr[2],[NSString stringWithFormat:@"%.2f",self.orderModel.orderAmt]?:@""]];
+            [weakSelf.payArr addObjectsFromArray:paArr];
+            NSString *payTimeStr;
+            if (self.orderModel.payTime.length!=0)
+            {
+                payTimeStr=[SNTool StringTimeFormat:self.orderModel.payTime];
+                [weakSelf.payArr insertObject:[NSString stringWithFormat:@"付款时间：%@",payTimeStr] atIndex:1];
+            }            
+            if ([self.orderModel.isDf intValue]==1) {
+                [weakSelf.payArr addObject:@"运费：到付"];
+            }else if ([self.orderModel.orderExpressPrice doubleValue]>0)
+            {
+                [weakSelf.payArr addObject:[NSString stringWithFormat:@"运费：￥%.2f",[self.orderModel.orderExpressPrice doubleValue]]];
+            }
+            if (self.orderModel.voucheroff>0) {
+                 [weakSelf.payArr addObject:[NSString stringWithFormat:@"抵用券：￥%.0f",self.orderModel.voucheroff]];
+            }
+            if (self.orderModel.moneyoff>0) {
+                 [weakSelf.payArr addObject:[NSString stringWithFormat:@"满减：￥%.0f",self.orderModel.moneyoff]];
+            }
+            
+            [weakSelf.payArr addObject:[NSString stringWithFormat:@"实付总额：￥%@",[NSString stringWithFormat:@"%.2f",self.orderModel.realAmt+[self.orderModel.orderExpressPrice doubleValue]]?:@""]];
+          
             if (self.orderModel.status==0) {
-                self.customHeadView.statusLab.textColor =[UIColor redColor];
+                self.customHeadView.statusLab.textColor =REDCOLOR;
             }
             else
             {
@@ -250,47 +295,122 @@
             }
             self.customHeadView.orderLab.text =[NSString stringWithFormat:@"订单号：%@",self.orderModel.orderNo];
             self.customHeadView.timeLab.text =[NSString stringWithFormat:@"下单时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",(long)self.orderModel.createTime]]];
-            
             NSArray *contentArr =@[@"尊敬的用户，您的订单已取消！",@"尊敬的用户，请耐心等待审核！", @"尊敬的用户，您的订单未付款，请您先付款！", @"尊敬的用户，您的订单已经审核成功，请您耐心等待发货！", @"尊敬的用户，您的订单已经出库，请您耐心等待！",@"尊敬的用户，您的订单已完成！",@"尊敬的用户，您的订单已经审核成功，请您耐心等待发货！",@"尊敬的用户，您的商品已经退货！"];
              NSArray *imgArr =@[@"cancel", @"checkpending", @"obligation", @"Toshipped", @"topreceived",@"offthestocks",@"Returns",@"returnedgoods"];
-            self.customHeadView.contentLab.text =contentArr[self.orderModel.status];
-            self.customHeadView.iconIMG.image =[UIImage imageNamed:imgArr[self.orderModel.status]];
+            if (weakSelf.orderModel.status==101) {
+                self.customHeadView.statusLab.text =@"已支付";
+                self.customHeadView.contentLab.text =@"尊敬的用户，您的订单已付款！";
+                self.customHeadView.iconIMG.image =[UIImage imageNamed:@"yizhifu"];
+            }else
+            {
+                self.customHeadView.contentLab.text =contentArr[self.orderModel.status];
+                self.customHeadView.statusLab.text =statusArr[weakSelf.orderModel.status];
+                self.customHeadView.iconIMG.image =[UIImage imageNamed:imgArr[self.orderModel.status]];
+            }
+            if (weakSelf.orderModel.isReturn==1) {
+                self.customHeadView.statusLab.text=@"退货中";
+            }
+            
+            
             if (self.orderModel.status==0) {
-               
 //                [SNTool compareOneDay: [SNTool dateFromString:[NSString stringWithFormat:@"%ld",(long)self.orderModel.confirmTime]] withAnotherDay:[SNTool dateFromString:[SNTool ddpGetExpectTimestamp:0 month:0 day:-1]]];
 //                NSLog(@"111%@222%@333%@444%@",[SNTool dateFromString:[NSString stringWithFormat:@"%ld",(long)self.orderModel.confirmTime]],[SNTool dateFromString:[NSString stringWithFormat:@"%ld",(long)self.orderModel.confirmTime]],[SNTool ddpGetExpectTimestamp:0 month:0 day:-1],[SNTool dateFromString:[SNTool ddpGetExpectTimestamp:0 month:0 day:-1]]);
-                
             }
-           
             [self.tableView reloadData];
-           
-            
         }
     } failure:^(NSError *error) {
         
     }];
-   
-
 }
+- (IBAction)saleOutBtnClick:(id)sender {
+    if ([self.saleOutBtn.titleLabel.text isEqualToString:@"整单申请售后"])
+    {
+        AskSellOutVC *outVC =[[AskSellOutVC alloc]init];
+        outVC.senderDic =[NSMutableDictionary dictionaryWithObjects:@[self.orderModel.order_id,@"",@"1"] forKeys:@[@"orderId",@"orderGoodsId",@"type"]];
+        outVC.refreshSourceBlock = ^{
+            [self getMsgList];
+            !_detailSourceBlock?:_detailSourceBlock();
+        };
+        [self.navigationController pushViewController:outVC animated:YES];
+    }
+    else if ([self.saleOutBtn.titleLabel.text isEqualToString:@"取消订单"]) {
+        LSXAlertInputView * alert=[[LSXAlertInputView alloc]initWithTitle:@"取消原因" PlaceholderText:@"请输入取消原因" WithKeybordType:LSXKeyboardTypeDefault CompleteBlock:^(NSString *contents) {
+            NSLog(@"-----%@",contents);
+            NSDictionary *dic =@{@"cancelReason":contents,@"orderId":self.orderModel.order_id};
+            [SNAPI postWithURL:@"buyer/cancelOrder" parameters:dic.mutableCopy success:^(SNResult *result) {
+                [MBProgressHUD showSuccess:@"取消成功"];
+                [self performSelector:@selector(laterClick) withObject:self afterDelay:1];
+            } failure:^(NSError *error) {
+                
+            }];
+        }];
+        [alert show];
+    }
+    
+}
+- (IBAction)cancelBtnClick:(id)sender {
+    if ([self.cancelBtn.titleLabel.text isEqualToString:@"取消订单"]) {
+        LSXAlertInputView * alert=[[LSXAlertInputView alloc]initWithTitle:@"取消原因" PlaceholderText:@"请输入取消原因" WithKeybordType:LSXKeyboardTypeDefault CompleteBlock:^(NSString *contents) {
+            NSLog(@"-----%@",contents);
+            NSDictionary *dic =@{@"cancelReason":contents,@"orderId":self.orderModel.order_id};
+            [SNAPI postWithURL:@"buyer/cancelOrder" parameters:dic.mutableCopy success:^(SNResult *result) {
+                [MBProgressHUD showSuccess:@"取消成功"];
+               
+            } failure:^(NSError *error) {
+                
+            }];
+        }];
+        [alert show];
+    }
+    else if ([self.cancelBtn.titleLabel.text isEqualToString:@"确认收货"]) {
+        NSDictionary *dic =@{@"orderId":self.orderModel.order_id};
+        [SNAPI postWithURL:@"buyer/sureOrder" parameters:dic.mutableCopy success:^(SNResult *result) {
+            [MBProgressHUD showSuccess:@"确认成功"];
+             [self performSelector:@selector(laterClick) withObject:self afterDelay:1];
+        } failure:^(NSError *error) {
+        }];
+    }
+    else if ([self.cancelBtn.titleLabel.text isEqualToString:@"整单申请售后"])
+    {
+        AskSellOutVC *outVC =[[AskSellOutVC alloc]init];
+        outVC.senderDic =[NSMutableDictionary dictionaryWithObjects:@[self.orderModel.order_id,@"",@"1"] forKeys:@[@"orderId",@"orderGoodsId",@"type"]];
+        outVC.refreshSourceBlock = ^{
+            [self getMsgList];
+            !_detailSourceBlock?:_detailSourceBlock();
+        };
+        [self.navigationController pushViewController:outVC animated:YES];
+    }
+    
+}
+-(void)laterClick
+{
+    [self.navigationController popViewControllerAnimated:YES];
+    !_detailSourceBlock?:_detailSourceBlock();
+}
+- (IBAction)againBuyBtnClick:(id)sender {
 
+    NSDictionary *dic =@{@"sourceType":@"Wechat",@"orderId":self.orderModel.order_id};
+    [SNAPI postWithURL:@"buyer/buyOrderAgain" parameters:dic.mutableCopy success:^(SNResult *result) {
+        self.tabBarController.selectedIndex =3;
+        [self.navigationController popToRootViewControllerAnimated:YES];
+    } failure:^(NSError *error) {
+        
+    }];
+}
 -(void)addCustomView
 {
     UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, 2, SCREEN_WIDTH, 36)];
     backView.backgroundColor =[UIColor whiteColor];
     [self.view addSubview:backView];
-    
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-
-
 #pragma mark 表的区数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    
     return 5;
 }
 #pragma mark 表的行数
@@ -334,11 +454,6 @@
     if (indexPath.section==0&&indexPath.row==0) {
         return 100;
     }
-    
-   
-//    if (indexPath.section==1||indexPath.section==3||indexPath.section==4) {
-//        return HScale(25);
-//    }
      return UITableViewAutomaticDimension;
 }
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -386,11 +501,10 @@
                 cell.orderModel =self.orderModel;
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.saleOutClickBlock = ^{
-                    [self.navigationController pushViewController:[EvaluateViewController new] animated:YES];
-//                    AskSellOutVC *outVC =[[AskSellOutVC alloc]init];
-//                    outVC.senderDic =[NSMutableDictionary dictionaryWithObjects:@[self.orderModel.order_id,self.goodListModel.good_id,@"2"] forKeys:@[@"orderId",@"orderGoodsId",@"type"]];
-//                    [self.navigationController pushViewController:outVC animated:YES];
                     
+                    AskSellOutVC *outVC =[[AskSellOutVC alloc]init];
+                    outVC.senderDic =[NSMutableDictionary dictionaryWithObjects:@[self.orderModel.order_id,self.goodListModel.good_id,@"2"] forKeys:@[@"orderId",@"orderGoodsId",@"type"]];
+                    [self.navigationController pushViewController:outVC animated:YES];            
                 };
                 return cell;
                 
@@ -421,13 +535,12 @@
        
         cell.textLabel.text =self.payArr[indexPath.row];
 //        long  count =self.payArr.count-2;
-        if (indexPath.row==self.payArr.count-2||indexPath.row==self.payArr.count-1) {
-            [SNTool setTextColor:cell.textLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(5, cell.textLabel.text.length-5) AndColor:[UIColor redColor]];
-        }
+//        if (indexPath.row==self.payArr.count-2||indexPath.row==self.payArr.count-1) {
+//            [SNTool setTextColor:cell.textLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(5, cell.textLabel.text.length-5) AndColor:REDCOLOR];
+//        }
     }
-//    cell.textLabel.text = @"啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦啦阿拉啦啦啦啦啦啦啦啦啦啦";
     cell.textLabel.numberOfLines =0;
-    cell.textLabel.font =DR_FONT(12);
+    cell.textLabel.font =DR_FONT(14);
     return cell;
     
 }
@@ -451,22 +564,6 @@
     [bgView addSubview:label];
     return bgView;
 }
-//- (nullable UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    if (section==0) {
-//        HeadView *headView = [HeadView headViewWithTableView:tableView];
-//
-////        headView.bgBtnBlock = ^(BOOL bgBtnSelectBlock) {
-////            self.isSelected =bgBtnSelectBlock;
-////            [self.tableView reloadData];
-////        };
-//
-////        headView.titleGroup = self.answersArray[section];
-//
-//        return headView;
-//    }
-//    return nil;
-//}
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
     if (section==0&&self.orderModel.goodsList.count>1) {
@@ -478,11 +575,11 @@
         button.titleLabel.font =[UIFont systemFontOfSize:14];
         [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         if ([[_isOpenArr objectAtIndex:section] isEqualToString:@"open"]) {
-            [button setImage:[UIImage imageNamed:@"arrow_down_grey"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:@"arrow_right_grey"] forState:UIControlStateNormal];
             [button setTitle:[NSString stringWithFormat:@"收起全部(%lu)",(unsigned long)self.orderModel.goodsList.count] forState:UIControlStateNormal];
         }
         else if ([[_isOpenArr objectAtIndex:section] isEqualToString:@"close"]) {
-            [button setImage:[UIImage imageNamed:@"arrow_right_grey"] forState:UIControlStateNormal];
+            [button setImage:[UIImage imageNamed:@"arrow_down_grey"] forState:UIControlStateNormal];
               [button setTitle:[NSString stringWithFormat:@"查看全部(%lu)",(unsigned long)self.orderModel.goodsList.count] forState:UIControlStateNormal];
         }
          [button layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:10];
@@ -505,5 +602,11 @@
     NSIndexSet *indexSet = [[NSIndexSet alloc] initWithIndex:sender.tag-100];
     [self.tableView reloadSections:indexSet withRowAnimation:UITableViewRowAnimationFade];
 }
-
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%ld",(long)indexPath.section);
+    CRDetailController *detailVC = [CRDetailController new];
+    detailVC.sellerid=self.orderModel.sellerId;
+    [self.navigationController pushViewController:detailVC animated:YES];
+}
 @end

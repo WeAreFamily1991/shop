@@ -6,7 +6,6 @@
 //  Copyright © 2018 SanTie. All rights reserved.
 //
 
-#import "STBaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -11,6 +11,10 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CustomFooterView : UIView
+@property (weak, nonatomic) IBOutlet UIButton *compTypeBtn;
+@property (weak, nonatomic) IBOutlet UILabel *companyLab;
+@property (weak, nonatomic) IBOutlet UIButton *phoneBtn;
+@property (weak, nonatomic) IBOutlet UILabel *contentlAB;
 
 @end
 

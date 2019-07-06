@@ -19,7 +19,7 @@
 
 @end
 
-@interface DCScanningViewController : UIViewController
+@interface DCScanningViewController : STBaseViewController
 
 /* 闪光灯按钮 */
 @property (strong , nonatomic)DCFlashButton *flashButton;

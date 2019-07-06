@@ -117,17 +117,17 @@
     CGFloat itemY = self.overallHeight;
 
     CGFloat itemH = ScreenW/4;
-    CGFloat itemW =2.2* ScreenW / 5.0;
+    CGFloat itemW = (ScreenW - 4*WScale(5))/3;
     switch (indexPath.item) {
         case 0:
-            layoutAttributes.frame = CGRectMake(5, itemY+5, itemW-7.5, 2*itemH-20);
+            layoutAttributes.frame = CGRectMake(5, itemY+5, itemW*0.86, itemH);
             break;
         case 1:
-            layoutAttributes.frame = CGRectMake(itemW+2.5, itemY+5, ScreenW-itemW-7.5, itemH-12.5);
+            layoutAttributes.frame = CGRectMake(itemW*0.86+10, itemY+5, itemW*0.86, itemH);
             break;
         case 2:
             self.overallHeight += itemH;
-            layoutAttributes.frame = CGRectMake(itemW+2.5, itemH-2.5, ScreenW-itemW-7.5, itemH-12.5);
+            layoutAttributes.frame = CGRectMake(2*itemW*0.86+15, itemY+5, ScreenW-(2*itemW*0.86+20), itemH);
             self.overallHeight += itemH;
             break;
         default:

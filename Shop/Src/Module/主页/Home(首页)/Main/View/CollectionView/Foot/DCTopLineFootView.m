@@ -42,7 +42,7 @@
     if (self) {
         
         [self setUpUI];
-        [self setsource];
+       
     }
     return self;
 }
@@ -59,6 +59,8 @@
      _cycleScrollView.titleLabelTextColor =[UIColor blackColor];
     _cycleScrollView.titleLabelTextFont =DR_FONT(14);
     _cycleScrollView.autoScrollTimeInterval = 5.0;
+    _cycleScrollView.currentPageDotColor =REDCOLOR;
+    _cycleScrollView.pageDotColor =[UIColor grayColor];
     _cycleScrollView.scrollDirection = UICollectionViewScrollDirectionVertical;
     _cycleScrollView.onlyDisplayText = YES;
 //    _cycleScrollView.pageDotImage =[UIImage imageNamed:@"news_ico"];
@@ -66,39 +68,28 @@
     self.quickButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.quickButton.titleLabel.font = DR_FONT(12);
     [self.quickButton setImage:[UIImage imageNamed:@"right_ico"] forState:UIControlStateNormal];
-    self.quickButton.frame =CGRectMake(ScreenW-WScale(65), self.dc_height-40, WScale(50), 40);
+    self.quickButton.frame =CGRectMake(ScreenW-WScale(65), self.dc_height/2-20, WScale(50), 40);
     [self.quickButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
     [self.quickButton setTitle:@"全部" forState:UIControlStateNormal];
+    [self.quickButton addTarget:self action:@selector(quickButtonClick) forControlEvents:UIControlEventTouchUpInside];
     [self.quickButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:10];
     [self addSubview:self.quickButton];
     UIView *lineView =[[UIView alloc]initWithFrame:CGRectMake(0, self.dc_height-1, ScreenW, 1)];
     lineView.backgroundColor =BACKGROUNDCOLOR;
     [self addSubview: lineView];
 }
-- (void)setsource
+-(void)setTitleGroupArray:(NSMutableArray *)titleGroupArray
 {
-    DRWeakSelf;
-    NSDictionary *mudic =@{@"typeCode":@"xinwengonggao",@"page":@"1",@"pageSize":@"10"};
-    [SNIOTTool getWithURL:@"mainPage/news" parameters:[mudic mutableCopy] success:^(SNResult *result) {
-        if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
-            
-            self.tipArr =[NSMutableArray array];
-            NSArray *sourceArr =[NewsModel mj_objectArrayWithKeyValuesArray:result.data];
-            for (NewsModel *model in sourceArr) {
-                [weakSelf.tipArr addObject:model.title];
-            }
-  
-            if (weakSelf.tipArr.count == 0) return;
-           weakSelf.cycleScrollView.titlesGroup = weakSelf.tipArr;
-        }
-        
-    } failure:^(NSError *error) {
-        
-    }];
-    
-    
+    _titleGroupArray =titleGroupArray;
+     self.cycleScrollView.titlesGroup = titleGroupArray;
 }
 
+-(void)quickButtonClick
+{
+    if (_allBlock) {
+        _allBlock(0);
+    }
+}
 #pragma mark - 点击图片Bannar跳转
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
     NSLog(@"点击了%zd轮播图",index);

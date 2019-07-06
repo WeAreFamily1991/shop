@@ -42,7 +42,7 @@
 {
     self.registeBtn.layer.cornerRadius =25;
     self.registeBtn.layer.masksToBounds =25;
-    self.phoneTF.text =[DRUserInfoModel sharedManager].account;
+    self.phoneTF.text =[DRUserInfoModel sharedManager].mobilePhone;
     [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     self.phoneTF.delegate =self;
     [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
@@ -50,29 +50,17 @@
     //时间按钮
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
+    
     TimerBtn.countDownButtonBlock = ^{
+        TimerBtn.phoneStr =self.phoneTF.text;
+        TimerBtn.imgCodeStr =self.imgCodeTF.text;
         [WeakSelf qurestCode]; //开始获取验证码
     };
     [self.codeView addSubview:TimerBtn];
 }
 //发生网络请求 --> 获取验证码
 - (void)qurestCode {
-    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
-        [MBProgressHUD showError:@"请输入正确的手机号码"];
-        return;
-    }
-    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
-        [MBProgressHUD showError:@"请输入正确的图文验证码"];
-        return;
-    }
-    //    DRWeakSelf;
-    [SNAPI commonMessageValidWithMobile:self.phoneTF.text validCode:self.imgCodeTF.text success:^(NSString *response) {
-        if ([response isEqualToString:@"200"]) {
-            [MBProgressHUD showError:@"验证码已发送"];
-        }
-    } failure:^(NSError *error) {
-        
-    }] ;
+   
     NSLog(@"发生网络请求 --> 获取验证码");
     
 }
@@ -83,7 +71,7 @@
         tokenStr =[User currentUser].token;
     }
     else{
-         tokenStr =[User currentUser].visitetoken;
+         tokenStr =[DEFAULTS objectForKey:@"visitetoken"];
     }
     NSString *urlStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",tokenStr,[SNTool getRandomNumber:1000 to:9999]];
     return urlStr;

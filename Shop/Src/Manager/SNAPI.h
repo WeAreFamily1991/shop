@@ -225,6 +225,14 @@
 + (void)userForgotPasswordMobilWithPassword:(NSString *)password ticket:(NSString *)ticket validCode:(NSString *)valideCode success:(void (^)())success failure:(void (^)(NSError *error))failure;
 
 /**
+ *  上传图片
+ *
+ *  @param image    用户头像图片
+ *  @param nickName 用户昵称(可选)
+ */
++ (void)uploadAvatar:(NSArray *)imageS nickName:(NSString *)nickName success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure;
+
+/**
  *  设置用户头像
  *
  *  @param image    用户头像图片
@@ -1065,6 +1073,8 @@ typedef NS_ENUM(NSInteger, SNThirdpartyType) {
  */
 + (void)postWithURL:(NSString *)url parameters:(NSDictionary *)paramers success:(void (^)(SNResult *result))success failure:(void (^)(NSError *error))failure;
 
+// GET
++ (void)getWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *result))success failure:(void (^)(NSError *error))failure;
 /**
  *  获取设备ID
  */

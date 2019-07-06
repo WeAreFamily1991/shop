@@ -79,38 +79,55 @@
     NSArray *childArray = @[
                             @{MallClassKey  : @"DCHandPickViewController",
                               MallTitleKey  : @"首页",
-                              MallImgKey    : @"home",
-                              MallSelImgKey : @"home_select"},
+                              MallImgKey    : @"首页",
+                              MallSelImgKey : @"首页-1"},
+                            
+                            @{MallClassKey  : @"DRBullDealerVC",
+                              MallTitleKey  : @"爆品牛商",
+                              MallImgKey    : @"爆品",
+                              MallSelImgKey : @"爆品-1"},
                             
                             @{MallClassKey  : @"DCCommodityViewController",
                               MallTitleKey  : @"分类购买",
-                              MallImgKey    : @"classify",
-                              MallSelImgKey : @"classify_select"},
+                              MallImgKey    : @"分类",
+                              MallSelImgKey : @"分类-1"},
                             
                             @{MallClassKey  : @"ShoppingCartViewController",
                               MallTitleKey  : @"购物车",
-                              MallImgKey    : @"shopcar",
-                              MallSelImgKey : @"shopcar_select"},
+                              MallImgKey    : @"购物车",
+                              MallSelImgKey : @"购物车-1"},
                             
                             @{MallClassKey  : @"MineViewController",
-                              MallTitleKey  : @"我的",
-                              MallImgKey    : @"mine",
-                              MallSelImgKey : @"mine_select"},
+                              MallTitleKey  : @"个人中心",
+                              MallImgKey    : @"个人中心",
+                              MallSelImgKey : @"个人中心-1"},
                             
                             ];
     [childArray enumerateObjectsUsingBlock:^(NSDictionary *dict, NSUInteger idx, BOOL * _Nonnull stop) {
         
         UIViewController *vc = [NSClassFromString(dict[MallClassKey]) new];
-        
+         vc.title =dict[MallTitleKey];
         DCNavigationController *nav = [[DCNavigationController alloc] initWithRootViewController:vc];
         UITabBarItem *item = nav.tabBarItem;
         
-        item.image = [UIImage imageNamed:dict[MallImgKey]];
+        item.image = [[UIImage imageNamed:dict[MallImgKey]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+//         vc.tabBarItem.image = originalImage;
         item.selectedImage = [[UIImage imageNamed:dict[MallSelImgKey]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        item.imageInsets = UIEdgeInsetsMake(6, 0,-6, 0);//（当只有图片的时候）需要自动调整
-
-        [self addChildViewController:nav];
+//        item.imageInsets = UIEdgeInsetsMake(6, 0,-6, 0);//（当只有图片的时候）需要自动调整
+//        item.titlePositionAdjustment = UIOffsetMake(5, 0);
+        //设置TabBarItem
+        NSMutableDictionary *textNormalDic = [NSMutableDictionary dictionary];
+        textNormalDic[NSForegroundColorAttributeName] = RGBHex(0X333333);
+            textNormalDic[NSFontAttributeName] = DR_FONT(12);
         
+        NSMutableDictionary *textSelectedDic = [NSMutableDictionary dictionary];
+        textSelectedDic[NSForegroundColorAttributeName] = REDCOLOR;
+            textSelectedDic[NSFontAttributeName] = DR_FONT(12);
+        
+        [item setTitleTextAttributes:textNormalDic forState:UIControlStateNormal];
+        [item setTitleTextAttributes:textSelectedDic forState:UIControlStateSelected];
+        [self addChildViewController:nav];
+       
         // 添加tabBarItem至数组
         [self.tabBarItems addObject:vc.tabBarItem];
     }];
@@ -119,12 +136,9 @@
 #pragma mark - 控制器跳转拦截
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     
-    if(viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerPerson]||viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerBeautyStore]){
-        
+    if(viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerBeautyStore]||viewController == [tabBarController.viewControllers objectAtIndex:DCTabBarControllerPerson]){        
         if (![User currentUser].isLogin) {
-            
-            [self presentViewController:[DRAppManager showLoginView] animated:YES completion:nil];
-//            [self presentViewController:dcLoginVc animated:YES completion:nil];
+            [DRAppManager showLoginView];
             return NO;
         }
     }

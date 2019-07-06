@@ -29,48 +29,48 @@
         _userNameLab.text = @"hahahahaha";
         [self.contentView addSubview:_userNameLab];
         //时间
-        _timeLab = [UITool createLabelWithFrame:CGRectMake(44, 36, kScreenWidth-80, 14) backgroundColor:[UIColor clearColor] textColor:[UIColor grayColor] textSize:12 alignment:NSTextAlignmentLeft lines:1];
-        _timeLab.text = @"2017/09/02    厨房清洁 | 上门服务";
-        [self.contentView addSubview:_timeLab];
-        
-        //分数
-        UIImageView *icon_scoring = [[UIImageView alloc]initWithImage:IMAGENAMED(@"icon-scoring")];
-        icon_scoring.frame = CGRectMake(kScreenWidth-37, -1, 27, 24);
-        [self.contentView addSubview:icon_scoring];
-        
-        _gradeLab = [UITool createLabelWithFrame:CGRectMake(kScreenWidth-37, -1, 27, 17) backgroundColor:[UIColor clearColor] textColor:[UIColor whiteColor] textSize:12 alignment:NSTextAlignmentCenter lines:1];
-        _gradeLab.text = @"5.0";
-        [self.contentView addSubview:_gradeLab];
-        
-        //评论内容
-        NSString *str = @"非常好，干净，地理位置好。附近很安静，适合散步。离宝能太古城很近，电视节目也很多。";
-        CGSize size = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:str withMaxWidth:kScreenWidth-54];
-        _contentLab = [UITool createLabelWithFrame:CGRectMake(44, _timeLab.maxY+10, kScreenWidth-54, size.height+3) backgroundColor:[UIColor clearColor] textColor:[UIColor darkGrayColor] textSize:14 alignment:NSTextAlignmentLeft lines:0];
-        _contentLab.text = str;
-        [self.contentView addSubview:_contentLab];
-        
-        _photoView = [[UIView alloc]initWithFrame:CGRectMake(44, _contentLab.maxY+6, kScreenWidth-54, 0)];
-        _photoView.userInteractionEnabled = YES;
-        [self.contentView addSubview:_photoView];
-        
-        //回复内容
-        _replyView = [[UIView alloc]initWithFrame:CGRectMake(44, _photoView.maxY+20, kScreenWidth-54,0)];
-        _replyView.clipsToBounds = YES;
-        _replyView.backgroundColor = RGBHex(0XF9F9F9);
-        [self.contentView addSubview:_replyView];
-        _replyLab = [UITool createLabelWithFrame:CGRectMake(10, 10, _replyView.width-20,0) backgroundColor:RGBHex(0XF9F9F9) textColor:RGBHex(0x878787) textSize:14 alignment:NSTextAlignmentLeft lines:0];
-        [_replyView addSubview:_replyLab];
-        
-        //图标
-        _topImgView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"arrow_top"]];
-        _topImgView.frame = CGRectMake(44+30, _replyView.minY-8, 15, 8);
-        _topImgView.hidden = YES;
-        [self.contentView addSubview:_topImgView];
-        
-    
-        _lineLab = [UITool lineLabWithFrame:CGRectMake(10, _replyLab.maxY + 10, kScreenWidth-10, 1)];
-        _lineLab.backgroundColor = RGBHex(0XE2E2E2);
-        [self.contentView addSubview:_lineLab];
+//        _timeLab = [UITool createLabelWithFrame:CGRectMake(44, 36, kScreenWidth-80, 14) backgroundColor:[UIColor clearColor] textColor:[UIColor grayColor] textSize:12 alignment:NSTextAlignmentLeft lines:1];
+//        _timeLab.text = @"2017/09/02    厨房清洁 | 上门服务";
+//        [self.contentView addSubview:_timeLab];
+//
+//        //分数
+//        UIImageView *icon_scoring = [[UIImageView alloc]initWithImage:IMAGENAMED(@"icon-scoring")];
+//        icon_scoring.frame = CGRectMake(kScreenWidth-37, -1, 27, 24);
+//        [self.contentView addSubview:icon_scoring];
+//
+//        _gradeLab = [UITool createLabelWithFrame:CGRectMake(kScreenWidth-37, -1, 27, 17) backgroundColor:[UIColor clearColor] textColor:[UIColor whiteColor] textSize:12 alignment:NSTextAlignmentCenter lines:1];
+//        _gradeLab.text = @"5.0";
+//        [self.contentView addSubview:_gradeLab];
+//
+//        //评论内容
+//        NSString *str = @"非常好，干净，地理位置好。附近很安静，适合散步。离宝能太古城很近，电视节目也很多。";
+//        CGSize size = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:str withMaxWidth:kScreenWidth-54];
+//        _contentLab = [UITool createLabelWithFrame:CGRectMake(44, _timeLab.maxY+10, kScreenWidth-54, size.height+3) backgroundColor:[UIColor clearColor] textColor:[UIColor darkGrayColor] textSize:14 alignment:NSTextAlignmentLeft lines:0];
+//        _contentLab.text = str;
+//        [self.contentView addSubview:_contentLab];
+//
+//        _photoView = [[UIView alloc]initWithFrame:CGRectMake(44, _contentLab.maxY+6, kScreenWidth-54, 0)];
+//        _photoView.userInteractionEnabled = YES;
+//        [self.contentView addSubview:_photoView];
+//
+//        //回复内容
+//        _replyView = [[UIView alloc]initWithFrame:CGRectMake(44, _photoView.maxY+20, kScreenWidth-54,0)];
+//        _replyView.clipsToBounds = YES;
+//        _replyView.backgroundColor = RGBHex(0XF9F9F9);
+//        [self.contentView addSubview:_replyView];
+//        _replyLab = [UITool createLabelWithFrame:CGRectMake(10, 10, _replyView.width-20,0) backgroundColor:RGBHex(0XF9F9F9) textColor:RGBHex(0x878787) textSize:14 alignment:NSTextAlignmentLeft lines:0];
+//        [_replyView addSubview:_replyLab];
+//
+//        //图标
+//        _topImgView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"arrow_top"]];
+//        _topImgView.frame = CGRectMake(44+30, _replyView.minY-8, 15, 8);
+//        _topImgView.hidden = YES;
+//        [self.contentView addSubview:_topImgView];
+//
+//
+//        _lineLab = [UITool lineLabWithFrame:CGRectMake(10, _replyLab.maxY + 10, kScreenWidth-10, 1)];
+//        _lineLab.backgroundColor = RGBHex(0XE2E2E2);
+//        [self.contentView addSubview:_lineLab];
     }
     return self;
     
@@ -103,7 +103,7 @@
     }
     //评论内容
     NSString *commContent = [NSString jsonUtils:model.commContent];
-    CGSize commContentSzie = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:commContent withMaxWidth:kScreenWidth-54];
+//    CGSize commContentSzie = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:commContent withMaxWidth:kScreenWidth-54];
     _contentLab.text = commContent;
     
     
@@ -115,7 +115,7 @@
         [_contentLab setChangeHeight:0];
         _photoView.mj_y = _contentLab.maxY ;
     }else{
-        [_contentLab setChangeHeight:commContentSzie.height];
+//        [_contentLab setChangeHeight:commContentSzie.height];
         _photoView.mj_y = _contentLab.maxY+ 6 ;
     }
 
@@ -167,10 +167,10 @@
         }
         _topImgView.hidden = NO;
         _replyView.hidden = NO;
-        CGSize replyContentSzie = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:replyContent withMaxWidth:kScreenWidth-74];
-        [_replyLab setChangeHeight:replyContentSzie.height];
-        [_replyView setChangeHeight:_replyLab.height + 20];
-        _topImgView.mj_y = _replyView.minY-8;
+//        CGSize replyContentSzie = [AppMethods sizeWithFont:[UIFont systemFontOfSize:14] Str:replyContent withMaxWidth:kScreenWidth-74];
+////        [_replyLab setChangeHeight:replyContentSzie.height];
+//        [_replyView setChangeHeight:_replyLab.height + 20];
+//        _topImgView.mj_y = _replyView.minY-8;
         
 //        NSMutableAttributedString *replyStr = [AppDefaultUtil returnStringColor:replyContent rang:NSMakeRange(5, replyContent.length-5) color:kColor_ReplyColor];
 //        _replyLab.attributedText = replyStr;

@@ -165,3 +165,56 @@
 @end
 
 
+
+@implementation MineCell4
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+}
++(instancetype)cellWithTableView:(UITableView *)tableView
+{
+    static NSString *identify = @"MineCell4";
+    MineCell4 *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    if (cell == nil)
+    {
+        cell = [[[NSBundle mainBundle] loadNibNamed:@"MineCell" owner:nil options:nil] objectAtIndex:3];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    cell.groundView.layer.cornerRadius =5;
+    cell.groundView.layer.masksToBounds =5;
+    [cell.kefuBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.messageBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.personBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.changePWBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.shouhuoBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.guanlianBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    [cell.loginOutBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleTop imageTitleSpace:10];
+    
+    [cell.kefuBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.messageBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.personBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.changePWBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.shouhuoBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.guanlianBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [cell.loginOutBtn addTarget:cell action:@selector(BtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    
+    return cell;
+}
+-(void)BtnClick:(UIButton *)sender
+{
+    
+    if (_BtnOthertagBlock) {
+        _BtnOthertagBlock (sender.tag);
+    }
+    
+    
+}
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+    
+    // Configure the view for the selected state
+}
+@end

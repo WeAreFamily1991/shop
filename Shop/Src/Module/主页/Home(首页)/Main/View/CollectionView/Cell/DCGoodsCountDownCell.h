@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface DCGoodsCountDownCell : UICollectionViewCell
-
+@property (copy,nonatomic) void (^btnItemBlock) (NSInteger btnTag);
 @end

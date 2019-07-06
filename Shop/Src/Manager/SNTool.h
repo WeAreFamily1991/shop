@@ -40,4 +40,5 @@
 + (int)getRandomNumber:(int)from to:(int)to ;
 +(int)compareOneDay:(NSDate *)oneDay withAnotherDay:(NSDate *)anotherDay;
 + (NSString *)laterGetExpectTimestamp:(NSInteger)year month:(NSUInteger)month day:(NSUInteger)day;
++ (NSArray *)readLocalFileWithName:(NSString *)name;
 @end

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class DCCalssSubItem;
-@interface DCClassMianItem : NSObject
+@interface DCClassMianItem : DRBaseModel
 @property (nonatomic , copy) NSString              * isShow;
 @property (nonatomic , copy) NSString              * st_id;
 @property (nonatomic , copy) NSString              * parentId;
@@ -26,6 +26,10 @@
 //@property (nonatomic , copy) NSArray<StCategoryVOList *>              * stCategoryVOList;
 @property (nonatomic , copy) NSString              * name;
 @property (nonatomic , copy) NSString              * classLayer;
+@property (nonatomic , copy) NSString              *cz;
+@property (nonatomic , copy) NSString              *hasBurst;
+
+@property (nonatomic , copy) NSString              *sellerId;
 
 
 @end

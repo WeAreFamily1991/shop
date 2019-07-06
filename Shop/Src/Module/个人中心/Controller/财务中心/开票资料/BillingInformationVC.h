@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BillingInformationVC : UIViewController
+@interface BillingInformationVC : STBaseViewController
 @property(nonatomic,assign)NSInteger num;
 @end
 

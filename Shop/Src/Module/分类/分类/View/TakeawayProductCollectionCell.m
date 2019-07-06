@@ -180,7 +180,7 @@
     [_addBT addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [_addBT setImage:IMAGENAMED(@"but_add_yellow") forState:UIControlStateNormal];
     [_addBT setImage:IMAGENAMED(@"but_add_yellow") forState:UIControlStateHighlighted];
-    _addBT.backgroundColor = [UIColor redColor];
+    _addBT.backgroundColor = REDCOLOR;
     [self.contentView addSubview:_addBT];
     _addBT.tag = 1;
     [_addBT mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -207,7 +207,7 @@
     [_reduceBT addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [_reduceBT setImage:IMAGENAMED(@"but_reduce") forState:UIControlStateNormal];
     [_reduceBT setImage:IMAGENAMED(@"but_reduce") forState:UIControlStateHighlighted];
-    _reduceBT.backgroundColor = [UIColor redColor];
+    _reduceBT.backgroundColor = REDCOLOR;
     [self.contentView addSubview:_reduceBT];
     _reduceBT.tag = 2;
     [_reduceBT mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -221,7 +221,7 @@
     [_specificationBT addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
     [_specificationBT setBackgroundImage:IMAGENAMED(@"but_spn_yellow") forState:UIControlStateNormal];
     [_specificationBT setBackgroundImage:IMAGENAMED(@"but_spn_yellow") forState:UIControlStateHighlighted];
-    _specificationBT.backgroundColor = [UIColor redColor];
+    _specificationBT.backgroundColor = REDCOLOR;
     [_specificationBT setTitle:@"选规格" forState:UIControlStateNormal];
     [_specificationBT setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     _specificationBT.titleLabel.font = kFontNameSize(12);

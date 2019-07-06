@@ -41,6 +41,7 @@
  */
 + (void)postURL:(NSString *)url parameters:(NSDictionary *)paramers formDataArray:(NSArray *)formDataArray success:(void (^)(id response))success failure:(void (^)(NSError *error))failure;
 
++ (void)uploadIMGURL:(NSString *)url imageArr:(NSArray *)imgS parameters:(NSMutableDictionary *)paramers formDataArray:(NSArray *)formDataArray success:(void (^)(id))success failure:(void (^)(NSError *))failure;
 @end
 
 
@@ -65,5 +66,10 @@
  *  文件类型
  */
 @property (nonatomic, copy) NSString *mimeType;
+
+/**
+ *  文件
+ */
+@property (nonatomic, copy) NSString *contentType;
 
 @end

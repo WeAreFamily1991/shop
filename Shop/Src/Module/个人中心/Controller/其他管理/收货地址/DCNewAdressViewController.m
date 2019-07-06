@@ -37,6 +37,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *saveChangeButton;
 @property (strong,nonatomic)NSArray *townArr;
 @property (nonatomic,assign)NSInteger selectRow;
+@property (nonatomic,assign)BOOL isYes;
 @property (nonatomic,retain)NSDictionary *dataSource;
 @property (nonatomic,retain) DRAddressInfoModel *infoModel;
 @end
@@ -70,7 +71,7 @@
 #pragma mark - LifeCyle
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    self.isYes =NO;
     [self setUpBase];
     
     [self setUpHeadView];
@@ -85,12 +86,24 @@
     DRWeakSelf;
     NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.adressItem.address_id] forKeys:@[@"id"]];
     
-    [SNIOTTool getWithURL:@"buyer/addressInfo" parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/addressInfo" parameters:dic success:^(SNResult *result) {
         weakSelf.infoModel =[DRAddressInfoModel mj_objectWithKeyValues:result.data];
         if (weakSelf.saveType == DCSaveAdressChangeType) { //编辑
             weakSelf.adressHeadView.rePersonField.text =weakSelf.infoModel.receiver;
-            weakSelf.adressHeadView.addressLabel.text =[DRBuyerModel sharedManager].location;
+            NSArray *addressArr =[weakSelf.infoModel.districtAddress componentsSeparatedByString:@"/"];
+//            [DRBuyerModel sharedManager].alllocationcode =weakSelf.infoModel.districtAddress;
+            if (addressArr.count==3) {
+                
+                weakSelf.adressHeadView.addressLabel.text =[NSString stringWithFormat:@"%@%@%@",addressArr[0],addressArr[1],addressArr[2]];
+            }
+            else if (addressArr.count==4)
+            {
+                weakSelf.adressHeadView.addressLabel.text =[NSString stringWithFormat:@"%@%@%@",addressArr[0],addressArr[1],addressArr[2]];
+                [weakSelf.adressHeadView.selectBtn setTitle:[addressArr lastObject] forState:UIControlStateNormal];
+                weakSelf.adressHeadView.selectBtn.selected =YES;
+            }
             weakSelf.adressHeadView.rePhoneField.text =weakSelf.infoModel.mobile;
+             weakSelf.adressHeadView.mobileTF.text =weakSelf.infoModel.phone;
             //        _adressHeadView.provinceField.text =_adressItem.provAddress;
             weakSelf.adressHeadView.detailTextView.text = weakSelf.infoModel.address;
             weakSelf.adressHeadView.isDefautsBtn.selected =[weakSelf.adressItem.isdefault boolValue];
@@ -107,14 +120,12 @@
 {
     DRWeakSelf;
     NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[[DRBuyerModel sharedManager].locationcode] forKeys:@[@"parentId"]];
-    [SNIOTTool getWithURL:@"mainPage/getDistrict" parameters:dic success:^(SNResult *result) {
-
+    [SNAPI getWithURL:@"mainPage/getDistrict" parameters:dic success:^(SNResult *result) {
         weakSelf.townArr =result.data;
-
         if (weakSelf.saveType ==DCSaveAdressChangeType&&weakSelf.townArr.count!=0) {
             if ([DEFAULTS objectForKey:@"town"]) {
-                [weakSelf.adressHeadView.selectBtn setTitle:[DEFAULTS objectForKey:@"town"] forState:UIControlStateNormal];
-                weakSelf.adressHeadView.selectBtn.selected =YES;
+//                [weakSelf.adressHeadView.selectBtn setTitle:[DEFAULTS objectForKey:@"town"] forState:UIControlStateNormal];
+//                weakSelf.adressHeadView.selectBtn.selected =YES;
                 NSMutableArray *nameArr =[NSMutableArray array];
                 for (NSDictionary *dic in self.townArr) {
                     [nameArr addObject:dic[@"name"]];
@@ -124,6 +135,7 @@
         }
         else if (weakSelf.saveType == DCSaveAdressNewType) {
             weakSelf.adressHeadView.addressLabel.text = [DRBuyerModel sharedManager].location;
+            NSLog(@"code=%@",[DEFAULTS objectForKey:@"locationcode"]);
             weakSelf.adressHeadView.isDefautsBtn.selected =YES;
         }
 
@@ -144,7 +156,7 @@
 - (void)setUpHeadView
 {
     _adressHeadView = [DCNewAdressView dc_viewFromXib];
-    _adressHeadView.frame = CGRectMake(0, 0, ScreenW, HScale(270));
+    _adressHeadView.frame = CGRectMake(0, 0, ScreenW, HScale(310));
     self.saveChangeButton.layer.cornerRadius = 25;
     self.saveChangeButton.layer.masksToBounds = 25;
     self.tableView.tableHeaderView = _adressHeadView;
@@ -216,12 +228,12 @@
     DRWeakSelf;
 
     if (_adressHeadView.rePersonField.text.length == 0 || _adressHeadView.rePhoneField.text.length == 0 || _adressHeadView.detailTextView.text.length == 0 || _adressHeadView.addressLabel.text.length == 0) {
-        [self.view makeToast:@"请填写完整地址信息" duration:0.5 position:CSToastPositionCenter];
+        [self.view makeToast:@"请填写完整信息" duration:0.5 position:CSToastPositionCenter];
         [DCSpeedy dc_callFeedback]; //触动
         return;
     }
-    if (![DCCheckRegular dc_checkTelNumber:_adressHeadView.rePhoneField.text]) {
-        [self.view makeToast:@"手机号码格式错误" duration:0.5 position:CSToastPositionCenter];        
+    if (_adressHeadView.rePhoneField.text.length!=11) {
+        [self.view makeToast:@"手机号码格式错误" duration:0.5 position:CSToastPositionCenter];
         return;
     }
     NSString *urlStr ;
@@ -233,16 +245,24 @@
     else{
          defautStr =@"false";
     }
+     NSMutableDictionary *smallDic =[NSMutableDictionary dictionary];
     if (_saveType ==DCSaveAdressChangeType) {
         urlStr =@"buyer/updateAddress";
-        dic=@{@"receiver":self.adressHeadView.rePersonField.text,@"mobile":self.adressHeadView.rePhoneField.text,@"districtid":self.townArr[self.selectRow][@"code"]?:@"",@"address": _adressHeadView.detailTextView.text,@"isdefault":defautStr,@"phone":@"",@"receiver":self.townArr[self.selectRow][@"name"]?:@"",@"id":self.infoModel.address_id?:@"",@"buyerid":self.infoModel.buyerid?:@""};
+        dic=@{@"receiver":self.adressHeadView.rePersonField.text,@"mobile":self.adressHeadView.rePhoneField.text,@"districtid":[DEFAULTS objectForKey:@"locationcode"]?:@"",@"address": _adressHeadView.detailTextView.text,@"isdefault":defautStr,@"phone":self.adressHeadView.mobileTF.text?:@"",@"receiver":self.townArr[self.selectRow][@"name"]?:@"",@"id":self.infoModel.address_id?:@"",@"buyerid":self.infoModel.buyerid?:@""};
+        
+        [smallDic addEntriesFromDictionary:dic];
+        if (_adressHeadView.selectBtn.selected==YES) {
+            [smallDic setObject:[NSString stringWithFormat:@"%@/%@",[DEFAULTS objectForKey:@"locationcode"]?:@"",self.townArr[self.selectRow][@"code"]?:@""] forKey:@"districtid"];
+        }
     }else
     {
-        urlStr =@"buyer/addAddress";        dic=@{@"receiver":self.adressHeadView.rePersonField.text,@"mobile":self.adressHeadView.rePhoneField.text,@"districtId":self.townArr[self.selectRow][@"code"]?:@"",@"address": _adressHeadView.detailTextView.text,@"isdefault":[NSString stringWithFormat:@"%d",_adressHeadView.isDefautsBtn.selected],@"phone":@"",@"receiver":self.townArr[self.selectRow][@"name"]?:@""};
+        urlStr =@"buyer/addAddress";        dic=@{@"receiver":self.adressHeadView.rePersonField.text,@"mobile":self.adressHeadView.rePhoneField.text,@"districtId":[DEFAULTS objectForKey:@"locationcode"]?:@"",@"address": _adressHeadView.detailTextView.text,@"isdefault":[NSString stringWithFormat:@"%d",_adressHeadView.isDefautsBtn.selected],@"phone":self.adressHeadView.mobileTF.text?:@"",@"receiver":self.townArr[self.selectRow][@"name"]?:@""};
+       [smallDic addEntriesFromDictionary:dic];
+        if (_adressHeadView.selectBtn.selected==YES) {
+            [smallDic setObject:[NSString stringWithFormat:@"%@/%@",[DEFAULTS objectForKey:@"locationcode"],self.townArr[self.selectRow][@"code"]?:@""] forKey:@"districtId"];
+        }
     }
-    
-    NSMutableDictionary *muDic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"address"];
-    
+    NSMutableDictionary *muDic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:smallDic] forKey:@"address"];
     [SNAPI postWithURL:urlStr parameters:muDic success:^(SNResult *result) {
         if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
             [MBProgressHUD showSuccess:result.data];

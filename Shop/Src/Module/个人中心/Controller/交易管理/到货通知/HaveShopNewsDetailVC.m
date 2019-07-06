@@ -8,7 +8,7 @@
 
 #import "HaveShopNewsDetailVC.h"
 #import "CollectionCell.h"
-#import "FirstTableViewCell.h"
+#import "SixCell.h"
 #import "CatgoryDetailCell.h"
 @interface HaveShopNewsDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
@@ -53,7 +53,7 @@
         self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
     self.tableView.separatorInset = UIEdgeInsetsMake(0, -10, 0, 0);
-    [_tableView registerClass:[FirstTableViewCell class] forCellReuseIdentifier:@"FirstTableViewCell"];
+    [_tableView registerClass:[SixCell class] forCellReuseIdentifier:@"SixCell"];
     __weak typeof(self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         if (weakSelf.MsgListArr.count) {
@@ -66,7 +66,6 @@
     }];
     [self.tableView.mj_header beginRefreshing];
     self.tableView.mj_footer = [MJRefreshAutoNormalFooter footerWithRefreshingBlock:^{
-        
         pageCount = pageCount +1;
         [weakSelf getMsgList];
     }];
@@ -94,8 +93,7 @@
     [dic setObject:@"" forKey:@"keyword"];
     DRWeakSelf;
     [MBProgressHUD showMessage:@""];
-    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
-       
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
             NSLog(@"data=%@",result.data[@"itemdata"]);
             NSMutableArray*addArr=result.data[@"itemdata"];
             NSMutableArray *modelArray =[GoodsModel mj_objectArrayWithKeyValuesArray:result.data[@"itemdata"]];
@@ -107,8 +105,6 @@
             else{
                 [self.tableView.mj_footer endRefreshing];
             }
-      
-        
         [self.tableView.mj_header endRefreshing];
         [MBProgressHUD hideHUD];
     } failure:^(NSError *error) {
@@ -117,13 +113,14 @@
         [MBProgressHUD hideHUD];
     }];
 }
+
 -(void)addCustomView
 {
     UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, 2, SCREEN_WIDTH, 36)];
     backView.backgroundColor =[UIColor whiteColor];
     [self.view addSubview:backView];
-    
 }
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -222,7 +219,7 @@
                                                   reuseIdentifier: SimpleTableIdentifier];
                 }
                 cell.textLabel.text =[NSString stringWithFormat:@"开票方：%@",_goodsModel.kpName];
-                cell.textLabel.textColor =[UIColor redColor];
+                cell.textLabel.textColor =REDCOLOR;
                 cell.textLabel.font =DR_FONT(13);
                 
                 return cell;
@@ -232,11 +229,13 @@
             case 2:
                 
             {
-                FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
+                SixCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SixCell" forIndexPath:indexPath];
+                if (!cell) {
+                    cell =[[SixCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"SixCell"];
+                }
                 cell.goodsModel =self.goodsModel;
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 return cell;
-                
             }
                 break;
             case 3:
@@ -244,6 +243,7 @@
             {
                 CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
                 cell.goodsModel =self.goodsModel;
+                cell.daohuoTongzhiStr =@"1";
                 if (self.goodsModel.favariteId.length==0)
                 {
                     cell.shoucangBtn.selected =NO;

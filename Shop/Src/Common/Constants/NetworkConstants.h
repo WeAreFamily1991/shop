@@ -25,14 +25,15 @@
 #define DEBUGAPI_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", DEBUGSERVER_ROOT]
 
  // 线上环境
-#define SERVER_ROOT             @"192.168.31.140:8888"
-#define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/", SERVER_ROOT]
+#define SERVER_ROOT                    @"api.cross.echosite.cn"
+#define RELEASEAPI_ROOT                [NSString stringWithFormat:@"http://%@/santie-restful/", SERVER_ROOT]
 #pragma mark - 状态码
 typedef NS_ENUM(NSUInteger, NetWorkStatus) {
     NetWorkStatusSuccess = 200, // 请求成功
     NetWorkStatusFail = -1, // 请求失败
 };
 
+#define HTML_ROOT                      @"http://m2.916465.com"
 #pragma mark - API
 // 获取游客的 token
 static NSString * const API_GuestToken                          = @"token/getToken";

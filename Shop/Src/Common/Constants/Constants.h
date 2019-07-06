@@ -96,13 +96,14 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 #define StrongObj(o) __strong typeof(o) o = o##Weak;
 #define kDefaultNavBar_SubView_MinY (kIsiPhoneX ? 24.0 : 0.0)//导航条子视图默认最小Y坐标
 // 判断是否为iPhoneX
-#define kIsiPhoneX (kScreenWidth == 375.0 && kScreenHeight == 812.0)
+#define kIsiPhoneX (SCREEN_WIDTH == 375.0 && SCREEN_HEIGHT == 812.0)
 // 屏幕比例系数
 #define ScreenScale [UIApplication sharedApplication].keyWindow.screen.scale
 // 适配 等比放大控件
-#define Size(x)                   ((x)*kScreenWidth*1.0/375.0)
-#define SizeInt(x)                   ((NSInteger)((x)*kScreenWidth/375))
+#define Size(x)                   ((x)*SCREEN_WIDTH*1.0/375.0)
+#define SizeInt(x)                   ((NSInteger)((x)*SCREEN_WIDTH/375))
 // 屏幕宽高
+#define kScreenWidth            [UIScreen mainScreen].bounds.size.width
 #define SCREEN_WIDTH            [UIScreen mainScreen].bounds.size.width
 #define SCREEN_HEIGHT           [UIScreen mainScreen].bounds.size.height
 #define HScale(v) v / 667. * SCREEN_HEIGHT //高度比
@@ -111,6 +112,8 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 #define DRTopHeight (DRStatusBarHeight + 44)
 #define DRTabBarHeight self.tabBarController.tabBar.frame.size.height
 #define DRStatusBarHeight UIApplication.sharedApplication.statusBarFrame.size.height
+#define FIT_WIDTH [UIScreen mainScreen].bounds.size.width/375
+#define kIPhoneXBottomHeight ((SCREEN_HEIGHT >= 812)?34:0) //iPhoneX底部留出34距离
 
 // 以 iPhone6 屏幕为标准，按比例计算宽度
 #define WidthScale(width) width/750.0*SCREEN_WIDTH
@@ -131,12 +134,21 @@ static NSString * const kGuestLoginStatusChange = @"kGuestLoginStatusChange";
 #define kColor_ButonCornerColor   kColor(@"#D9D9D9")
 #define kColor_bgHeaderViewColor  kColor(@"#E2E2E2")
 #define kColor(hexStr)            [AppMethods colorWithHexString:hexStr]
-#define BACKGROUNDCOLOR         RGBHex(0XF3F5F7)
+#define BACKGROUNDCOLOR         RGBHex(0XF2F2F2)
 #define RGB(R, G, B)            [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:1.0]
 #define RGBA(R, G, B, A)        [UIColor colorWithRed:R/255.0 green:G/255.0 blue:B/255.0 alpha:A]
 #define RGBHex(s)               [UIColor colorWithRed:(((s&0xFF0000) >> 16))/255.0 green:(((s&0xFF00) >>8))/255.0 blue:((s&0xFF))/255.0 alpha:1.0]
 #define RGBAHex(s, A)           [UIColor colorWithRed:(((s&0xFF0000) >> 16))/255.0 green:(((s&0xFF00) >>8))/255.0 blue:((s&0xFF))/255.0 alpha:A]
 #define JDColor(r,g,b) [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:1.0]
+#define REDCOLOR   [UIColor redColor]
+#define WHITECOLOR [UIColor whiteColor]
+#define BLACKCOLOR [UIColor blackColor]
+#define CLEARCOLOR [UIColor clearColor]
+#define KSelectBorderColor      [UIColor colorWithRed:253/255.0 green:206/255.0 blue:41/255.0 alpha:1]
+#define KUnSelectBorderColor    [UIColor colorWithRed:204/255.0 green:204/255.0 blue:204/255.0 alpha:1]
+#define KButtonColor            [UIColor colorWithRed:51/255.0 green:51/255.0 blue:51/255.0 alpha:1]
+//快捷赋值
+#define ImgName(imageName) [UIImage imageNamed:imageName]
 //
 #ifdef DEBUG
     #define STLog(...) NSLog(__VA_ARGS__)
@@ -199,8 +211,7 @@ static inline UIColor * ColorWithHexString(NSString *str){
  */
 static inline CGFloat FontSize (CGFloat size) {
     CGFloat screenW = SCREEN_WIDTH > 375.0 ? 375.0 : SCREEN_WIDTH;
-    CGFloat finalSize = size / 750.0 * screenW;
-    
+    CGFloat finalSize = size / 750.0 * screenW;    
     return finalSize;
 }
 

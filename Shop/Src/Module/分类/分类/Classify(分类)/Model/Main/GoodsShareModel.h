@@ -28,6 +28,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * yx;//牙型
 @property (nonatomic , copy) NSString              * pp;//品牌
 @property (nonatomic , copy) NSString              * zj;//直径
+@property (nonatomic , copy) NSString              *sellerId;
+@property (nonatomic , copy) NSString              *levelId;
+@property (nonatomic , copy) NSString              *surfaceId;
+@property (nonatomic , copy) NSString              *materialId;
+@property (nonatomic , copy) NSString              *standardId;
+@property (nonatomic , copy) NSString              *keyword;
+@property (nonatomic , copy) NSString              *countNumStr;
+@property (nonatomic , copy) NSString              *selectcode;
+
 
 @end
 

@@ -40,7 +40,7 @@
     if (self = [super init]) {
 //        self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.4];
         
-        alertViewHeight = HScale(280);
+        alertViewHeight = HScale(200);
         buttonHeight = HScale(40);
         self.selectArray = [NSMutableArray array];
         
@@ -85,7 +85,7 @@
         
         self.confirmButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.confirmButton.frame = CGRectMake(CGRectGetMaxX(self.cancelButton.frame),CGRectGetMaxY(self.selectTableView.frame), self.alertView.frame.size.width/2, buttonHeight);
-        self.confirmButton.backgroundColor = [UIColor redColor];
+        self.confirmButton.backgroundColor = REDCOLOR;
         [self.confirmButton setTitle:@"确定" forState:UIControlStateNormal];
         [self.confirmButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         self.confirmButton.titleLabel.font = [UIFont ldy_fontFor2xPixels:22];
@@ -203,7 +203,7 @@
         [self.selectArray enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSNumber *data = obj;
             int row = [data intValue];
-            NSArray *idArr =@[@"0",@"st",@"zf"];
+            NSArray *idArr =@[@"0",@"zf"];
             [dataAr addObject:idArr[row]];
         }];
 

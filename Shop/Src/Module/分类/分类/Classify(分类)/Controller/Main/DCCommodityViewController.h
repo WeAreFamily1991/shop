@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DCCommodityViewController : UIViewController
-
+@interface DCCommodityViewController : STBaseViewController
+@property (nonatomic,retain)NSString *statusStr;
 @end

@@ -49,22 +49,25 @@
 
 - (void)setUpUI
 {
-    self.backgroundColor = [UIColor whiteColor];
+    
 //    _redView = [[UIView alloc] init];
-//    _redView.backgroundColor = [UIColor redColor];
+//    _redView.backgroundColor = REDCOLOR;
 //    [self addSubview:_redView];
+    self.backgroundColor =BACKGROUNDCOLOR;
+    _timeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    _timeBtn.frame =self.bounds;
+    _timeBtn.backgroundColor =[UIColor whiteColor];
+    _timeBtn.titleLabel.font = DR_BoldFONT(18);
+    [_timeBtn setTitleColor:REDCOLOR forState:UIControlStateNormal];
+    [_timeBtn setTitle:@"进入店铺" forState:UIControlStateNormal];
+    [_timeBtn addTarget:self action:@selector(timeBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_timeBtn];
     
-    _timeLabel = [[UILabel alloc] init];
-    _timeLabel.text = @"卖家推荐";
-    _timeLabel.font = DR_BoldFONT(18);
-    _timeLabel.textColor =[UIColor blackColor];
-    [self addSubview:_timeLabel];
-    
-    _lineView =[[UIView alloc]init];
-    _lineView.backgroundColor =BACKGROUNDCOLOR;
-    [self addSubview:_lineView];
+//    _lineView =[[UIView alloc]init];
+//    _lineView.backgroundColor =REDCOLOR;
+//    [self addSubview:_lineView];
 //    _countDownLabel = [[UILabel alloc] init];
-//    _countDownLabel.textColor = [UIColor redColor];
+//    _countDownLabel.textColor = REDCOLOR;
 //    _countDownLabel.text = @"05 : 58 : 33";
 //    _countDownLabel.font = DR_FONT(14);
 //    [self addSubview:_countDownLabel];
@@ -77,17 +80,20 @@
 //    [self addSubview:_quickButton];
 
 }
-
+-(void)timeBtnClick:(UIButton *)sender
+{
+    !_timeBtnBlock ? : _timeBtnBlock();
+}
 #pragma mark - 布局
 - (void)layoutSubviews
 {
     [super layoutSubviews];
     
-    _redView.frame = CGRectMake(0, 10, 8, 20);
-    _timeLabel.frame = CGRectMake(15, 0, 80, self.dc_height);
-    _countDownLabel.frame = CGRectMake(CGRectGetMaxX(_timeLabel.frame), 0, 100, self.dc_height);
-    _quickButton.frame = CGRectMake(self.dc_width - 70, 0, 70, self.dc_height);
-    _lineView.frame =CGRectMake(_timeLabel.dc_right+5, self.dc_height/2, self.dc_width-_timeLabel.width-40, 1);
+//    _redView.frame = CGRectMake(0, 10, 8, 20);
+//    _timeLabel.frame = CGRectMake(0, 0, ScreenW, self.dc_height);
+//    _countDownLabel.frame = CGRectMake(CGRectGetMaxX(_timeLabel.frame), 0, 100, self.dc_height);
+//    _quickButton.frame = CGRectMake(self.dc_width - 70, 0, 70, self.dc_height);
+//    _lineView.frame =CGRectMake(_timeLabel.dc_right+5, self.dc_height/2, self.dc_width-_timeLabel.width-40, 1);
 }
 
 

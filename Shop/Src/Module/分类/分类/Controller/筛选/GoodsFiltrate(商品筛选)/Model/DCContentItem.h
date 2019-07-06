@@ -7,12 +7,13 @@
 //
 #import <Foundation/Foundation.h>
 
-@interface DCContentItem : NSObject
+@interface DCContentItem : DRBaseModel
 
 
 @property (nonatomic , strong) NSString *code;
 @property (nonatomic , strong) NSString *name;
 @property (nonatomic , strong) NSString *child_id;
+@property (nonatomic , strong) NSString *content;
 
 /** 是否点击 */
 @property (nonatomic,assign)BOOL isSelect;

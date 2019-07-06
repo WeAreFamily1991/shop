@@ -22,6 +22,7 @@
 @property (nonatomic , copy) NSString              * loginLogIp;//
 @property (nonatomic , copy) NSString              * host;//主机名，null（前台不可见）
 @property (nonatomic , copy) NSString              * mobilePhone;//手机号
+@property (nonatomic , copy) NSString              * parentid;//子类ID
 @property (nonatomic , assign) BOOL              sessionStatus;//会话状态
 @property (nonatomic , assign) NSInteger              lastLoginTime;//最近登陆时间
 @property (nonatomic , assign) NSInteger              status;//后台预留字段
@@ -59,6 +60,9 @@
 @property (nonatomic , copy) NSString              * cName;
 @property (nonatomic , copy) NSString              * overdueControl;
 @property (nonatomic , copy) NSString              * locationcode;
+@property (nonatomic , copy) NSString              * alllocationcode;
+@property (nonatomic,copy)NSString              * yingyeLogo;//头像
+@property (nonatomic,copy)NSString              * zhizhaoLogo;//头像
 //@property(nonatomic,copy)NSString *status;
 //@property(nonatomic,copy)NSString *address;
 //@property(nonatomic,copy)NSString *ctime;

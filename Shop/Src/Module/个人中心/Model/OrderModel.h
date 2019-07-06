@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * fpTaxno;
 @property (nonatomic , copy) NSString              * saId;
 //@property (nonatomic , assign) BOOL              check;
-//@property (nonatomic , copy) NSString              * kpName;
+@property (nonatomic , copy) NSString              * orderExpressPrice;
 @property (nonatomic , copy) NSString              * message;
 @property (nonatomic , copy) NSString              * buyerName;
 //@property (nonatomic , assign) CGFloat              totalqty;
@@ -69,7 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * pickPrintTime;
 @property (nonatomic , copy) NSString              * fpRegAddress;
 @property (nonatomic , copy) NSString              * tradorid;
-//@property (nonatomic , copy) NSString              * compType;
+
+@property (nonatomic , copy) NSString              * isDf;
 @property (nonatomic , copy) NSString              * returnExpressComp;
 @property (nonatomic , copy) NSString              * fpType;
 @property (nonatomic , copy) NSString              * erpOid;
@@ -87,7 +88,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * expressImg;
 //@property (nonatomic , copy) NSString              * expressType;
 //@property (nonatomic , copy) NSString              * expressPrice;
-//@property (nonatomic , assign) NSInteger              priceType;
+@property (nonatomic , assign) NSInteger              afterSaleStatus;
 @property (nonatomic , copy) NSString              * fpBank;
 @property (nonatomic , copy) NSString              * phone;
 //@property (nonatomic , copy) NSString              * storeName;
@@ -102,7 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * mobile;
 //@property (nonatomic , copy) NSArray<GoodsList *>              * goodsList;
 @property (nonatomic , assign) NSInteger              completeTime;
-//@property (nonatomic , assign) CGFloat              returnedAmt;
+//@property (nonatomic , assign) CGFloat              afterSaleStatus;
 @property (nonatomic , copy) NSString              * sourcetype;
 @property (nonatomic , copy) NSString              * expressStationId;
 @property (nonatomic , copy) NSString              * paySn;
@@ -122,7 +123,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger              buyerComfirmStatus;
 @property (nonatomic , assign) NSInteger              orderComplateTime;
 //@property (nonatomic , assign) NSInteger              isReturn;
-//@property (nonatomic , copy) NSString              * sellerName;
+@property (nonatomic , copy) NSString              * logphone;
 @property (nonatomic , copy) NSString              * fpParty;
 @property (nonatomic , copy) NSString              * moneyoffTopic;
 //@property (nonatomic , assign) NSInteger              sellerPayWay;
@@ -199,6 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * spec;
 @property (nonatomic , copy) NSString              * surfacename;
 @property (nonatomic , copy) NSString              * imgUrl;
+@property (nonatomic , copy) NSString              * imgurl;
 @property (nonatomic , copy) NSString              * itemName;
 @property (nonatomic , copy) NSString              * discount;
 @property (nonatomic , copy) NSString              * pack;
@@ -211,7 +213,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * unitName1;
 @property (nonatomic , copy) NSString              * countPiece;
 @property (nonatomic , copy) NSString              * unitName2;
-//@property (nonatomic , assign) CGFloat              returnedQty;
+@property (nonatomic , assign) CGFloat              returnPrice;
 //@property (nonatomic , copy) NSString              * discountId;
 @property (nonatomic , copy) NSString              * unitName3;
 
@@ -240,11 +242,11 @@ NS_ASSUME_NONNULL_BEGIN
 //@property (nonatomic , assign) CGFloat              returnedAmt;
 @property (nonatomic , copy) NSString              * saleUnitConversion;
 //@property (nonatomic , copy) NSString              * pmid;
-@property (nonatomic , assign) CGFloat              unitConversion2;
+@property (nonatomic , copy) NSString              *unitConversion2;
 @property (nonatomic , copy) NSString              * discount1;
 //@property (nonatomic , copy) NSString              * materialname;
 //@property (nonatomic , copy) NSString              * pmqty;
-@property (nonatomic , assign) CGFloat              unitConversion3;
+@property (nonatomic , copy) NSString              *unitConversion3;
 @property (nonatomic , copy) NSString              * unitConversion4;
 @property (nonatomic , copy) NSString              * discount2;
 //@property (nonatomic , copy) NSString              * storeid;

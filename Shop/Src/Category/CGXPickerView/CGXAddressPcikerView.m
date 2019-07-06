@@ -94,7 +94,8 @@
 #pragma mark - 获地址数据
 - (void)loadData {
     NSMutableArray *arrData = [NSMutableArray array];
-    if (self.fileName) {
+    if (self.fileName)
+    {
         if ([self.fileName hasSuffix:@".plist"]) {
             NSString *fileName = [self.fileName stringByReplacingOccurrencesOfString:@".plist" withString:@""];
             NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"plist"];
@@ -109,17 +110,13 @@
             NSString  *str = [self.fileName stringByReplacingOccurrencesOfString:@".plist--plist" withString:@""];
             arrData = [NSMutableArray arrayWithContentsOfFile:[self dataFilePath:str]];
         }
-    } else{
-//        NSString *path = [[NSBundle mainBundle] pathForResource:@"province" ofType:@"json"];
+    }
+    else
+    {
         NSString *imagePath = [[NSBundle mainBundle] pathForResource:@"province" ofType:@"json"];
         NSString *string = [[NSString alloc] initWithContentsOfFile:imagePath encoding:NSUTF8StringEncoding error:nil];
         NSData * resData = [[NSData alloc]initWithData:[string dataUsingEncoding:NSUTF8StringEncoding]];
         arrData = [NSJSONSerialization JSONObjectWithData:resData options:NSJSONReadingMutableLeaves error:nil];
-//        NSString *strResourcesBundle = [[NSBundle mainBundle] pathForResource:@"CGXPickerView" ofType:@"bundle"];
-//        NSString *filePath = [[NSBundle bundleWithPath:strResourcesBundle] pathForResource:@"CGXAddressCity" ofType:@"plist"];
-//        arrData = [NSMutableArray arrayWithContentsOfFile:filePath];
-        
-        
     }
     for (NSDictionary *dict in arrData) {
         NSMutableDictionary *dic1 = [NSMutableDictionary dictionary];
@@ -167,7 +164,10 @@
 
 #pragma mark - 背景视图的点击事件
 - (void)didTapBackgroundView:(UITapGestureRecognizer *)sender {
-    [self dismissWithAnimation:NO];
+    if ([DEFAULTS objectForKey:@"locationcode"])
+    {
+        [self dismissWithAnimation:YES];
+    }
 }
 
 #pragma mark - 弹出视图方法
@@ -243,7 +243,12 @@
 
 #pragma mark - 取消按钮的点击事件
 - (void)clickLeftBtn {
-    [self dismissWithAnimation:YES];
+    if ([DEFAULTS objectForKey:@"locationcode"])
+    {
+        [self dismissWithAnimation:YES];
+       
+    }
+   
 }
 
 #pragma mark - 确定按钮的点击事件

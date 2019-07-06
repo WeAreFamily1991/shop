@@ -76,10 +76,12 @@
     }];
     
     self.filterView.sureClickBlock = ^(NSArray *selectArray) { //在筛选情况下的确定回调
+        
         NSDictionary *dic=@{@"array":selectArray};
         [[NSNotificationCenter defaultCenter] postNotificationName:@"select" object:nil userInfo:dic];
         [weakSelf tapEvent];
     };
+    
 
 }
 

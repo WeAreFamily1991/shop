@@ -29,15 +29,19 @@ target 'Shop' do
   
   # navigation controller
   pod 'RTRootNavigationController', '~> 0.7.1'
-  
+  pod "SKFPicPreview"  
   # 键盘遮挡问题
   pod 'IQKeyboardManager', '~> 6.2.0'
-
-  pod 'YYKit', '~> 1.0.9'
   pod 'SVProgressHUD'
   pod 'FMDB'
   pod 'KSCrash'
   pod 'JSONModel'
   pod 'JPush' 
+  pod 'YYKit', '~> 1.0.9'  
+  pod 'YYModel'  
+  pod 'TFDropDownMenu'
+  pod 'FWCycleScrollView'
+  pod 'MJPhotoBrowser'
+  pod 'TZImagePickerController'
   pod 'CDDPagerController'
 end

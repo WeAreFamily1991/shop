@@ -14,6 +14,7 @@
 #import "SNTool.h"
 #import "SNURL.h"
 #import "SNLog.h"
+#import "AFNetworking.h"
 //#import "NSMutableDictionaryAddition.h"
 #import "SNNetworking.h"
 #import "SNAPIManager.h"
@@ -113,14 +114,9 @@
     
     [SNIOTTool postvisiteTokenWithURL:GET_TOKEN parameters:dict success:^(SNResult *result) {
         NSString *visiteStr =result.data;
-        [User currentUser].visitetoken =visiteStr;
-//        SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
-////        token.visit_token =
-//        [token setVisit_token:result.data];
-//           [DEFAULTS setObject:result.data forKey:@"token"];
-       // visiteStr    __NSCFString *    @"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiZ3Vlc3QiLCJqdGkiOiJEQUREQkFBNzdGNzc0QjY4QjJCNDlEMUNDQjE1NzY5NiIsInVzZXJuYW1lIjoiaW9zIn0.cjg9vMX4LF3Wx7ug0n952P0eZtLCy0DyJruAERnY2C0"    0x0000000280ae5e10
+//        [User currentUser].visitetoken =visiteStr;
         
-    
+        [DEFAULTS setObject:visiteStr forKey:@"visitetoken"];
         
     } failure:^(NSError *error) {
         
@@ -140,25 +136,23 @@
 //    if (areaCode) [dict setObject:areaCode forKey:@"area_code"];
     
     [SNIOTTool postWithURL:USER_LOGIN parameters:dict success:^(SNResult *result) {
-        
         if (success) {
-            
             SNToken *token = [SNToken mj_objectWithKeyValues:result.data];
             token.password = password;
             token.mobilePhone =account;
             [User currentUser].token =result.token;
             [User currentUser].isLogin =YES;
             DRUserInfoModel *model =[DRUserInfoModel mj_objectWithKeyValues:result.data];
-           
-//            DRUserInfoModel *userModel =[DRUserInfoModel mj_objectWithKeyValues:model.buyer];
-//            SNAPIManager *manager = [SNAPIManager shareAPIManager];
-//            manager.token = token.access_token;
-//            manager.expiresTime = token.expiresTime;
-            
+            [DRBuyerModel sharedManager].alllocationcode =result.data[@"buyer"][@"locationcode"];
+            [DEFAULTS setObject:result.data[@"buyer"][@"location"] forKey:@"address"];
+            [DEFAULTS setObject:result.data[@"buyer"][@"locationcode"] forKey:@"locationcode"];
+            NSArray *codeArr =[result.data[@"buyer"][@"locationcode"] componentsSeparatedByString:@"/"];
+            [DEFAULTS setObject:[codeArr lastObject] forKey:@"code"];
             success();
         }
         
     } failure:^(NSError *error) {
+        
         if (failure) {
             failure(error);
         }
@@ -526,15 +520,68 @@
     image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
-    SNFormData *formData = [[SNFormData alloc] init];
-    formData.fileData = UIImageJPEGRepresentation(image, 0.5);
-    formData.name = @"file";
-    formData.fileName = @"";
-    formData.mimeType = @"";//"image/jpeg
+//    SNFormData *formData = [[SNFormData alloc] init];
+//    formData.fileData = UIImageJPEGRepresentation(image, 0.5);
+//    formData.name = @"file";
+//    formData.fileName = @"";
+//    formData.mimeType = @"";//"image/jpeg
+//
+//    NSMutableDictionary *paramers = [NSMutableDictionary dictionary];
+//
+//    [self postWithURL:USER_AVATAR parameters:paramers formDataArray:@[formData] success:^(SNResult *result) {
+//
+//        if (success) {
+//            success(result);
+//        }
+//
+//    } failure:^(NSError *error) {
+//        if (failure) {
+//            failure(error);
+//        }
+//    }];
+    [self uploadAvatar:@[image] nickName:nil success:^(SNResult *result) {
+        if (success) {
+            success(result);
+        }
+    } failure:^(NSError *error) {
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+
+// 设置用户头像
++ (void)uploadAvatar:(NSArray *)imageS nickName:(NSString *)nickName success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+    
+//    if (!imageS) {
+//        if (failure) {
+//            failure([self missRequiredParameter]);
+//        }
+//        return;
+//    }
+//    NSMutableArray *formDatas =[NSMutableArray array];
+//    int indexPax = 0;
+//    for (UIImage *image in imageS) {
+//        CGSize size = CGSizeMake(250, 250);
+//        UIGraphicsBeginImageContext(size);  //size 为CGSize类型，即你所需要的图片尺寸
+//        [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+////        image = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        NSArray *nameArr =@[@"1",@"2",@"3"];
+//        SNFormData *formData = [[SNFormData alloc] init];
+//        formData.fileData = UIImageJPEGRepresentation(image, 0.5);
+//        formData.name = @"file";
+//        formData.fileName =nameArr[indexPax];
+////        formData.contentType =@"application/octet-stream";
+//        formData.mimeType = @"application/octet-stream";//"image/jpeg
+//        [formDatas addObject:formData];
+//        indexPax =indexPax+1;
+//    }
     
     NSMutableDictionary *paramers = [NSMutableDictionary dictionary];
     
-    [SNIOTTool postWithURL:USER_AVATAR parameters:paramers formDataArray:@[formData] success:^(SNResult *result) {
+    [SNIOTTool postWithURL:USER_AVATAR parameters:paramers formDataArray:imageS success:^(SNResult *result) {
         
         if (success) {
             success(result);
@@ -546,7 +593,6 @@
         }
     }];
 }
-
 // 绑定iPhone设备和用户
 + (void)userBindiPhoneToken:(NSString *)ticket success:(void (^)())success failure:(void (^)(NSError *))failure {
     
@@ -871,7 +917,7 @@
 //    [NSMutableDictionary dictionaryWithObject: forKey:];
 
     
-    [SNIOTTool getWithURL:COMMON_VALID parameters:paramers success:^(SNResult *result) {
+    [SNAPI getWithURL:COMMON_VALID parameters:paramers success:^(SNResult *result) {
         if (success) {
             success(result.data);
         }
@@ -2633,13 +2679,49 @@
         }
         
     } failure:^(NSError *error) {
-        [MBProgressHUD showError:error.domain];
+        if (error.code==401) {
+            [MBProgressHUD showError:@"请先去登录"];
+            DELAY(1);
+             [DRAppManager showLoginView];
+//
+        }
+       
         if (failure) {
             failure(error);
         }
     }];
 }
 
+// GET
++ (void)getWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
+    
+   
+    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithDictionary:paramers];
+   
+   
+    [SNIOTTool getWithURL:url parameters:dic success:^(SNResult *result) {
+        if (success) {
+            success(result);
+        }
+        
+    } failure:^(NSError *error) {
+        if (error.code==401) {
+            [MBProgressHUD showError:@"请先去登录"];
+            DELAY(1);
+            [DRAppManager showLoginView];
+            //
+        }
+        
+        if (failure) {
+            failure(error);
+        }
+    }];
+}
+
+-(void)later
+{
+   
+}
 // 获取设备ID
 + (NSString *)imei {
     

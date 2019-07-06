@@ -9,7 +9,7 @@
 #import "ThirdCell.h"
 #import "Masonry.h"
 #import "NSString+Extension.h"
-#import "UIView+Ext.h"
+
 
 #define kWindowH   [UIScreen mainScreen].bounds.size.height //应用程序的屏幕高度
 #define kWindowW    [UIScreen mainScreen].bounds.size.width  //应用程序的屏幕宽度
@@ -64,32 +64,31 @@
         baseStr =@"吨";
     }
     NSString *nameStr,*cellStr;
-    if (goodListModel.unitConversion1.length!=0) {
+    if (goodListModel.unitConversion1.length!=0&&![goodListModel.unitConversion1 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%.3f%@/%@",[goodListModel.unitConversion1 doubleValue],baseStr,goodListModel.unitName1];
         cellStr =goodListModel.unitName1;
     }
-    if ([NSString stringWithFormat:@"%f",goodListModel.unitConversion2].length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",goodListModel.unitConversion2] doubleValue],baseStr,goodListModel.unitName2];
+    if (goodListModel.unitConversion2.length!=0&&![goodListModel.unitConversion2 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",[goodListModel.unitConversion2 doubleValue]] doubleValue],baseStr,goodListModel.unitName2];
         if (cellStr.length==0) {
             cellStr =goodListModel.unitName2;
             
         }
     }
-    if ([NSString stringWithFormat:@"%f",goodListModel.unitConversion3].length!=0) {
-        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",goodListModel.unitConversion3] doubleValue],baseStr,goodListModel.unitName3];
+    if (goodListModel.unitConversion3.length!=0&&![goodListModel.unitConversion3 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[[NSString stringWithFormat:@"%f",[goodListModel.unitConversion3 doubleValue]] doubleValue],baseStr,goodListModel.unitName3];
         if (cellStr.length==0) {
             cellStr =goodListModel.unitName3;
             
         }
     }
-    if (goodListModel.unitConversion4.length!=0) {
+    if (goodListModel.unitConversion4.length!=0&&![goodListModel.unitConversion4 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodListModel.unitConversion4 doubleValue],baseStr,goodListModel.unitName4];
         if (cellStr.length==0) {
             cellStr =goodListModel.unitName4;
-            
         }
     }
-    if (goodListModel.unitConversion5.length!=0) {
+    if (goodListModel.unitConversion5.length!=0&&![goodListModel.unitConversion5 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodListModel.unitConversion5 doubleValue],baseStr,goodListModel.unitName5];
         if (cellStr.length==0) {
             cellStr =goodListModel.unitName5;
@@ -98,20 +97,26 @@
     }
      self.parameterLabel.text =[NSString stringWithFormat:@"包装参数：%@",nameStr];
     self.cellLabel.text =[NSString stringWithFormat:@"订单数量(%@)：%.3f",baseStr,goodListModel.qty];
-    self.countLabel.text = [NSString stringWithFormat:@"单价：￥%.3f",goodListModel.price];
-    self.allCountLabel.text =[NSString stringWithFormat:@"小计：%.3f",goodListModel.realAmt];
+    self.countLabel.text = [NSString stringWithFormat:@"单价：￥%.2f",goodListModel.realPrice];
+    self.allCountLabel.text =[NSString stringWithFormat:@"小计：%.2f",goodListModel.qty*goodListModel.realPrice];
     
-   
-    [SNTool setTextColor:self.cellLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(self.cellLabel.text.length-[NSString stringWithFormat:@"%.3f",goodListModel.qty].length, [NSString stringWithFormat:@"%.3f",goodListModel.qty].length) AndColor:[UIColor redColor]];
+    [SNTool setTextColor:self.cellLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(self.cellLabel.text.length-[NSString stringWithFormat:@"%.3f",goodListModel.qty].length, [NSString stringWithFormat:@"%.3f",goodListModel.qty].length) AndColor:REDCOLOR];
     
-    [SNTool setTextColor:self.countLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(3, [NSString stringWithFormat:@"%.3f",goodListModel.price].length+1) AndColor:[UIColor redColor]];
+    [SNTool setTextColor:self.countLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(3, [NSString stringWithFormat:@"%.2f",goodListModel.realPrice].length+1) AndColor:REDCOLOR];
 }
 -(void)setOrderModel:(OrderModel *)orderModel
 {
     _orderModel =orderModel;
     if (orderModel.status==4||orderModel.status==5) {
+        
         [self.saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
         [self.saleOutBtn addTarget:self action:@selector(saleOutBtnClick:) forControlEvents:UIControlEventTouchUpInside];
+        if (orderModel.status ==5) {
+            self.saleOutBtn.hidden = !orderModel.orderpaytype;
+        }
+    }
+    if (orderModel.isReturn==1) {
+        self.saleOutBtn.hidden =YES;
     }
 }
 -(void)saleOutBtnClick:(UIButton *)sender
@@ -168,8 +173,8 @@
     CGFloat tagBtnX = 0;
     CGFloat tagBtnY = 0;
     for (int i = 0; i<array.count; i++) {
-        CGSize tagTextSize = [array[i] sizeWithFont:ZF_FONT(12) maxSize:CGSizeMake(WScale(280),WScale(25))];
-        if (tagBtnX+tagTextSize.width+WScale(25) >WScale(280)) {
+        CGSize tagTextSize = [array[i] sizeWithFont:ZF_FONT(12) maxSize:CGSizeMake(WScale(300),WScale(25))];
+        if (tagBtnX+tagTextSize.width+WScale(25) >WScale(300)) {
             
             tagBtnX = 0;
             tagBtnY += WScale(25)+WScale(5);
@@ -187,7 +192,10 @@
         tagBtnX = CGRectGetMaxX(label.frame)+WScale(5);
     }
     Height = tagBtnY +WScale(25);
-    self.standardView.height = Height;
+    [self.standardView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(Height);
+    }];
+    
 }
 -(UILabel *)parameterLabel
 {
@@ -199,8 +207,9 @@
         [self addSubview:_parameterLabel];
         [_parameterLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.productName.mas_left);
-            make.top.mas_equalTo(self.productName.mas_bottom).mas_equalTo(Height+WScale(10));
+            make.top.mas_equalTo(self.standardView.mas_bottom).mas_equalTo(WScale(10));
             make.right.mas_equalTo(WScale(-5));
+            
         }];
     }
     return _parameterLabel;
@@ -243,7 +252,7 @@
 {
     if (!_allCountLabel) {
         _allCountLabel = [[UILabel alloc] init];
-        _allCountLabel.textColor = [UIColor redColor];
+        _allCountLabel.textColor = REDCOLOR;
         _allCountLabel.font = ZF_FONT(12);
 //        _allCountLabel.numberOfLines = 0;
         [self addSubview:_allCountLabel];
@@ -265,7 +274,7 @@
         _saleOutBtn.layer.cornerRadius =HScale(10);
         _saleOutBtn.layer.masksToBounds =HScale(10);
 //        [_saleOutBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_16"] forState:UIControlStateNormal];
-        _saleOutBtn.backgroundColor =[UIColor redColor];
+        _saleOutBtn.backgroundColor =REDCOLOR;
         [_saleOutBtn setTitle:@"申请售后" forState:UIControlStateNormal];
         [_saleOutBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _saleOutBtn.titleLabel.font =DR_FONT(14);

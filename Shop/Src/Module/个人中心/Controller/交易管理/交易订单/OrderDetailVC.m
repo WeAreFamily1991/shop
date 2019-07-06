@@ -12,6 +12,7 @@
 #import "DetailOrdervc.h"
 #import "AskSellOutVC.h"
 #import "OrderModel.h"
+#import "LSXAlertInputView.h"
 @interface OrderDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
@@ -39,19 +40,6 @@
     self.view.backgroundColor =BACKGROUNDCOLOR;
     [self.view addSubview:self.bgTipButton];
     _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[self.sendDataDictionary[@"startTime"]?:@"",self.sendDataDictionary[@"endTime"]?:@"",self.sendDataDictionary[@"dzNo"]?:@"",@""] forKeys:@[@"startTime",@"endTime",@"orderNo",@"evaluateType"]];
-//    self.tableView.frame =CGRectMake(0, 120, SCREEN_WIDTH, self.tableView.height - 120);
-//    self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
-//    self.tableView.backgroundColor =BACKGROUNDCOLOR;
-//    if (@available(iOS 11.0, *)) {
-//
-//        _tableView.estimatedRowHeight = 0;
-//
-//        _tableView.estimatedSectionHeaderHeight = 0;
-//
-//        _tableView.estimatedSectionFooterHeight = 0;
-//        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-//    }
-//    [_tableView registerClass:[FirstTableViewCell class] forCellReuseIdentifier:@"FirstTableViewCell"];
         __weak typeof(self) weakSelf = self;
         self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
             if (weakSelf.MsgListArr.count) {
@@ -80,7 +68,7 @@
     {
         _tableView = [[UITableView alloc] initWithFrame:self
                                                   .view.bounds style:UITableViewStyleGrouped];
-        self.tableView.height = self.tableView.height - DRTopHeight -120;
+        self.tableView.dc_height = self.tableView.dc_height - DRTopHeight -120;
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.showsVerticalScrollIndicator = NO;
@@ -130,7 +118,16 @@
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
     if (self.status==0) {
         [dic setObject:@"" forKey:@"orderStatus"];
-    }else
+    }
+    else if (self.status==7)
+    {
+        [dic setObject:@"8" forKey:@"orderStatus"];
+    }
+    else if (self.status==8)
+    {
+        [dic setObject:@"7" forKey:@"orderStatus"];
+    }
+    else
     {
         [dic setObject:[NSString stringWithFormat:@"%ld",self.status-1] forKey:@"orderStatus"];
     }
@@ -143,7 +140,7 @@
     }
     NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"orderCondition"];
     DRWeakSelf;
-    [SNIOTTool getWithURL:@"buyer/orderList" parameters:mudic success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/orderList" parameters:mudic success:^(SNResult *result) {
 
         NSLog(@"data=%@",result.data[@"list"]);
         NSMutableArray*addArr=result.data[@"list"];
@@ -182,8 +179,6 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-
 - (DCUpDownButton *)bgTipButton
 {
     if (!_bgTipButton) {
@@ -221,12 +216,12 @@
 //区头的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return HScale(130);
+    return 0.01;
 }
 //区尾的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 70;
+    return 0.01;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -234,9 +229,11 @@
         
         FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
         self.orderModel = self.MsgListArr[indexPath.section];
+        
         self.goodListModel =[GoodsListModel mj_objectWithKeyValues:self.orderModel.goodsList[indexPath.row]];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.goodListModel =self.goodListModel;
+//        cell.dataDict =@{};
         return cell;
     }
     static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
@@ -257,7 +254,7 @@
     self.orderModel = self.MsgListArr[section];
     CollectionCell2 *headView =[CollectionCell2 cellWithTableView:tableView];
     headView.orderModel =self.orderModel;
-    return headView;
+    return [UIView new];
 }
 -(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -267,8 +264,26 @@
         footerView.orderModel =self.orderModel;
         
         //    CollectionCell4 *cell =[CollectionCell4 cellWithTableView:tableView];
-        footerView.BtnBlock = ^(NSInteger btnag) {
+        footerView.BtnBlock = ^(NSInteger btnag,NSString *titleStr) {
             switch (btnag) {
+                case 1:
+                {
+                     self.orderModel = self.MsgListArr[section];
+                    NSDictionary *dic =@{@"sourceType":@"Wechat",@"orderId":self.orderModel.order_id};
+                    [SNAPI postWithURL:@"buyer/buyOrderAgain" parameters:dic.mutableCopy success:^(SNResult *result) {
+                        self.tabBarController.selectedIndex =3;
+                        [self.navigationController popToRootViewControllerAnimated:YES];
+                        
+                    } failure:^(NSError *error) {
+                        
+                    }];
+                }
+                    break;
+                case 2:
+                {
+                    [self.tableView.mj_header beginRefreshing];
+                }
+                    break;
                 case 3:
                 {
                     self.orderModel = self.MsgListArr[section];
@@ -290,7 +305,7 @@
             }
             
         };
-        return footerView;
+        return [UIView new];
     }
     return [UIView new];
 }

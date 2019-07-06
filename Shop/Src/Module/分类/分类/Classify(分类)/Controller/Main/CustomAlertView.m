@@ -247,6 +247,10 @@
     !_closeclickBlock?:_closeclickBlock();
 }
 - (IBAction)sureBtn:(id)sender {
+    if (self.selectBtnTag==0) {
+        [MBProgressHUD showError:@"请选择期望到货时间"];
+        return;
+    }
     !_sureclickBlock?:_sureclickBlock();
 }
 

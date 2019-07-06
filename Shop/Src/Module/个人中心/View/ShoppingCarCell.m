@@ -8,6 +8,7 @@
 
 #import "ShoppingCarCell.h"
 #import "UIViewExt.h"
+
 @implementation ShoppingCarCell
 
 
@@ -26,14 +27,16 @@
 -(void)createSubViews{
     
     
-    self.checkImg = [[UIImageView alloc]initWithFrame:CGRectMake(10, (120-20)/2.0, 20, 20)];
-    self.checkImg.image =IMAGENAMED(@"Unchecked");
-    [self addSubview:self.checkImg];
+    self.selectBtn =[DDButton buttonWithType:UIButtonTypeCustom];
+    self.selectBtn.frame =CGRectMake(10, (120-20)/2.0, 20, 20);
+    [_selectBtn setBackgroundImage:[UIImage imageNamed:@"list_unchoose"] forState:UIControlStateNormal];
+    [_selectBtn addTarget:self action:@selector(selectedGoods:) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_selectBtn];
     
 //
     
-    
-    self.orderLab = [[UILabel alloc]initWithFrame:CGRectMake(self.checkImg.right+10,10,kScreenWidth-self.checkImg.right-20-self.typeRightLab.width, 20)];
+   
+    self.orderLab = [[UILabel alloc]initWithFrame:CGRectMake( self.selectBtn.right+10,10,SCREEN_WIDTH- self.selectBtn.right-20-self.typeRightLab.width, 20)];
     self.orderLab.text = @"单据编码：XD-00005-201902-D00019";
     self.orderLab.numberOfLines = 0;
     self.orderLab.font = DR_FONT(13);
@@ -66,14 +69,14 @@
     self.typeRightLab = [[UILabel alloc]initWithFrame:CGRectMake(SCREEN_WIDTH-50-10,10,50, 20)];
     self.typeRightLab.text = @"可开票";
     self.typeRightLab.textAlignment =NSTextAlignmentRight;
-    self.typeRightLab.textColor = [UIColor redColor];
+    self.typeRightLab.textColor = REDCOLOR;
     self.typeRightLab.font = DR_FONT(13);
     [self addSubview:self.typeRightLab];
     
     
     self.detailBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     self.detailBtn.frame = CGRectMake(SCREEN_WIDTH-WScale(90)-10,self.numberLab.bottom-30,WScale(90), 30);
-    [self.detailBtn setBackgroundColor:[UIColor redColor]];
+    [self.detailBtn setBackgroundColor:REDCOLOR];
     
 //    [self.detailBtn addTarget:self action:@selector(detailBtnClick) forControlEvents:UIControlEventTouchUpInside];
     self.detailBtn.layer.masksToBounds = YES;
@@ -97,37 +100,37 @@
 
 -(void)detailBtnClick
 {
-    !_selectClickBlock ? : _selectClickBlock();
+    !_selectClickBlock?:_selectClickBlock();
+}
+- (void)selectedGoods:(UIButton *)btn {
+    _select = !_select;
+    UIImage *selectBtnImage = (_select)?(ImgName(@"list_choose")):(ImgName(@"list_unchoose"));
+    [_selectBtn setBackgroundImage:selectBtnImage forState:UIControlStateNormal];
+    
+//    if ([self.delegate respondsToSelector:@selector(cell:selected:indexPath:)]) {
+        [self.delegate cell:self selected:_select indexPath:self.indexPath];
+//    }
 }
 
 -(void)setShoppingModel:(ShoppingModel *)shoppingModel{
     
     _shoppingModel = shoppingModel;
+   
+    
+    _select = shoppingModel.isSelected;
+    UIImage *selectBtnImage = _select?(ImgName(@"list_choose")):(ImgName(@"list_unchoose"));
+    [_selectBtn setBackgroundImage:selectBtnImage forState:UIControlStateNormal];
 
     self.orderLab.text = [NSString stringWithFormat:@"单据编码：%@",shoppingModel.orderNo];
     
-    if (shoppingModel.selectState)
-    {
-        self.checkImg.image = [UIImage imageNamed:@"checked"];
-        self.selectState = YES;
-        
-    }else{
-        self.selectState = NO;
-        self.checkImg.image = [UIImage imageNamed:@"Unchecked"];
-    }
-    
     self.timeLab.text  = [NSString stringWithFormat:@"单据时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",(long)shoppingModel.createTime]]];
     
-    
-    self.orderPriceLab.text = [NSString stringWithFormat:@"单据金额：%.2f",shoppingModel.orderAmt];
-    NSString *longStr =[NSString stringWithFormat:@"%.2f",shoppingModel.orderAmt];
-    [SNTool setTextColor:self.orderPriceLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5,longStr.length) AndColor:[UIColor redColor]];
     self.backPriceLab.text =[NSString stringWithFormat:@"退货金额：%.2f",[shoppingModel.returnedAmt doubleValue]];
     NSString *lonStr =[NSString stringWithFormat:@"%.2f",[shoppingModel.returnedAmt doubleValue]];
-    [SNTool setTextColor:self.backPriceLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5,lonStr.length) AndColor:[UIColor redColor]];
-    self.numberLab.text =[NSString stringWithFormat:@"可开票金额：%.2f",[shoppingModel.realAmt doubleValue]];
-    NSString *loStr =[NSString stringWithFormat:@"%.2f",[shoppingModel.realAmt doubleValue]];
-    [SNTool setTextColor:self.numberLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(6,loStr.length) AndColor:[UIColor redColor]];
+    [SNTool setTextColor:self.backPriceLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(5,lonStr.length) AndColor:REDCOLOR];
+    self.numberLab.text =[NSString stringWithFormat:@"可开票金额：%.2f",shoppingModel.canReturnAmt];
+    NSString *loStr =[NSString stringWithFormat:@"%.2f",shoppingModel.canReturnAmt];
+    [SNTool setTextColor:self.numberLab FontNumber:DR_FONT(12) AndRange:NSMakeRange(6,loStr.length) AndColor:REDCOLOR];
     
 }
 - (void)awakeFromNib {

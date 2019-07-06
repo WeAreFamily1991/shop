@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NumberCalculate.h"
 #import "AskSellOutModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FourthCell : UITableViewCell<NumberCalculateDelegate>
+@interface FourthCell : UITableViewCell<ATChooseCountDelegate>
 {
     float Height;
 }
@@ -22,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *cellLabel;       ///<销售单位
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
 @property(nonatomic,strong)UIView *backView;
-@property(nonatomic,strong)NumberCalculate *number;     //输入框加减
+@property(nonatomic,strong)ATChooseCountView *chooseCountView;     //输入框加减
 @property(nonatomic,strong)UILabel *danweiLab;     //单位
 @property(nonatomic,strong)UILabel *allCountLabel;      ///小计
 @property(nonatomic,strong)UIButton *saleOutBtn;      ///售后
@@ -31,7 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong)AskSellOutModel *sellOutModel;
 @property (nonatomic, copy) dispatch_block_t saleOutClickBlock;
 @property (nonatomic, copy) NSString *numStr;
-@property (copy,nonatomic) void (^numberBlock) (NSString *numberStr);
+@property (copy,nonatomic) void (^numberBlock) (NSString *numberStr,NSInteger selectRow);
+@property(nonatomic,assign)NSInteger selectRow;
 @end
 
 NS_ASSUME_NONNULL_END

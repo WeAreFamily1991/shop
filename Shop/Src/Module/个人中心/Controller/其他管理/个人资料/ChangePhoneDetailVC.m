@@ -50,6 +50,8 @@
     //时间按钮
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
+    TimerBtn.phoneStr =self.phoneTF.text;
+    TimerBtn.imgCodeStr =self.imgCodeTF.text;
     TimerBtn.countDownButtonBlock = ^{
         [WeakSelf qurestCode]; //开始获取验证码
     };
@@ -85,7 +87,7 @@
         tokenStr =[User currentUser].token;
     }
     else{
-        tokenStr =[User currentUser].visitetoken;
+        tokenStr =[DEFAULTS objectForKey:@"visitetoken"];
     }
     NSString *urlStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",tokenStr,[SNTool getRandomNumber:1000 to:9999]];
     return urlStr;

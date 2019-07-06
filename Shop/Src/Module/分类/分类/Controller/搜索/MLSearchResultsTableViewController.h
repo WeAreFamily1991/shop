@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface MLSearchResultsTableViewController : UITableViewController
-
+@property (assign,nonatomic)NSInteger selectIndex;
 /** 选中cell时调用此Block  */
 @property (nonatomic, copy) void(^didSelectText)(NSString *selectedText);
 

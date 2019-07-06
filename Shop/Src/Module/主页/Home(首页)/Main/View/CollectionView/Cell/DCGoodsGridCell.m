@@ -48,16 +48,17 @@
     }
     return self;
 }
-
-- (void)setUpUI
+-(void)setYouLikeItem:(DCRecommendItem *)youLikeItem
 {
+    _youLikeItem =youLikeItem;
     self.backgroundColor =BACKGROUNDCOLOR;
     NSMutableArray *views = [NSMutableArray array];
     NSArray *titles = @[@"课程1",@"阿米巴",@"创客",@"大赛",@"人才银行",@"小邮局",@"蚤市2",@"课程",@"阿米巴",@"创客",@"大赛",@"人才银行",@"小邮局3",@"蚤市",@"课程",@"阿米巴",@"创客",@"大赛",@"人才银行",@"小邮局4",@"蚤市"];
     for (int i = 0; i < titles.count; i++) {
         DTHomeButton *btn = [[DTHomeButton alloc]initWithFrame:CGRectZero withTitle:titles[i] withImageURLString:@""];
+        btn.youLikeItem =youLikeItem;
         //        [btn setTitle:titles[i] forState:0];
-        //        [btn setTitleColor:[UIColor redColor] forState:0];
+        //        [btn setTitleColor:REDCOLOR forState:0];
         [views addObject:btn];
         
     }
@@ -66,6 +67,10 @@
     self.scrollView = [[DTHomeScrollView alloc]initWithFrame:self.bounds viewsArray:views];
     self.scrollView.delegate = self;
     [self addSubview:self.scrollView];
+}
+- (void)setUpUI
+{
+  
 
 }
 #pragma DTHomeScrollViewDelegate

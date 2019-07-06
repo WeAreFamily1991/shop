@@ -46,6 +46,10 @@
     }
     return _MsgListArr;
 }
+-(void)setStatus:(NSInteger)status
+{
+    NSLog(@"status=%ld",(long)status);
+}
 -(void)selectWithIndex:(NSInteger)selectIndex
 {
     NSLog(@"selectIndex=%ld",(long)selectIndex);
@@ -86,7 +90,11 @@
     [self.tableView.mj_footer endRefreshing];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"sale" object:nil];
 }
-
+-(void)setSourceDic:(NSMutableDictionary *)sourceDic
+{
+    _sourceDic =sourceDic;
+    [self.tableView.mj_header beginRefreshing];
+}
 - (void)notificationHandler:(NSNotification *)notification {
     if ([notification.name isEqualToString:@"sale"]) {
         NSDictionary *dic =notification.userInfo;
@@ -131,9 +139,19 @@
         }
         if (dictionary) {
             [dic addEntriesFromDictionary:dictionary];
-        }    
+        }
+    if (_sourceDic) {
+        if ([_sourceDic[@"index"] isEqualToString:@"1"]) {
+            [dic setObject:_sourceDic[@"time"]?:@"" forKey:@"startTime"];
+            [dic setObject:_sourceDic[@"time"]?:@"" forKey:@"endTime"];
+        }
+        else
+        {
+            [dic setObject:_sourceDic[@"dzNo"]?:@"" forKey:@"dzNo"];
+        }
+    }
     DRWeakSelf;
-    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         NSLog(@"data=%@",result.data[@"list"]);
         NSMutableArray*addArr=result.data[@"list"];
         if (addArr.count) {
@@ -202,37 +220,56 @@
     return 0.01;
 }
 //区尾的高度
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 10.01;
+}
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 
-    self.saleModel =self.MsgListArr[indexPath.row];
-    if (self.status==0) {
-        SaleOrderCell *cell =[SaleOrderCell cellWithTableView:tableView];
-        cell.typeLab.hidden =YES;
-        cell.saleModel =self.saleModel;
-        cell.status =self.status;
-        cell.detailClickBlock = ^{
-            SaleDetailVC *saleDetailVC =[[SaleDetailVC alloc]init];
-            saleDetailVC.saleModel =self.saleModel;
-            saleDetailVC.fatherStatus =self.status;
-            [self.navigationController pushViewController:saleDetailVC animated:YES];
-        };
-        return cell;
-    }else
-    {
-        SaleOrderCell1 *cell =[SaleOrderCell1 cellWithTableView:tableView];
-        cell.typeLab.hidden =YES;
-        cell.saleModel =self.saleModel;
-        cell.status =self.status;
-        cell.detailClickBlock = ^{
-            SaleDetailVC *saleDetailVC =[[SaleDetailVC alloc]init];
-            saleDetailVC.saleModel =self.saleModel;
-            saleDetailVC.fatherStatus =self.status;
-            [self.navigationController pushViewController:saleDetailVC animated:YES];
-        };
-        return cell;
+    if (self.MsgListArr.count!=0) {
+        self.saleModel =self.MsgListArr[indexPath.row];
+        if (self.status==0) {
+            SaleOrderCell *cell =[SaleOrderCell cellWithTableView:tableView];
+            cell.typeLab.hidden =YES;
+            cell.saleModel =self.saleModel;
+            cell.status =self.status;
+            cell.detailClickBlock = ^{
+                SaleDetailVC *saleDetailVC =[[SaleDetailVC alloc]init];
+                self.saleModel =self.MsgListArr[indexPath.row];
+                saleDetailVC.saleModel =self.saleModel;
+                saleDetailVC.fatherStatus =self.status;
+                [self.navigationController pushViewController:saleDetailVC animated:YES];
+            };
+            return cell;
+        }else
+        {
+            SaleOrderCell1 *cell =[SaleOrderCell1 cellWithTableView:tableView];
+            cell.typeLab.hidden =YES;
+            cell.saleModel =self.saleModel;
+            cell.status =self.status;
+            cell.detailClickBlock = ^{
+                self.saleModel =self.MsgListArr[indexPath.row];
+                SaleDetailVC *saleDetailVC =[[SaleDetailVC alloc]init];
+                saleDetailVC.saleModel =self.saleModel;
+                saleDetailVC.fatherStatus =self.status;
+                [self.navigationController pushViewController:saleDetailVC animated:YES];
+            };
+            return cell;
+        }
+        
     }
+    static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
+                             SimpleTableIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
+                                      reuseIdentifier: SimpleTableIdentifier];
+    }
+//    cell.textLabel.text = [_titleStr stringByAppendingString:[NSString stringWithFormat:@"-%d",(int)indexPath.row]];
+    return cell;
 }
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.saleModel =self.MsgListArr[indexPath.row];

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface BillApplicationDetailVC : UIViewController
+@interface BillApplicationDetailVC : STBaseViewController
 @property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @property(nonatomic,assign)NSInteger status;
 @property (nonatomic,retain)NSMutableDictionary *mudic;

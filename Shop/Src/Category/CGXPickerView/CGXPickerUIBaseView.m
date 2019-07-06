@@ -25,6 +25,7 @@
     // 添加顶部标题栏
     [self.alertView addSubview:self.topView];
     // 添加左边取消按钮
+    
     [self.topView addSubview:self.leftBtn];
     // 添加右边确定按钮
     [self.topView addSubview:self.rightBtn];
@@ -81,6 +82,14 @@
         _leftBtn.layer.borderColor = self.manager.leftBtnborderColor.CGColor;
         _leftBtn.layer.borderWidth = self.manager.leftBtnBorderWidth;
         _leftBtn.layer.masksToBounds = YES;
+        if ([User currentUser].isLogin)
+        {
+            _leftBtn.hidden =NO;
+        }
+        else
+        {
+            _leftBtn.hidden =YES;
+        }
         _leftBtn.titleLabel.font = [UIFont systemFontOfSize:self.manager.leftBtnTitleSize];
         [_leftBtn setTitleColor:self.manager.leftBtnTitleColor forState:UIControlStateNormal];
         [_leftBtn setTitle:self.manager.leftBtnTitle forState:UIControlStateNormal];

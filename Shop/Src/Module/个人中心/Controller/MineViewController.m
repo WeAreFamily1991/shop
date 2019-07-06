@@ -53,7 +53,9 @@
         [[DRBuyerModel sharedManager] setValuesForKeysWithDictionary:result.data[@"buyer"]];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [self logOut];
+          self.tabBarController.selectedIndex=0;
+//        [self logOut];
+        
     }];
 //    [SNAPI userInfoSuccess:^(DRUserInfoModel *user) {
 //
@@ -71,14 +73,14 @@
     UIView *footView =[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
     footView.backgroundColor =[UIColor clearColor];
     self.tableView.tableFooterView =footView;
-    UILabel *titleLab =[[UILabel alloc]initWithFrame:footView.bounds];
+    UILabel *titleLab =[[UILabel alloc]initWithFrame:CGRectMake(0, 0, ScreenW, 30)];
     titleLab.text =@"- 热线电话:0573-83108631 -";
     titleLab.textColor =[UIColor lightGrayColor];
     titleLab.font=DR_FONT(12);
-    titleLab.textAlignment =1;
+    titleLab.textAlignment =NSTextAlignmentCenter;
     [footView addSubview:titleLab];
     UIButton *titleBtn =[UIButton buttonWithType:UIButtonTypeCustom];
-    titleBtn.frame =titleLab.bounds;
+    titleBtn.frame =CGRectMake(0, 0, ScreenW, 30);
     [titleBtn addTarget:self action:@selector(titleBtnClick) forControlEvents:UIControlEventTouchUpInside];
     [footView addSubview:titleBtn];
 }
@@ -123,10 +125,18 @@
         };
         return cell;
     }
+    NSString *childID =[DRUserInfoModel sharedManager].parentid;
+    if (childID.length!=0) {
+        MineCell4 *cell = [MineCell4 cellWithTableView:tableView];
+        cell.BtnOthertagBlock = ^(NSInteger moneyBtntag) {
+            [self managePushVC:moneyBtntag];
+        };
+    }
     MineCell3 *cell = [MineCell3 cellWithTableView:tableView];
     cell.BtnOthertagBlock = ^(NSInteger moneyBtntag) {
         [self managePushVC:moneyBtntag];
     };
+    
     return cell;
    
 }
@@ -253,8 +263,10 @@
         }
             break;
         case 26:
+            
         {
-            [self.navigationController pushViewController:[BillMessageVC new] animated:YES];
+            [MBProgressHUD showError:@"敬请期待！"];
+//            [self.navigationController pushViewController:[BillMessageVC new] animated:YES];
         }
             break;
         case 27:
@@ -268,7 +280,9 @@
                                                             handler:^(UIAlertAction * _Nonnull action)
                                       {
                                          
-                                          [self logOut];
+                                          self.tabBarController.selectedIndex=0;
+                                          [DRAppManager showLoginView];
+//                                          [self logOut];
                                       }];
             [alertController addAction:action1];
             
@@ -291,13 +305,16 @@
 -(void)logOut
 {
     [[User currentUser] loginOut];
+    
     LoginVC *dcLoginVc = [LoginVC new];
+    
     DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
     [self presentViewController:nav animated:YES completion:nil];
+  
     NSMutableDictionary *dic =[NSMutableDictionary dictionary];
     [SNIOTTool postWithURL:USER_LOGOUT parameters:dic success:^(SNResult *result) {
         if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
-            
+           
         }
         
     } failure:^(NSError *error) {

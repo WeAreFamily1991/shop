@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface DCScrollAdFootView : UICollectionReusableView
-
+/* 轮播图数组 */
+@property (copy , nonatomic)NSArray *imageGroupArray;
 @end

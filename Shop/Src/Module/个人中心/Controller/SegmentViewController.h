@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, SegmentControlStyle) {
     SegmentControlTypeFixed   //内容部分固定
 };
 
-@interface SegmentViewController : UIViewController
+@interface SegmentViewController : STBaseViewController
 //标签栏标题数组
 @property (nonatomic, strong) NSArray *titleArray;
 //每个标签对应ViewController数组

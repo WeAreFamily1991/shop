@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChildVC : UIViewController
+@interface ChildVC : STBaseViewController
 
 @end
 

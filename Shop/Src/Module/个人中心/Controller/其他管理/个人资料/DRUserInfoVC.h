@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "DRUserInfoModel.h"
 
-@interface DRUserInfoVC : UIViewController
+@interface DRUserInfoVC : STBaseViewController
 
 //@property (nonatomic, strong) DRUserInfoModel *userModel;
 

@@ -144,7 +144,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     _menuView = menuView;
     //商品
     CGFloat button_W = self.width/2;
-    UIButton *productBT = [UITool createButtonWithFrame:CGRectMake(0, 0, button_W, 36) title:@"商品分类" backgroundColor:[UIColor whiteColor] titleColor:[UIColor redColor] target:self selector:@selector(btnClick:) tag:1];
+    UIButton *productBT = [UITool createButtonWithFrame:CGRectMake(0, 0, button_W, 36) title:@"商品分类" backgroundColor:[UIColor whiteColor] titleColor:REDCOLOR target:self selector:@selector(btnClick:) tag:1];
     productBT.titleLabel.font =  DR_FONT(14);
     [productBT setBackgroundImage:[AppMethods createImageWithColor:[UIColor whiteColor]] forState:UIControlStateHighlighted];
     [menuView addSubview:productBT];
@@ -164,7 +164,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     //4:可移动的底部滑竿
     _scrollLab = [[UILabel alloc]init];
     _scrollLab.frame = CGRectMake(productBT.center.x-10, productBT.height-2, 20, 2);
-    _scrollLab.backgroundColor = [UIColor redColor];
+    _scrollLab.backgroundColor = REDCOLOR;
     [menuView addSubview:_scrollLab];
     
     UIView *bottomMenuView = [[UIView alloc]initWithFrame:CGRectMake(0, 38, self.width, 36)];
@@ -190,7 +190,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     //4:可移动的底部滑竿
     _bottomScrollLab = [[UILabel alloc]init];
     _bottomScrollLab.frame = CGRectMake(allBT.center.x-10, _bottomMenuView.height-2, 20, 2);
-    _bottomScrollLab.backgroundColor = [UIColor redColor];
+    _bottomScrollLab.backgroundColor = REDCOLOR;
     [bottomMenuView addSubview:_bottomScrollLab];
 }
 
@@ -245,7 +245,7 @@ static CGFloat rubberBandDistance(CGFloat offset, CGFloat dimension) {
     _currentIndex = tag;
     UIButton *lastBT = (UIButton *)[_menuView viewWithTag:_lastIndex];
     [lastBT setTitleColor:kColor_TitleColor forState:UIControlStateNormal];
-    [btn setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [btn setTitleColor:REDCOLOR forState:UIControlStateNormal];
 //    _scrollLab.mj_x = btn.center.x-10;
     _lastIndex = tag;
     

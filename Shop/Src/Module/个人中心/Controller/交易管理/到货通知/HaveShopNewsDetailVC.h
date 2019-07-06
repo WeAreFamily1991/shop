@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HaveShopNewsDetailVC : UIViewController
+@interface HaveShopNewsDetailVC : STBaseViewController
 
 @end
 

@@ -38,7 +38,7 @@ typedef NS_ENUM(NSInteger, REFrostedViewControllerLiveBackgroundStyle) {
     REFrostedViewControllerLiveBackgroundStyleDark
 };
 
-@interface REFrostedViewController : UIViewController
+@interface REFrostedViewController : STBaseViewController
 
 @property (assign, readwrite, nonatomic) REFrostedViewControllerDirection direction;
 @property (strong, readwrite, nonatomic) UIColor *blurTintColor;

@@ -51,27 +51,40 @@
     return self;
 }
 
+-(void)setPhoneStr:(NSString *)phoneStr
+{
+    _phoneStr =phoneStr;
+}
 
-
+-(void)setImgCodeStr:(NSString *)imgCodeStr
+{
+    _imgCodeStr =imgCodeStr;
+}
 -(void)setSecond:(int)second{
     _second = second;
     _timer = _second;
 }
-
 - (void)sentCodeBtnClick {
-    
-    //获取验证码
-    _countDownButtonBlock();
-    
-    self.enabled = NO;
-    
-    [self refreshButtonView];
-    [self setTitle:[NSString stringWithFormat:@"获取验证码(%zi)", _timer] forState:UIControlStateNormal];
-    
-    _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(myTimer) userInfo:nil repeats:YES];
+      _countDownButtonBlock();
+    if (_phoneStr.length==0||_phoneStr.length!=11) {
+        [MBProgressHUD showError:@"请输入正确的手机号码"];
+        return;
+    }
+    if (_imgCodeStr.length==0||_imgCodeStr.length!=4) {
+        [MBProgressHUD showError:@"请输入正确的图文验证码"];
+        return;
+    }
+    //    DRWeakSelf;
+    [SNAPI commonMessageValidWithMobile:_phoneStr validCode:_imgCodeStr success:^(NSString *response) {
+        [MBProgressHUD showError:@"验证码已发送"];
+        self.enabled = NO;
+        [self refreshButtonView];
+        [self setTitle:[NSString stringWithFormat:@"获取验证码(%zi)", _timer] forState:UIControlStateNormal];
+        _myTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(myTimer) userInfo:nil repeats:YES];
+    } failure:^(NSError *error) {
+        [MBProgressHUD showError:error.domain];
+    }] ;
 }
-
-
 - (void)myTimer{
     [self setTitle:[NSString stringWithFormat:@"获取验证码(%zi)", _timer] forState:UIControlStateNormal];
     if (_timer == 0) {
@@ -92,8 +105,6 @@
     [self setBackgroundImage:[self imageWithColor:[UIColor colorWithRed:1.000 green:0.310 blue:0.000 alpha:1.00] andSize:self.frame.size] forState:UIControlStateNormal];
     [self setBackgroundImage:[self imageWithColor:[UIColor lightGrayColor] andSize:self.frame.size] forState:UIControlStateDisabled];
 }
-
-
 - (UIImage *)imageWithColor:(UIColor *)color andSize:(CGSize)aSize{
     CGRect rect = CGRectMake(0.0f, 0.0f, aSize.width, aSize.height);
     UIGraphicsBeginImageContext(rect.size);

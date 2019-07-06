@@ -9,7 +9,7 @@
 #import "SecondCell.h"
 #import "Masonry.h"
 #import "NSString+Extension.h"
-#import "UIView+Ext.h"
+
 
 #define kWindowH   [UIScreen mainScreen].bounds.size.height //应用程序的屏幕高度
 #define kWindowW    [UIScreen mainScreen].bounds.size.width  //应用程序的屏幕宽度
@@ -22,10 +22,75 @@
     [super awakeFromNib];
     
 }
+-(void)setTitleStr:(NSString *)titleStr
+{
+    _titleStr =titleStr;
+    _nullImg.hidden =NO;
+     self.moreBtn.hidden =NO;
+}
+-(void)setSameModel:(DRSameModel *)sameModel
+{
+    _sameModel =sameModel;
+    [self.productImg sd_setImageWithURL:[NSURL URLWithString:sameModel.imgurl] placeholderImage:[UIImage imageNamed:@"santie_default_img"]];
+    self.productName.text =sameModel.itemname;
+    [self.moreBtn setImage: [UIImage imageNamed: @"arrow_right_grey" ]forState:UIControlStateSelected];
+    
+    [self.moreBtn setImage: [UIImage imageNamed: @"arrow_down_grey" ]forState:UIControlStateNormal];
+    
+    //设置分组标题
+    
+    [self.moreBtn setTitle:@"更多信息"  forState:UIControlStateNormal];
+    [self.moreBtn setTitle:@"收起更多"  forState:UIControlStateSelected];
+    
+    [self.moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    [self.moreBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleBottom imageTitleSpace:5];
+    self.moreBtn.hidden =YES;
+    self.nullImg.hidden =NO;
+    NSArray * array = @[sameModel.spec?:@"",sameModel.materialname?:@"",sameModel.brandname?:@""];
+    NSMutableArray *titArr =[NSMutableArray array];
+    for (NSString *str in array) {
+        if (str.length!=0) {
+            [titArr addObject:str];
+        }
+    }
+    Height = WScale(30);
+    [self setStandWithArray:titArr];
+    
+    NSString *baseStr;//basicunitid 5千支  6公斤  7吨
+    if ([sameModel.basicunitid intValue]==5) {
+        baseStr =@"千支";
+    }
+    if ([sameModel.basicunitid intValue]==6) {
+        baseStr =@"公斤";
+    }
+    if ([sameModel.basicunitid intValue]==7) {
+        baseStr =@"吨";
+    }
+    NSString *nameStr;
+    if (sameModel.unitconversion1.length!=0&&![sameModel.unitconversion1 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%.3f%@/%@",[sameModel.unitconversion1 doubleValue],baseStr,sameModel.unitname1];
+    }
+    if (sameModel.unitconversion2.length!=0&&![sameModel.unitconversion2 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[sameModel.unitconversion2 doubleValue],baseStr,sameModel.unitname2];
+    }
+    if (sameModel.unitconversion3.length!=0&&![sameModel.unitconversion3 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[sameModel.unitconversion3 doubleValue],baseStr,sameModel.unitname3];
+    }
+    if (sameModel.unitconversion4!=0&&![sameModel.unitconversion4 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[sameModel.unitconversion4 doubleValue],baseStr,sameModel.unitname4];
+    }
+    if (sameModel.unitconversion5.length!=0&&![sameModel.unitconversion5 isEqualToString:@"0"]) {
+        nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[sameModel.unitconversion5 doubleValue],baseStr,sameModel.unitname5];
+    }
+    
+    self.parameterLabel.text =[NSString stringWithFormat:@"包装参数：%@",nameStr];
+    self.cellLabel.text = nil;
+    self.countLabel.text =[NSString stringWithFormat:@"库存数(%@)：%.3f  发货地：%@",baseStr,sameModel.qty,sameModel.storeName] ;
+}
 -(void)setGoodsModel:(GoodsModel *)goodsModel
 {
     _goodsModel =goodsModel;
-    
+      _nullImg.hidden =YES;
     [self.productImg sd_setImageWithURL:[NSURL URLWithString:goodsModel.imgurl] placeholderImage:[UIImage imageNamed:@"santie_default_img"]];
     self.productName.text =goodsModel.itemname;
     [self.moreBtn setImage: [UIImage imageNamed: @"arrow_right_grey" ]forState:UIControlStateSelected];
@@ -39,7 +104,7 @@
     
     [self.moreBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
       [self.moreBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleBottom imageTitleSpace:5];
-
+     self.moreBtn.hidden =NO;
     NSArray * array = @[goodsModel.spec?:@"",goodsModel.levelname?:@"",goodsModel.materialname?:@"",goodsModel.surfacename?:@"",goodsModel.brandname?:@""];
     NSMutableArray *titArr =[NSMutableArray array];
     for (NSString *str in array) {
@@ -61,25 +126,26 @@
         baseStr =@"吨";
     }
     NSString *nameStr;
-    if (goodsModel.unitconversion1.length!=0) {
+    if (goodsModel.unitconversion1.length!=0&&![goodsModel.unitconversion1 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%.3f%@/%@",[goodsModel.unitconversion1 doubleValue],baseStr,goodsModel.unitname1];
     }
-    if (goodsModel.unitconversion2.length!=0) {
+    if (goodsModel.unitconversion2.length!=0&&![goodsModel.unitconversion2 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion2 doubleValue],baseStr,goodsModel.unitname2];
     }
-    if (goodsModel.unitconversion3.length!=0) {
+    if (goodsModel.unitconversion3.length!=0&&![goodsModel.unitconversion3 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion3 doubleValue],baseStr,goodsModel.unitname3];
     }
-    if (goodsModel.unitconversion4.length!=0) {
+    if (goodsModel.unitconversion4.length!=0&&![goodsModel.unitconversion4 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion4 doubleValue],baseStr,goodsModel.unitname4];
     }
-    if (goodsModel.unitconversion5.length!=0) {
+    if (goodsModel.unitconversion5.length!=0&&![goodsModel.unitconversion5 isEqualToString:@"0"]) {
         nameStr =[NSString stringWithFormat:@"%@ %.3f%@/%@",nameStr?:@"",[goodsModel.unitconversion5 doubleValue],baseStr,goodsModel.unitname5];
     }
    
     self.parameterLabel.text =[NSString stringWithFormat:@"包装参数：%@",nameStr];
     self.cellLabel.text = nil;
     self.countLabel.text =[NSString stringWithFormat:@"库存数(%@)：%.3f  %@",baseStr,[goodsModel.qty doubleValue],goodsModel.storeName] ;
+    
 }
 -(UIImageView *)productImg
 {
@@ -89,7 +155,22 @@
         [_productImg mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(WScale(5));
             make.top.mas_equalTo(WScale(5));
-            make.width.height.mas_equalTo(WScale(65));
+            make.width.mas_equalTo(WScale(65));
+            make.height.mas_equalTo(WScale(55));
+        }];
+    }
+    return _productImg;
+}
+-(UIImageView *)nullImg
+{
+    if (!_nullImg) {
+        _nullImg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"hot-ico"]];
+      
+        [self addSubview:_nullImg];
+        [_nullImg mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.mas_equalTo(WScale(5));
+            make.top.mas_equalTo(WScale(5));
+            make.width.height.mas_equalTo(WScale(15));
         }];
     }
     return _productImg;
@@ -148,8 +229,8 @@
     CGFloat tagBtnX = 0;
     CGFloat tagBtnY = 0;
     for (int i = 0; i<array.count; i++) {
-        CGSize tagTextSize = [array[i] sizeWithFont:ZF_FONT(12) maxSize:CGSizeMake(WScale(280),WScale(25))];
-        if (tagBtnX+tagTextSize.width+WScale(25) >WScale(280)) {
+        CGSize tagTextSize = [array[i] sizeWithFont:ZF_FONT(12) maxSize:CGSizeMake(WScale(310),WScale(25))];
+        if (tagBtnX+tagTextSize.width+WScale(25) >WScale(310)) {
             
             tagBtnX = 0;
             tagBtnY += WScale(25)+WScale(5);
@@ -157,7 +238,7 @@
         UILabel * label = [[UILabel alloc] init];
         label.frame = CGRectMake(tagBtnX, tagBtnY, tagTextSize.width+WScale(5),WScale(25));
         label.text = array[i];
-        label.textColor = [UIColor blackColor];
+        label.textColor = [UIColor redColor];
         label.font = ZF_FONT(12);
         label.textAlignment = NSTextAlignmentCenter;
         label.layer.cornerRadius = 2;
@@ -167,7 +248,10 @@
         tagBtnX = CGRectGetMaxX(label.frame)+WScale(5);
     }
     Height = tagBtnY +WScale(25);
-    self.standardView.height = Height;
+    [self.standardView mas_updateConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(Height);
+    }];
+  
 }
 -(UILabel *)parameterLabel
 {
@@ -179,8 +263,9 @@
         [self addSubview:_parameterLabel];
         [_parameterLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.left.mas_equalTo(self.productName.mas_left);
-            make.top.mas_equalTo(self.productName.mas_bottom).mas_equalTo(Height+WScale(10));
+            make.top.mas_equalTo(self.standardView.mas_bottom).mas_equalTo(WScale(10));
             make.right.mas_equalTo(WScale(-5));
+
         }];
     }
     return _parameterLabel;

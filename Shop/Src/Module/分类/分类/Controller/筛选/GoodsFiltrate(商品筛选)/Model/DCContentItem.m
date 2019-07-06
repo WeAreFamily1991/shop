@@ -14,8 +14,4 @@
              @"child_id" : @"id"
              };
 }
--(void)setValue:(id)value forUndefinedKey:(NSString *)key
-{
-    
-}
 @end

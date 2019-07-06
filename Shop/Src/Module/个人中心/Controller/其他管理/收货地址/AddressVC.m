@@ -223,7 +223,7 @@
                                               reuseIdentifier: SimpleTableIdentifier];
             }
             cell.textLabel.text = @"含税含运";
-            cell.textLabel.textColor =[UIColor redColor];
+            cell.textLabel.textColor =REDCOLOR;
             cell.textLabel.font =DR_FONT(13);
             
             return cell;

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ShopEvaluateVC : UIViewController
+@interface ShopEvaluateVC : STBaseViewController
 @property(nonatomic,assign)NSInteger status;
 //@property (nonatomic , strong) UITableView *tableView;
 @end

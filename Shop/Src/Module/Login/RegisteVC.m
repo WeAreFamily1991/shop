@@ -11,6 +11,7 @@
 #import "ZJBLTimerButton.h"
 #import "CGXPickerView.h"
 #import "SNAPIManager.h"
+#import "DRAgreementVC.h"
 @interface RegisteVC ()
 @property (weak, nonatomic) IBOutlet UITextField *companyTF;
 @property (weak, nonatomic) IBOutlet UITextField *phoneTF;
@@ -27,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *loginBtn;
 @property (weak, nonatomic) IBOutlet UIButton *codeBtn;
 @property (strong, nonatomic)UIImageView *codeIMG;
+@property (strong, nonatomic) ZJBLTimerButton *TimerBtn;
 
 @property (nonatomic, strong) NNValidationView *testView;
 @property (nonatomic,retain)NSString *validCodeIMGStr;
@@ -54,41 +56,37 @@
 -(void)layout
 {
    
-    self.loginBtn.layer.cornerRadius =25;
-    self.loginBtn.layer.masksToBounds =25;
+    self.loginBtn.layer.cornerRadius =self.loginBtn.dc_height/2;
+    self.loginBtn.layer.masksToBounds =self.loginBtn.dc_height/2;
     [self.loginBtn.layer setBorderColor:[UIColor lightGrayColor].CGColor];
     [self.loginBtn.layer setBorderWidth:1.0];
-    self.registeBtn.layer.cornerRadius =25;
-    self.registeBtn.layer.masksToBounds =25;
+    self.registeBtn.layer.cornerRadius =self.loginBtn.dc_height/2;
+    self.registeBtn.layer.masksToBounds =self.loginBtn.dc_height/2;
     [self.phoneTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     [self.imgCodeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     [self.codeTF addTarget:self action:@selector(textFieldChangeAction:) forControlEvents:UIControlEventEditingChanged];
     //时间按钮
-    ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
+  self.TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
-    TimerBtn.countDownButtonBlock = ^{
+   
+    self.TimerBtn.countDownButtonBlock = ^{
+        WeakSelf.TimerBtn.phoneStr =WeakSelf.phoneTF.text;
+        WeakSelf.TimerBtn.imgCodeStr =WeakSelf.imgCodeTF.text;
         [WeakSelf qurestCode]; //开始获取验证码
     };
-    [self.codeView addSubview:TimerBtn];
+    [self.codeView addSubview:self.TimerBtn];
     
 }
 //发生网络请求 --> 获取验证码
 - (void)qurestCode {
-    if (self.phoneTF.text.length==0||self.phoneTF.text.length!=11) {
-        [MBProgressHUD showError:@"请输入正确的手机号码"];
-        return;
-    }
-    if (self.imgCodeTF.text.length==0||self.imgCodeTF.text.length!=4) {
-        [MBProgressHUD showError:@"请输入正确的图文验证码"];
-        return;
-    }
+    
 //    DRWeakSelf;
     [SNAPI commonMessageValidWithMobile:self.phoneTF.text validCode:self.imgCodeTF.text success:^(NSString *response) {
         if ([response isEqualToString:@"200"]) {
             [MBProgressHUD showError:@"验证码已发送"];
         }
     } failure:^(NSError *error) {
-        
+        [MBProgressHUD showError:error.domain];
     }] ;
         
 
@@ -103,6 +101,8 @@
         {
             if (textField.text.length>11) {
                 self.phoneTF.text = [self.phoneTF.text substringToIndex:11];
+               
+               
             }
         }
             break;
@@ -110,6 +110,7 @@
         {
             if (textField.text.length>4) {
               self.imgCodeTF.text = [self.imgCodeTF.text substringToIndex:4];
+           
             }
         }
             break;
@@ -127,14 +128,14 @@
     }
 }
 - (IBAction)codeBtnClick:(id)sender {
-   self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"token"],[SNTool getRandomNumber:1000 to:9999]];
+   self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"visitetoken"],[SNTool getRandomNumber:1000 to:9999]];
      NSLog(@"wwwww+%d",[SNTool getRandomNumber:1000 to:9999]);
      [self.codeBtn sd_setImageWithURL:[NSURL URLWithString:self.imgStr] forState:UIControlStateNormal];
-    
 }
 
 - (void)setupViews {
-    self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"token"],[SNTool getRandomNumber:1000 to:9999]];
+    
+    self.imgStr =[NSString stringWithFormat:@"%@%@?santieJwt=%@&%d",[SNAPIManager shareAPIManager].baseURL,@"openStResouces/getValidCode",[DEFAULTS objectForKey:@"visitetoken"],[SNTool getRandomNumber:1000 to:9999]];
     [self.codeBtn sd_setImageWithURL:[NSURL URLWithString:self.imgStr] forState:UIControlStateNormal];
 }
 -(void)addIMG
@@ -148,6 +149,8 @@
         [self.selectAreaBtn setTitle:[NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]] forState:UIControlStateNormal];
         NSLog(@"%@-%@",selectAddressArr,selectAddressRow);
         self.selectAreaCodeStr =[NSString stringWithFormat:@"%@",[selectAddressArr lastObject]];
+        [DEFAULTS setObject:[NSString stringWithFormat:@"%@,%@,%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]] forKey:@"address"];
+        [DEFAULTS setObject:[selectAddressArr lastObject] forKey:@"locationcode"];
         //            weakSelf.navigationItem.title = [NSString stringWithFormat:@"%@%@%@", selectAddressArr[0], selectAddressArr[1],selectAddressArr[2]];
         
     }];
@@ -158,7 +161,7 @@
     
 }
 - (IBAction)xieyiBtnClick:(id)sender {
-    
+    [self.navigationController pushViewController:[DRAgreementVC new] animated:YES];
 }
 - (IBAction)registBtnClick:(id)sender {
     if (self.companyTF.text.length==0) {
@@ -223,7 +226,7 @@
 }
 
 - (IBAction)loginBtnClick:(id)sender {
-    
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 /*

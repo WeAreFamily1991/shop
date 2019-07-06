@@ -317,10 +317,10 @@
     return url;
 }
 
-- (UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index { //返回占位图片
-    EvaluateModel *model = _dataArray[_selectedIndex];
-    NSArray *picList = model.picList;
-    return [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:picList[index][@"picUrl"]];
-}
+//- (UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index { //返回占位图片
+//    EvaluateModel *model = _dataArray[_selectedIndex];
+//    NSArray *picList = model.picList;
+//    return [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:picList[index][@"picUrl"]];
+//}
 
 @end

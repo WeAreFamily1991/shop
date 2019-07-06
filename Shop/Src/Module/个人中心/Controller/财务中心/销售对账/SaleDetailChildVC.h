@@ -10,7 +10,7 @@
 @class SalesOrderModel;
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SaleDetailChildVC : UIViewController
+@interface SaleDetailChildVC : STBaseViewController
 @property(nonatomic,assign)NSInteger status;
 @property(nonatomic,assign)NSInteger fatherStatus;
 @property (strong , nonatomic)SalesOrderModel *saleModel;

@@ -34,8 +34,13 @@
 
 + (id)showLoginView {
     
+    [[User currentUser] loginOut];
+    
     LoginVC *dcLoginVc = [LoginVC new];
+    
     DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
+   [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:nav animated:YES completion:nil];
+//    [self presentViewController:nav animated:YES completion:nil];
     return nav;
 }
 

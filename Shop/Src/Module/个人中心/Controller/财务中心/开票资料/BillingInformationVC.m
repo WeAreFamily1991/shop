@@ -33,9 +33,9 @@
     self.titleView.button_Width = WScale(50);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.view addSubview:_titleView];
     
     ///线

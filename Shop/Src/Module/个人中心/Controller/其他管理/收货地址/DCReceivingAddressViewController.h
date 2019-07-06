@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DCReceivingAddressViewController : UIViewController
+@interface DCReceivingAddressViewController : STBaseViewController
 //@property (nonatomic, strong) DRUserInfoModel *userModel;
-
+@property (nonatomic,retain)NSString *selectStr;
+@property (nonatomic, copy) void (^changeURLBLOCK)(NSString *addressid);
 @end

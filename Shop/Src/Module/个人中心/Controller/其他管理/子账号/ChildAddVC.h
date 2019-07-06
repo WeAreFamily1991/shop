@@ -10,7 +10,7 @@
 #import "DRChildCountModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChildAddVC : UIViewController
+@interface ChildAddVC : STBaseViewController
 @property (nonatomic,assign)BOOL selectType;
 @property (nonatomic,retain)DRChildCountModel *childModel;
 @property (nonatomic, copy) void (^childBlock)();

@@ -33,16 +33,25 @@
 - (void)setUpUI
 {
     self.backgroundColor = [UIColor whiteColor];
-    _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(10, 0, ScreenW-20, self.dc_height-10) delegate:self placeholderImage:nil];
+    _cycleScrollView = [SDCycleScrollView cycleScrollViewWithFrame:CGRectMake(0, 0, ScreenW, self.dc_height) delegate:self placeholderImage:nil];
     _cycleScrollView.bannerImageViewContentMode = UIViewContentModeScaleAspectFill;
     _cycleScrollView.autoScrollTimeInterval = 5.0;
-    _cycleScrollView.layer.masksToBounds =5;
-    _cycleScrollView.layer.cornerRadius =5;
-    _cycleScrollView.imageURLStringsGroup = GoodsFooterImagesArray;
+    _cycleScrollView.currentPageDotColor =REDCOLOR;
+    _cycleScrollView.pageDotColor =[UIColor grayColor];
+//    _cycleScrollView.layer.masksToBounds =5;
+//    _cycleScrollView.layer.cornerRadius =5;
+//    _cycleScrollView.imageURLStringsGroup = GoodsFooterImagesArray;
     
     [self addSubview:_cycleScrollView];
 }
-
+- (void)setImageGroupArray:(NSArray *)imageGroupArray
+{
+    _imageGroupArray = imageGroupArray;
+    _cycleScrollView.placeholderImage = [UIImage imageNamed:@"default_160"];
+    if (imageGroupArray.count == 0) return;
+    _cycleScrollView.imageURLStringsGroup = _imageGroupArray;
+    
+}
 #pragma mark - 点击广告跳转
 - (void)cycleScrollView:(SDCycleScrollView *)cycleScrollView didSelectItemAtIndex:(NSInteger)index {
     NSLog(@"点击了%zd广告图",index);

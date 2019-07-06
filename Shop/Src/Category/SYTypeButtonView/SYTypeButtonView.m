@@ -38,7 +38,7 @@ static NSInteger const tagButton = 1000;
         _titleFontSelected = [UIFont systemFontOfSize:13.0];
         _titleColorNormal = [UIColor blackColor];
         _titleColorSelected = [UIColor orangeColor];
-        _scrollLineColor = [UIColor redColor];
+        _scrollLineColor = REDCOLOR;
         _adjustScrollLineWidth = NO;
         
         if (view) {

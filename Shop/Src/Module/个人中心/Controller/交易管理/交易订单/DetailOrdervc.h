@@ -10,8 +10,10 @@
 #import "OrderModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DetailOrdervc : UIViewController
+@interface DetailOrdervc : STBaseViewController
 @property (nonatomic,retain)OrderModel *orderModel;
+@property (nonatomic,retain)NSString *orderID;
+@property (strong ,nonatomic)dispatch_block_t detailSourceBlock;
 @end
 
 NS_ASSUME_NONNULL_END

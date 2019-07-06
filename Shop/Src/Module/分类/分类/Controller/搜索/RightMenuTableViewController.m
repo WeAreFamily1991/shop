@@ -8,7 +8,7 @@
 
 #import "RightMenuTableViewController.h"
 #import "UIViewController+REFrostedViewController.h"
-#import "CommodityTableViewController.h"
+
 @interface RightMenuTableViewController ()
 @property (strong, nonatomic) UIView *footerView;
 @property (strong, nonatomic) UISwitch *autoPeiSongSwitch;
@@ -177,8 +177,8 @@
 {
     if (_autoPeiSongSwitch== nil) {
         _autoPeiSongSwitch = [[UISwitch alloc] init];
-        //_autoLoginSwitch.thumbTintColor=[UIColor redColor];//按钮颜色
-        //_autoLoginSwitch.tintColor=[UIColor redColor];//处于off时switch 的颜色
+        //_autoLoginSwitch.thumbTintColor=REDCOLOR;//按钮颜色
+        //_autoLoginSwitch.tintColor=REDCOLOR;//处于off时switch 的颜色
         _autoPeiSongSwitch.onTintColor=JDColor(240, 97, 98);//处于on时switch 的颜色
         [_autoPeiSongSwitch addTarget:self action:@selector(autoLoginChanged:) forControlEvents:UIControlEventValueChanged];
     }

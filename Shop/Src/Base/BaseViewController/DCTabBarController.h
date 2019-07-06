@@ -11,9 +11,10 @@
 typedef  NS_ENUM(NSInteger ,DCTabBarControllerType){
    
     DCTabBarControllerHome = 0, //首页
-    DCTabBarControllerMediaList = 1,  //分类购买
-    DCTabBarControllerBeautyStore = 2, //购物车
-    DCTabBarControllerPerson = 3, //个人中心
+    DCTabBarControllernull = 1, //首页
+    DCTabBarControllerMediaList = 2,  //分类购买
+    DCTabBarControllerBeautyStore = 3, //购物车
+    DCTabBarControllerPerson = 4, //个人中心
 };
 
 @interface DCTabBarController : UITabBarController

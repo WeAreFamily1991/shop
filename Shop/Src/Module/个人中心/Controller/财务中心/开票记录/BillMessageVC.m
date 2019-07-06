@@ -125,14 +125,14 @@
     backIMG.userInteractionEnabled =YES;
     [backView addSubview:backIMG];
     self.orderTF =[[UITextField alloc]initWithFrame:CGRectMake(10, 0, 3*SCREEN_WIDTH/5-20, 30)];
-    self.orderTF.placeholder =@"单据编号/店铺名称";
+    self.orderTF.placeholder =@"输入申请单号/发票抬头搜索";
     self.orderTF.font =DR_FONT(14);
     self.orderTF.delegate =self;
     [backIMG addSubview:self.orderTF];
     UIButton *searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     searchBtn.layer.cornerRadius =15;
     searchBtn.layer.masksToBounds =15;
-    searchBtn.backgroundColor =[UIColor redColor];
+    searchBtn.backgroundColor =REDCOLOR;
     searchBtn.titleLabel.font =DR_FONT(14);
     [searchBtn setTitle:@"查询" forState:UIControlStateNormal];
     searchBtn.frame =CGRectMake(3*SCREEN_WIDTH/5+30, 4, SCREEN_WIDTH-3*SCREEN_WIDTH/5-45, 30);
@@ -185,9 +185,9 @@
     self.titleView.button_Width = WScale(45);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.view addSubview:_titleView];
     
     ///线

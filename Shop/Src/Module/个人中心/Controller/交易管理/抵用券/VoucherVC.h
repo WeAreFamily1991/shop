@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface VoucherVC : UIViewController
+@interface VoucherVC : STBaseViewController
 @property(nonatomic,assign)NSInteger num;
 @end
 

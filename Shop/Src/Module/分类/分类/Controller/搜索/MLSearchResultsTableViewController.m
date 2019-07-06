@@ -26,7 +26,10 @@
     //添加当前类对象为一个观察者，name和object设置为nil，表示接收一切通知
     [center addObserver:self selector:@selector(handleColorChange:) name:@"searchBarDidChange" object:nil];
 }
-
+-(void)setSelectIndex:(NSInteger)selectIndex
+{
+    _selectIndex =selectIndex;
+}
 -(void)handleColorChange:(NSNotification* )sender
 {
     NSString *text = sender.userInfo[@"searchText"];

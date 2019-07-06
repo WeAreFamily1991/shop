@@ -205,7 +205,7 @@
                 }
                 
                 
-                cell.textLabel.textColor =[UIColor redColor];
+                cell.textLabel.textColor =REDCOLOR;
                 cell.textLabel.font =DR_FONT(12);
                 return cell;
             }

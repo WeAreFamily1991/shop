@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DCNewFeatureViewController : UIViewController
+@interface DCNewFeatureViewController : STBaseViewController
 
 /**
  新特性属性设置

@@ -45,7 +45,7 @@
     _addShopCarButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self addSubview:_addShopCarButton];
     _addShopCarButton.tag = 1;
-    _addShopCarButton.backgroundColor = [UIColor redColor];
+    _addShopCarButton.backgroundColor = REDCOLOR;
     [_addShopCarButton setImage:[UIImage imageNamed:@"search_list_addcart_icon"] forState:UIControlStateNormal];
     _addShopCarButton.frame = CGRectMake(self.dc_width - 80,self.dc_height * 0.5, 80, self.dc_height * 0.5);
     [_addShopCarButton addTarget:self action:@selector(setUpClickAction:) forControlEvents:UIControlEventTouchUpInside];

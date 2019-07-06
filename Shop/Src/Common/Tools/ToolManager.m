@@ -159,14 +159,14 @@ NSString *decimalNumberWithDouble(double conversionValue){
     return decodedString;
 }
 
-+ (NSString *)returnTime:(NSString *)time format:(NSString *)format
-{
-    NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-    NSDate *date = [dateFormatter dateFromString:time];
-    NSString *timeString = [date stringWithFormat:format];
-    return timeString;
-}
+//+ (NSString *)returnTime:(NSString *)time format:(NSString *)format
+//{
+//    NSDateFormatter * dateFormatter = [[NSDateFormatter alloc] init];
+//    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+//    NSDate *date = [dateFormatter dateFromString:time];
+//    NSString *timeString = [date stringWithFormat:format];
+//    return timeString;
+//}
 
 
 //返回APP图标

@@ -7,18 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ShoppingModel.h"
+#import "BillApplicationModel.h"
 
 #import "AddNumberView.h"
 #import "LineLabel.h"
-
+#import "DDButton.h"
 @protocol ShoppingCarCellDelegate;
 @interface ShoppingCarCell : UITableViewCell<AddNumberViewDelegate>
 
 
-@property (nonatomic,strong) UIImageView *checkImg;
+@property (nonatomic,strong) UIButton;
 
-//@property (nonatomic,strong) UIImageView *shopImageView;
+@property (nonatomic,strong) DDButton *selectBtn;
 
 @property (nonatomic,strong) UILabel *orderLab;//单据编码
 
@@ -36,7 +36,8 @@
 @property (nonatomic,strong) UIButton *detailBtn;//查看详情
 
 @property (nonatomic,strong) ShoppingModel *shoppingModel;
-
+@property (nonatomic, strong) NSIndexPath *indexPath;//cell对应的indexPath
+@property (nonatomic, assign) BOOL select;//是否是选中对应的商品
 /** detail点击回调 */
 @property (nonatomic, copy) dispatch_block_t selectClickBlock;
 @property (assign,nonatomic) BOOL selectState;//选中状态
@@ -44,10 +45,11 @@
 @property (nonatomic,assign) id<ShoppingCarCellDelegate>delegate;
 
 //@property (nonatomic,strong) AddNumberView *addNumberView;
-
 @end
 
 @protocol ShoppingCarCellDelegate
+
+- (void)cell:(ShoppingCarCell *)cell selected:(BOOL)isSelected indexPath:(NSIndexPath *)indexPath;
 
 -(void)btnClick:(UITableViewCell *)cell andFlag:(int)flag;
 

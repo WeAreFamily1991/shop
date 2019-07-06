@@ -32,12 +32,6 @@
                         <action selector="upDownClick:" destination="hVp-RV-0o3" eventType="touchUpInside" id="OQk-ch-Jc6"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d8P-No-nBC">
-                    <rect key="frame" x="63" y="0.0" width="345" height="52"/>
-                    <fontDescription key="fontDescription" name="PingFangSC-Regular" family="PingFang SC" pointSize="12"/>
-                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JIU-Ow-83B">
                     <rect key="frame" x="353" y="0.0" width="78" height="52"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -51,21 +45,15 @@
             </subviews>
             <constraints>
                 <constraint firstItem="5PY-Et-BL1" firstAttribute="centerY" secondItem="Scf-z6-6UM" secondAttribute="centerY" id="0mp-a2-OZU"/>
-                <constraint firstItem="d8P-No-nBC" firstAttribute="top" secondItem="hVp-RV-0o3" secondAttribute="top" id="368-3U-8Ar"/>
                 <constraint firstItem="Scf-z6-6UM" firstAttribute="leading" secondItem="hVp-RV-0o3" secondAttribute="leading" constant="5" id="44a-t8-aa2"/>
                 <constraint firstItem="Scf-z6-6UM" firstAttribute="centerY" secondItem="hVp-RV-0o3" secondAttribute="centerY" id="6Xc-TF-acD"/>
-                <constraint firstAttribute="bottom" secondItem="d8P-No-nBC" secondAttribute="bottom" id="Evj-UY-HqG"/>
                 <constraint firstAttribute="trailing" secondItem="5PY-Et-BL1" secondAttribute="trailing" constant="8" id="GlW-wr-8ei"/>
-                <constraint firstItem="d8P-No-nBC" firstAttribute="leading" secondItem="Scf-z6-6UM" secondAttribute="trailing" constant="20" id="NyH-Zr-HjP"/>
                 <constraint firstItem="JIU-Ow-83B" firstAttribute="top" secondItem="hVp-RV-0o3" secondAttribute="top" id="OPF-bc-jgo"/>
                 <constraint firstAttribute="trailing" secondItem="JIU-Ow-83B" secondAttribute="trailing" id="aAm-hA-3Il"/>
                 <constraint firstAttribute="bottom" secondItem="JIU-Ow-83B" secondAttribute="bottom" id="c7i-EC-JUa"/>
-                <constraint firstItem="5PY-Et-BL1" firstAttribute="leading" secondItem="d8P-No-nBC" secondAttribute="trailing" constant="5" id="eky-tC-Zjj"/>
-                <constraint firstItem="d8P-No-nBC" firstAttribute="centerY" secondItem="5PY-Et-BL1" secondAttribute="centerY" id="rHl-q9-g2G"/>
             </constraints>
             <connections>
                 <outlet property="headLabel" destination="Scf-z6-6UM" id="MvL-mQ-BBM"/>
-                <outlet property="selectHeadLabel" destination="d8P-No-nBC" id="E3n-T9-eB3"/>
                 <outlet property="upDownButton" destination="5PY-Et-BL1" id="Iw4-Hw-laE"/>
             </connections>
             <point key="canvasLocation" x="-74.400000000000006" y="-358.02098950524743"/>

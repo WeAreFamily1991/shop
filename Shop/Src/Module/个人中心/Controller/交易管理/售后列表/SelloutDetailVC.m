@@ -9,7 +9,10 @@
 #import "SelloutDetailVC.h"
 #import "FirstTableViewCell.h"
 #import "CollectionCell.h"
-
+#import "DRSellAfterModel.h"
+#import "LSXAlertInputView.h"
+#import "DRDetailSelloutVC.h"
+#import "CRDetailController.h"
 @interface SelloutDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
@@ -17,14 +20,23 @@
 @property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @property (nonatomic,strong)NSMutableArray *MsgListArr;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-
+@property (nonatomic,retain)DCUpDownButton *bgTipButton;
+@property (nonatomic,retain)DRSellAfterModel *sellAfterModel;
+@property (nonatomic,retain)GoodsList *ListModel;
 @property (nonatomic, copy) NSString *titleStr;
 @end
 
 @implementation SelloutDetailVC
-
+-(NSMutableArray *)MsgListArr
+{
+    if (!_MsgListArr) {
+        _MsgListArr =[NSMutableArray array];
+    }
+    return _MsgListArr;
+}
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[self.sendDataDictionary[@"startTime"]?:@"",self.sendDataDictionary[@"endTime"]?:@"",self.sendDataDictionary[@"dzNo"]?:@""] forKeys:@[@"startTime",@"endTime",@"orderNo"]];
     self.view.backgroundColor =BACKGROUNDCOLOR;
 //    self.tableView.frame =CGRectMake(0, 80, SCREEN_WIDTH, self.tableView.height - 80);
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
@@ -56,83 +68,75 @@
         [weakSelf getMsgList];
     }];
     [self.tableView.mj_footer endRefreshing];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notificationHandler:) name:@"SelloutVC" object:nil];
     //   self.tableView.height = self.tableView.height - 50 - DRTopHeight -100;
+}
+- (void)notificationHandler:(NSNotification *)notification {
+    if ([notification.name isEqualToString:@"SelloutVC"]) {
+        NSDictionary *dic =notification.userInfo;
+        if ([dic[@"index"] intValue]==3) {
+            [_sendDataDictionary setObject:dic[@"dzNo"]?:@"" forKey:@"orderNo"];
+            
+        }else
+        {
+            [_sendDataDictionary setObject:dic[@"startTime"]?:@"" forKey:@"startTime"];
+            [_sendDataDictionary setObject:dic[@"endTime"]?:@"" forKey:@"endTime"];
+        }
+        [self.tableView.mj_header beginRefreshing];
+    }
+}
+-(void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"SelloutVC" object:nil];
 }
 -(void)getMsgList
 {
-    if (!_sendDataDictionary) {
-        _sendDataDictionary = [[NSMutableDictionary alloc] init];
-    }
+//    if (!_sendDataDictionary) {
+//        _sendDataDictionary = [[NSMutableDictionary alloc] init];
+//    }
     //    [MBProgressHUD showMessage:@""];
     [self loadDataSource:_sendDataDictionary withpagecount:[NSString stringWithFormat:@"%d",pageCount]];
 }
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
-    //    NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithObjects:@[[UserModel sharedManager].token,] forKeys:@[@"token"]];
-    //    NSString *urlStr = @"/ZcApi/CollectInfoList";
-    //    if (self.statusStr == nil || [self.statusStr isEqualToString:@"2"]) {
-    //        urlStr = @"/ZcApi/CollectInfoList";
-    //        if ([self.title isEqualToString:SNStandardString(@"我的采集")]) {
-    //            [dic setValue:@"2" forKey:@"s_type"];
-    //        }
-    //    }
-    //    else if ([self.statusStr isEqualToString:@"1"]) {
-    //        urlStr = @"/ZcApi/MyAssignList";
-    //    }
-    //    if (page) {
-    //        [dic setObject:page forKey:@"page"];
-    //        [dic setObject:@"10" forKey:@"limit"];
-    //    }
-    //    if (dictionary) {
-    //        [dic addEntriesFromDictionary:dictionary];
-    //    }
-    //    if (self.status) {
-    //        [dic setValue:self.status forKey:@"status"];
-    //    }
-    //
-    //    [Interface_Base Post:urlStr dic:dic sccessBlock:^(NSDictionary *data, NSString *message) {
-    //        NSLog(@"data=%@",data[@"data"]);
-    //        if ([data[@"data"] isKindOfClass:[NSNull class]]||data[@"data"]==nil) {
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            //             self.tableView.mj_footer.hidden =YES;
-    //            [self.tableView reloadData];
-    //
-    //            [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //
-    //            //            [MBProgressHUD showError:@"暂无新数据"];
-    //        }else
-    //        {
-    //            [self.MsgListArr addObjectsFromArray:data[@"data"]];
-    //            if (self.MsgListArr.count==0) {
-    //                self.zeroView.hidden =NO;
-    //            }else
-    //            {
-    //                self.zeroView.hidden =YES;
-    //            }
-    //            [self.tableView reloadData];
-    //            if (self.MsgListArr.count<10) {
-    //                [self.tableView.mj_footer endRefreshingWithNoMoreData];
-    //                //                self.tableView.mj_footer.hidden =YES;
-    //            }
-    //            else
-    //            {
-    //                //                self.tableView.mj_footer.hidden =NO;
-    //                [self.tableView.mj_footer endRefreshing];
-    //            }
-    //            [self.tableView.mj_header endRefreshing];
-    //            [MBProgressHUD hideHUD];
-    //        }
-    //    } failBlock:^(NSDictionary *data, NSString *message) {
-    //        [self.tableView.mj_header endRefreshing];
-    //        [self.tableView.mj_footer endRefreshing];
-    //        [MBProgressHUD hideHUD];
-    //    }];
+     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+    if (page) {
+        [dic setObject:page forKey:@"pageNum"];
+        [dic setObject:@"10" forKey:@"pageSize"];
+    }
+     [dic setObject:[NSString stringWithFormat:@"%ld",self.status] forKey:@"status"];
+    if (dictionary) {
+        [dic addEntriesFromDictionary:dictionary];
+    }
+//    NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"orderCondition"];    
+    DRWeakSelf;
+    [SNAPI getWithURL:@"buyer/afterSaleList4Mobile" parameters:dic.mutableCopy success:^(SNResult *result) {
+        
+        NSLog(@"data=%@",result.data[@"list"]);
+        NSMutableArray*addArr=result.data[@"list"];
+        NSMutableArray *modelArray =[DRSellAfterModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
+        [weakSelf.MsgListArr addObjectsFromArray:modelArray];
+        [self.tableView reloadData];
+        
+        if (addArr.count<10){
+            
+            [self.tableView.mj_footer endRefreshingWithNoMoreData];
+        }
+        else{
+            [self.tableView.mj_footer endRefreshing];
+        }
+        
+        [self.tableView.mj_header endRefreshing];
+        
+        [MBProgressHUD hideHUD];
+        
+    } failure:^(NSError *error) {
+        
+        [self.tableView.mj_header endRefreshing];
+        [self.tableView.mj_footer endRefreshing];
+        [MBProgressHUD hideHUD];
+        
+    }];
 }
 -(void)addCustomView
 {
@@ -146,94 +150,69 @@
     // Dispose of any resources that can be recreated.
 }
 
-
+- (DCUpDownButton *)bgTipButton
+{
+    if (!_bgTipButton) {
+        _bgTipButton = [DCUpDownButton buttonWithType:UIButtonTypeCustom];
+        [_bgTipButton setImage:[UIImage imageNamed:@"MG_Empty_dizhi"] forState:UIControlStateNormal];
+        _bgTipButton.titleLabel.font = DR_FONT(13);
+        [_bgTipButton setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
+        [_bgTipButton setTitle:@"暂无数据" forState:UIControlStateNormal];
+        _bgTipButton.frame = CGRectMake((ScreenW - 150) * 1/2 , (ScreenH - 150) * 1/2-DRTopHeight, 150, 150);
+        _bgTipButton.adjustsImageWhenHighlighted = false;
+    }
+    return _bgTipButton;
+}
 
 #pragma mark 表的区数
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 3;
+    self.bgTipButton.hidden = (_MsgListArr.count > 0) ? YES : NO;
+    return _MsgListArr.count;
 }
+
 #pragma mark 表的行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 4;
+    self.sellAfterModel =self.MsgListArr[section];
+    return self.sellAfterModel.goodsList.count;
 }
+
 #pragma mark 表的行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    switch (indexPath.row) {
-        case 0:
-            return 100;
-            break;
-        case 1:
-            return UITableViewAutomaticDimension;
-            break;
-            
-        case 2:
-            return 30;
-            break;
-            
-        case 3:
-            return 40;
-            break;
-            
-            
-        default:
-            break;
-    }
     return UITableViewAutomaticDimension;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return UITableViewAutomaticDimension;
 }
+
 //区头的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 0.01;
+    return HScale(130);
 }
+
 //区尾的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 10;
+    return 40;
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    switch (indexPath.row) {
-        case 0:
-            
-        {
-            CollectionCell2 *cell =[CollectionCell2 cellWithTableView:tableView];
-            return cell;
-        }
-            break;
-        case 1:
-            
-        {
-            FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
-           
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            return cell;
-        }
-            break;
-        case 2:
-            
-        {
-            CollectionCell3 *cell =[CollectionCell3 cellWithTableView:tableView];
-            return cell;
-        }
-            break;
-        case 3:
-            
-        {
-            CollectionCell4 *cell =[CollectionCell4 cellWithTableView:tableView];
-            return cell;
-        }
-            break;
-            
-            
-        default:
-            break;
+    if (self.MsgListArr.count!=0) {
+         FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
+        self.sellAfterModel = self.MsgListArr[indexPath.section];
+        
+        self.ListModel =[GoodsList mj_objectWithKeyValues:self.sellAfterModel.goodsList[indexPath.row]];
+        cell.goodSellOutModel =self.ListModel;
+        
+        cell.selectionStyle = 0;
+        return cell;
+
     }
     static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
@@ -242,8 +221,90 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                       reuseIdentifier: SimpleTableIdentifier];
     }
-    cell.textLabel.text = [_titleStr stringByAppendingString:[NSString stringWithFormat:@"-%d",(int)indexPath.row]];
     return cell;
-    
+}
+-(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+   if (self.MsgListArr.count!=0) {
+       self.sellAfterModel = self.MsgListArr[section];
+       CollectionCell2 *headView =[CollectionCell2 cellWithTableView:tableView];
+       headView.selloutModel =self.sellAfterModel;
+       return headView;
+   }
+    return [UIView new];
+}
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    if (self.MsgListArr.count!=0) {
+        self.sellAfterModel = self.MsgListArr[section];
+        CollectionCell10 *footerView =[CollectionCell10 cellWithTableView:tableView];
+        footerView.selloutModel =self.sellAfterModel;
+        
+        //    CollectionCell4 *cell =[CollectionCell4 cellWithTableView:tableView];
+        footerView.BtnBlock = ^(NSInteger btnag,NSString *titleStr) {
+            switch (btnag) {
+                case 0:
+                {
+                    ///初始化提示框
+                    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                             message:@"确定取消退货吗？"                                                                                          preferredStyle:UIAlertControllerStyleAlert];
+                    UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                                      style:UIAlertActionStyleDefault
+                                                                    handler:^(UIAlertAction * _Nonnull action)
+                                              {
+                                                  self.sellAfterModel = self.MsgListArr[section];
+                                                  NSDictionary *dic =@{@"returnId":self.sellAfterModel.returnId};
+                                                  [SNAPI postWithURL:@"buyer/cancelReturnOrder" parameters:dic.mutableCopy success:^(SNResult *result) {
+                                                      [MBProgressHUD showSuccess:@"取消成功"];
+                                                      [self.tableView.mj_header beginRefreshing];
+                                                  } failure:^(NSError *error) {
+                                                  }];
+                                              }];
+                    [alertController addAction:action1];
+                    UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
+                                                                      style:UIAlertActionStyleCancel
+                                                                    handler:nil];
+                    //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
+                    [alertController addAction:action2];
+                    
+                    dispatch_async(dispatch_get_main_queue(),^{
+                        [self presentViewController:alertController animated:YES completion:nil];
+                    });
+                   
+                }
+                    break;
+                case 1:
+                {
+                    DRDetailSelloutVC *sellOutVc =[[DRDetailSelloutVC alloc]init];
+                    self.sellAfterModel = self.MsgListArr[section];
+                    sellOutVc.returnId =self.sellAfterModel.returnId;
+                    sellOutVc.cancelBtnBlock = ^{
+                        [self.tableView.mj_header beginRefreshing];
+                    };
+                    [self.navigationController pushViewController:sellOutVc animated:YES];
+                }
+                    break;
+                default:
+                {
+                    self.sellAfterModel = self.MsgListArr[section];
+//                    DetailOrdervc *detailVC =[[DetailOrdervc alloc]init];
+//                    detailVC.orderModel =self.orderModel;
+//                    [self.navigationController pushViewController:detailVC animated:YES];
+                }
+                    break;
+            }
+            
+        };
+        return footerView;
+    }
+    return [UIView new];
+}
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%ld",(long)indexPath.section);
+    self.sellAfterModel = self.MsgListArr[indexPath.section];
+    CRDetailController *detailVC = [CRDetailController new];
+    detailVC.sellerid=self.sellAfterModel.sellerId;
+    [self.navigationController pushViewController:detailVC animated:YES];
 }
 @end

@@ -54,15 +54,11 @@
 }
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    
-   
 }
 -(void)layout
 {
-    
     self.phoneView.layer.cornerRadius =25;
     self.phoneView.layer.masksToBounds =25;
-    
     self.passwordView.layer.cornerRadius =25;
     self.passwordView.layer.masksToBounds =25;
     self.loginBtn.layer.cornerRadius =22.5;
@@ -72,7 +68,6 @@
     [self.registebTN.layer setBorderColor:[UIColor lightGrayColor].CGColor];
     [self.registebTN.layer setBorderWidth:1.0];
     self.remmberBtn.selected =[[DEFAULTS objectForKey:@"selected"] boolValue];
-    
     
 }
 #pragma mark - 退出当前界面

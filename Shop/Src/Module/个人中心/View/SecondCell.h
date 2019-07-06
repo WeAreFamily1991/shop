@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "GoodsModel.h"
+#import "DRSameModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SecondCell : UITableViewCell
@@ -15,6 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
     float Height;
 }
 @property(nonatomic,strong)UIImageView *productImg;  ///<产品图片
+@property(nonatomic,strong)UIImageView *nullImg;  ///<产品图片
 @property(nonatomic,strong)UIButton *moreBtn;  ///<展示更多
 @property(nonatomic,strong)UILabel *productName;     ///<产品名称
 @property(nonatomic,strong)UIView *standardView;     ///<规格
@@ -22,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *cellLabel;       ///<销售单位
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
 @property (nonatomic,retain)GoodsModel *goodsModel;
+@property (nonatomic,retain)DRSameModel *sameModel;
+@property (nonatomic,retain)NSString *titleStr;
 @end
 
 NS_ASSUME_NONNULL_END

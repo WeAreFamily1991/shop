@@ -112,8 +112,7 @@
         NSDictionary *dic=@{@"account":self.phoneTF.text,@"accountName":self.nameTF.text,@"mobile":self.phoneTF.text,@"password":[self.passwordTF.text MD5],@"confirmPassword":[self.sureTF.text MD5]};
        muDic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"childAccount"];
        urlStr =@"buyer/addChildAccount";
-    }
-    
+    }    
     [SNAPI postWithURL:urlStr parameters:muDic success:^(SNResult *result) {
         [MBProgressHUD showSuccess:result.data];
         if (weakSelf.childBlock) {
@@ -121,12 +120,10 @@
         }
         [DEFAULTS setObject:self.passwordTF.text forKey:@"password"];
          [DEFAULTS setObject:self.sureTF.text forKey:@"Surepassword"];
-        
         [self performSelector:@selector(back) withObject:self afterDelay:1];
-    
-     
+        
      } failure:^(NSError *error) {
-         
+         [MBProgressHUD showError:error.domain];
      }];
 }
 -(void)back

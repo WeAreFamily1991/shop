@@ -55,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * title;
 @property (nonatomic , copy) NSString              * stypes;
 @property (nonatomic , assign) NSInteger              receiveTime;
+@property (nonatomic , assign) NSInteger              userStartTime;
+@property (nonatomic , assign) NSInteger              userEndTime;
 @end
 
 NS_ASSUME_NONNULL_END

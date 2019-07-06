@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "GoodsModel.h"
 #import "OrderModel.h"
+#import "DRSellAfterModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FirstTableViewCell : UITableViewCell
 {
-    float Height;
+    float HeightF;
 }
 @property(nonatomic,strong)UIImageView *productImg;  ///<产品图片
 @property(nonatomic,strong)UILabel *productName;     ///<产品名称
@@ -22,6 +23,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic,strong)UILabel *cellLabel;       ///<销售单位
 @property(nonatomic,strong)UILabel *countLabel;      ///<库存
 @property (nonatomic,retain)GoodsListModel *goodListModel;
+@property (nonatomic,retain)GoodsList *goodSellOutModel;
 @property (nonatomic,retain)GoodsModel *goodsModel;
 @property(nonatomic,strong)NSDictionary *dataDict;      ///<数据
 @property(nonatomic,assign)NSInteger selectRow;

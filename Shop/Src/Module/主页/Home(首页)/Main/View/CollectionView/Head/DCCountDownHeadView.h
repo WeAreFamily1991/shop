@@ -10,5 +10,6 @@
 
 @interface DCCountDownHeadView : UICollectionReusableView
 /* 时间 */
-@property (strong , nonatomic)UILabel *timeLabel;
+@property (strong , nonatomic)UIButton *timeBtn;
+@property (nonatomic, copy) dispatch_block_t timeBtnBlock;
 @end

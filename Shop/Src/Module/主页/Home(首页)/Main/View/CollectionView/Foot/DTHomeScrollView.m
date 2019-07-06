@@ -8,6 +8,7 @@
 
 #import "DTHomeScrollView.h"
 #import "DTHomePageControl.h"
+
 @interface DTHomeScrollView ()<UIScrollViewDelegate>
 {
     NSInteger targetIndex;
@@ -64,6 +65,10 @@
     self.timer = nil;
     
 }
+-(void)dealloc
+{
+    [self stopScroll];
+}
 - (void)scrollToIndex:(NSInteger)targetIndex
 {
     CGFloat pointX = self.bounds.size.width * (targetIndex);
@@ -82,7 +87,7 @@
     _pageControl.numberOfPages = (self.views.count - 1) / self.maxCount + 1;
     NSLog(@"numberOfPages=%ld",(long)_pageControl.numberOfPages);
     allCount =_pageControl.numberOfPages;
-    _pageControl.currentPageIndicatorTintColor = [UIColor redColor];
+    _pageControl.currentPageIndicatorTintColor = REDCOLOR;
     _pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     [self addSubview:_pageControl];
     
@@ -97,8 +102,7 @@
         UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(self.frame.size.width * i, 0, self.frame.size.width, _upScrollView.frame.size.height)];
         NSInteger index = self.maxCount;
         if ((self.views.count - i*6) <self.maxCount) {
-            index = (self.views.count - i*self.maxCount);
-            
+            index = (self.views.count - i*self.maxCount);            
         }
         NSLog(@"allCount =%ld",index);
         for (int j = 0; j <index; j++) {
@@ -107,11 +111,11 @@
             NSLog(@"row = %d",row);
             NSLog(@"col = %d",col);
             NSLog(@"btnHieght = %f",(bgView.frame.size.height / 2));
-            UIButton *btn = self.views[i*self.maxCount+j];
-            btn.frame = CGRectMake(col * (self.frame.size.width / 3), row * (bgView.frame.size.height / 2) , (self.frame.size.width/ 3), (bgView.frame.size.height / 2));
-            btn.tag = 100000 + i * self.maxCount + j;
-            [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
-            [bgView addSubview:btn];
+            UIView *btnView = self.views[i*self.maxCount+j];
+            btnView.frame = CGRectMake(col * (self.frame.size.width / 2), row * bgView.frame.size.height , (self.frame.size.width/ 2), bgView.frame.size.height);
+            btnView.tag = 100000 + i * self.maxCount + j;
+//            [btn addTarget:self action:@selector(btnAction:) forControlEvents:UIControlEventTouchUpInside];
+            [bgView addSubview:btnView];
         }
         [_upScrollView addSubview:bgView];
         
@@ -154,5 +158,6 @@
     [self startScroll];
     
 }
+
 
 @end

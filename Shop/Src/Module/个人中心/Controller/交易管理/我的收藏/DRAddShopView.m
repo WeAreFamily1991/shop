@@ -65,9 +65,6 @@
         
         NSString *bottomStr= [NSString stringWithFormat:@"￥%.3f/%@",itemModel.price,self.baseStr];
     
-    
-       
-        
         [button setTitle:[NSString stringWithFormat:@"%@\n%@",nameStr,bottomStr] forState:UIControlStateNormal];
         [button setBackgroundImage:[UIImage imageNamed:@"normel_BACK"] forState:UIControlStateNormal];
         [button setBackgroundImage:[UIImage imageNamed:@"select_back"] forState:UIControlStateSelected];
@@ -117,8 +114,7 @@
     self.numberTF.delegate =self;
     self.numberTF.baseNum=@"1";
     self.numberTF.minNum =1;
-    if ([goodsModel.deliveryDay intValue]==0) {
-        
+    if ([goodsModel.deliveryDay intValue]==0) {        
         self.timeLab.text =@"预计发货时间：当天发货";
     }else if ([goodsModel.deliveryDay intValue]==1)
     {

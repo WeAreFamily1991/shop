@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface StoreHomeDetailVC : UIViewController
+@interface StoreHomeDetailVC : STBaseViewController
 @property(nonatomic,assign)NSInteger status;
 @property(nonatomic,assign)NSInteger num;
 @end

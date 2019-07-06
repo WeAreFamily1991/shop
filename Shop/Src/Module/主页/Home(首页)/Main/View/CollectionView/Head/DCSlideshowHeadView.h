@@ -13,5 +13,9 @@
 /* 轮播图数组 */
 @property (copy , nonatomic)NSArray *imageGroupArray;
 
+
+/* 店铺轮播图数组 */
+@property (copy , nonatomic)NSArray *imageShopGroupArray;
+
 @property (copy,nonatomic) void (^ManageIndexBlock) (NSInteger ManageIndexBlock);
 @end

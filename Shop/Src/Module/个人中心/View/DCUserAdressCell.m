@@ -43,7 +43,8 @@
     _adItem = adItem;
     
     self.perNameLabel.text = adItem.receiver;
-    self.perPhoneLabel.text = [DCSpeedy dc_encryptionDisplayMessageWith:adItem.mobile WithFirstIndex:3];
+    self.perPhoneLabel.text =adItem.mobile;
+//    [DCSpeedy dc_encryptionDisplayMessageWith:adItem.mobile WithFirstIndex:3];
     self.perDetailLabel.text =adItem.address;
     
     if ([[NSString stringWithFormat:@"%@",adItem.isdefault] isEqualToString:@"1"]) {//判断是否是默认选择

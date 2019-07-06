@@ -98,7 +98,7 @@
 //    
 //    _natureLabel = [[UILabel alloc] init];
 //    _natureLabel.textAlignment = NSTextAlignmentCenter;
-//    _natureLabel.backgroundColor = [UIColor redColor];
+//    _natureLabel.backgroundColor = REDCOLOR;
 //    _natureLabel.font = DR_FONT(10);
 //    _natureLabel.textColor = [UIColor whiteColor];
 //    [_goodsImageView addSubview:_natureLabel];

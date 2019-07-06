@@ -12,27 +12,31 @@
 // Controllers
 #import "DCGoodsSetViewController.h"
 #import "MLSearchViewController.h"
+#import "DRLocationVC.h"
 // Models
 #import "DCClassMianItem.h"
 #import "DCCalssSubItem.h"
 #import "DCClassGoodsItem.h"
 #import "SendSourceModel.h"
+#import "DRFactoryModel.h"
 
 // Views
 #import "DCNavSearchBarView.h"
 #import "DCClassCategoryCell.h"
 #import "DCGoodsSortCell.h"
 #import "DCBrandSortCell.h"
+#import "DRFactoryCell.h"
 #import "DCBrandsSortHeadView.h"
-#import "SYMoreButtonView.h"
+#import "CBSegmentView.h"
 // Vendors
 #import <MJExtension.h>
 // Categories
 #import "UIBarButtonItem+DCBarButtonItem.h"
 #import "CategoryDetailVC.h"
+
 // Others
 
-@interface DCCommodityViewController ()<UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,SYMoreButtonDelegate>
+@interface DCCommodityViewController ()<UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 /* tableView */
 @property (strong , nonatomic)UITableView *tableView;
@@ -48,12 +52,13 @@
 @property (strong , nonatomic)NSMutableArray<DCClassGoodsItem *> *titleItem;
 /* 右边数据 */
 @property (strong , nonatomic)NSMutableArray<DCClassMianItem *> *mainItem;
+/* 右边数据 */
+@property (strong , nonatomic)NSMutableArray<DRFactoryModel *> *factoryArr;
 
-@property (nonatomic,strong)SYMoreButtonView *bottomBtnView;
 @property (nonatomic,strong)NSMutableArray *sendArr ,*nameArr;
 @property (nonatomic,strong)SendSourceModel *souceModel;
 @property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
-@property (strong,nonatomic) NSArray *hotSearchArr;
+@property (strong,nonatomic) NSDictionary *hotSearchDic;
 
 @end
 
@@ -61,29 +66,31 @@ static NSString *const DCClassCategoryCellID = @"DCClassCategoryCell";
 static NSString *const DCBrandsSortHeadViewID = @"DCBrandsSortHeadView";
 static NSString *const DCGoodsSortCellID = @"DCGoodsSortCell";
 static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
+static NSString *const DRFactoryCellID = @"DRFactoryCell";
 
 @implementation DCCommodityViewController
 
 #pragma mark - LazyLoad
 
--(NSArray *)hotSearchArr
+-(NSDictionary *)hotSearchDic
 {
-    if (!_hotSearchArr) {
-        _hotSearchArr =[NSArray array];
+    if (!_hotSearchDic) {
+        _hotSearchDic =[NSDictionary dictionary];
     }
-    return _hotSearchArr;
+    return _hotSearchDic;
 }
 - (UITableView *)tableView
 {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-        _tableView.frame = CGRectMake(0, DRTopHeight+50, tableViewH, ScreenH - DRTopHeight-50-DRTabBarHeight);
+        _tableView.frame = CGRectMake(0, 50, tableViewH, ScreenH -50-DRTabBarHeight-DRTopHeight);
         _tableView.delegate = self;
         _tableView.dataSource = self;
         _tableView.showsVerticalScrollIndicator = NO;
         [self.view addSubview:_tableView];
         
         [_tableView registerClass:[DCClassCategoryCell class] forCellReuseIdentifier:DCClassCategoryCellID];
+        
     }
     return _tableView;
 }
@@ -101,9 +108,10 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
         _collectionView.showsVerticalScrollIndicator = NO;
         _collectionView.showsHorizontalScrollIndicator = NO;
         _collectionView.alwaysBounceVertical = YES;
-        _collectionView.frame = CGRectMake(tableViewH , DRTopHeight+50, ScreenW - tableViewH - DCMargin, ScreenH - DRTopHeight-50-DRTabBarHeight);
+        _collectionView.frame = CGRectMake(tableViewH ,50, ScreenW - tableViewH - DCMargin, ScreenH - DRTopHeight-50-DRTabBarHeight);
         //注册Cell
         [_collectionView registerClass:[DCGoodsSortCell class] forCellWithReuseIdentifier:DCGoodsSortCellID];
+        [_collectionView registerClass:[DRFactoryCell class] forCellWithReuseIdentifier:DRFactoryCellID];
         [_collectionView registerClass:[DCBrandSortCell class] forCellWithReuseIdentifier:DCBrandSortCellID];
         //注册Header
         [_collectionView registerClass:[DCBrandsSortHeadView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:DCBrandsSortHeadViewID];
@@ -121,13 +129,21 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
     [self setUpData];
     [self setHotSearch];
 }
+//-(void)viewWillAppear:(BOOL)animated
+//{
+//    [self.navigationController setNavigationBarHidden:YES animated:YES];
+//}
+//-(void)viewWillDisappear:(BOOL)animated
+//{
+//    [self.navigationController setNavigationBarHidden:NO animated:YES];
+//}
 -(void)setUpHeaderBtn
 {
-    UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, DRTopHeight, self.view.width,50)];
+    UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.width,50)];
     backView.backgroundColor =[UIColor whiteColor];
     [self.view addSubview:backView];
     DRWeakSelf;
-    [SNIOTTool getWithURL:@"mainPage/getCzList" parameters:nil success:^(SNResult *result) {
+    [SNAPI getWithURL:@"mainPage/getCzList" parameters:nil success:^(SNResult *result) {
         NSDictionary *dic =@{@"id":@"",@"name":@"全部"};
         weakSelf.nameArr=[NSMutableArray arrayWithObject:@"全部"];
         for (NSDictionary *dic in result.data) {
@@ -135,32 +151,20 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
         }
         weakSelf.sendArr=[[NSMutableArray alloc]initWithObjects:dic, nil];
         [weakSelf.sendArr addObjectsFromArray:result.data];
-        weakSelf.bottomBtnView = [[SYMoreButtonView alloc] initWithFrame:CGRectMake(0.0, 0, ScreenW, backView.dc_height)];
-        [backView addSubview:weakSelf.bottomBtnView];
-        weakSelf.bottomBtnView.backgroundColor = [UIColor clearColor];
-        weakSelf.bottomBtnView.titles = weakSelf.nameArr;
-        weakSelf.bottomBtnView.showline = NO;
-        weakSelf.bottomBtnView.showlineAnimation = NO;
-        weakSelf.bottomBtnView.font = 14;
-        weakSelf.bottomBtnView.indexSelected = 0;
-        weakSelf.bottomBtnView.colorSelected = [UIColor redColor];
-        weakSelf.bottomBtnView.delegate = self;
-        weakSelf.bottomBtnView.buttonClick = ^(NSInteger index) {
-            NSLog(@"block click index = %@", @(index));
+        CBSegmentView *zoomSegmentView = [[CBSegmentView alloc]initWithFrame:backView.bounds];
+        [backView addSubview:zoomSegmentView];
+        [zoomSegmentView setTitleArray:weakSelf.nameArr withStyle:CBSegmentStyleZoom];
+        zoomSegmentView.titleChooseReturn = ^(NSInteger x) {
+            NSLog(@"点击了第%ld个按钮",x+1);
+            [self.sendDataDictionary setObject:self.sendArr[x][@"id"] forKey:@"cz"];
+            [self setUpData];
         };
-        [weakSelf.bottomBtnView reloadData];
         UIView *lineView =[[UIView alloc]initWithFrame:CGRectMake(0, 49, SCREEN_WIDTH, 1)];
-        lineView.backgroundColor =[UIColor lightGrayColor];
+        lineView.backgroundColor =BACKGROUNDCOLOR;
         [backView addSubview: lineView];
     } failure:^(NSError *error) {
         
     }];
-}
-- (void)sy_buttonClick:(NSInteger)index
-{
-    
-    [self.sendDataDictionary setObject:self.sendArr[index][@"id"] forKey:@"cz"];
-    [self setUpData];
 }
 #pragma mark - initizlize
 - (void)setUpTab
@@ -176,39 +180,64 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 #pragma mark - 加载数据
 - (void)setUpData
 {
-    DRWeakSelf;
-    [MBProgressHUD showMessage:@""];
-    [SNIOTTool getWithURL:@"mainPage/itemCategory" parameters:_sendDataDictionary success:^(SNResult *result) {
-       
-        
-        weakSelf.titleItem = [DCClassGoodsItem mj_objectArrayWithKeyValuesArray:result.data];
-        [weakSelf.tableView reloadData];
-         //默认选择第一行（注意一定要在加载完数据之后）
-         [weakSelf.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionTop];
-        NSMutableArray *muItem =[NSMutableArray array];
-        for (NSDictionary *dic in weakSelf.titleItem[0].childCategory2) {
-            
-            NSArray *mainItemArr  =[DCClassMianItem mj_objectArrayWithKeyValuesArray:dic[@"stCategoryVOList"]];
-            [muItem addObjectsFromArray:mainItemArr];
-            weakSelf.mainItem =muItem;
-        }
-         [weakSelf.collectionView reloadData];
-        [MBProgressHUD hideHUD];
-    } failure:^(NSError *error) {
-         [MBProgressHUD hideHUD];
-        
-    }];
+   
+    [self addSource];
+    [self addgetFactoryArea];
 //    _titleItem = [DCClassGoodsItem mj_objectArrayWithFilename:@"ClassifyTitles.plist"];
 //    _mainItem = [DCClassMianItem mj_objectArrayWithFilename:@"ClassiftyGoods01.plist"];
     //默认选择第一行（注意一定要在加载完数据之后）
    
 }
-
+-(void)addSource
+{
+     DRWeakSelf;
+    [MBProgressHUD showMessage:@""];
+    [SNAPI getWithURL:@"mainPage/itemCategory" parameters:_sendDataDictionary success:^(SNResult *result) {
+        
+        weakSelf.mainItem =[NSMutableArray array];
+        weakSelf.titleItem = [DCClassGoodsItem mj_objectArrayWithKeyValuesArray:result.data];
+        [weakSelf.tableView reloadData];
+        //默认选择第一行（注意一定要在加载完数据之后）
+        NSArray *DATAArr =result.data;
+        if (DATAArr.count!=0) {
+            [weakSelf.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionTop];
+            NSMutableArray *muItem =[NSMutableArray array];
+            
+            for (NSDictionary *dic in weakSelf.titleItem[0].childCategory2) {
+                
+                NSArray *mainItemArr  =[DCClassMianItem mj_objectArrayWithKeyValuesArray:dic[@"stCategoryVOList"]];
+                [muItem addObjectsFromArray:mainItemArr];
+                weakSelf.mainItem =muItem;
+            }
+        }
+        [weakSelf.collectionView reloadData];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [MBProgressHUD hideHUD];
+        
+    }];
+}
+-(void)addgetFactoryArea
+{
+     DRWeakSelf;
+    [MBProgressHUD showMessage:@""];
+    NSDictionary *dic =@{@"pageNum":@"1",@"pageSize":@"10"};
+    [SNAPI getWithURL:@"mainPage/getFactoryArea" parameters:dic.mutableCopy success:^(SNResult *result) {
+        
+        weakSelf.factoryArr =[NSMutableArray array];
+        weakSelf.factoryArr = [DRFactoryModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
+        [weakSelf.collectionView reloadData];
+        [MBProgressHUD hideHUD];
+    } failure:^(NSError *error) {
+        [MBProgressHUD hideHUD];
+        
+    }];
+}
 -(void)setHotSearch
 {
     DRWeakSelf;
-    [SNIOTTool getWithURL:@"mainPage/hotSearch" parameters:nil success:^(SNResult *result) {
-        weakSelf.hotSearchArr =result.data[@"item"];
+    [SNAPI getWithURL:@"mainPage/hotSearch" parameters:nil success:^(SNResult *result) {
+        weakSelf.hotSearchDic =result.data;
     } failure:^(NSError *error) {
     }];
 }
@@ -293,6 +322,9 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 
 #pragma mark - <UITableViewDataSource>
 - (NSInteger) numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    if ([self.statusStr isEqualToString:@"homePush"]) {
+        return 2;
+    }
     return 1;
 }
 
@@ -300,16 +332,31 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 //    for (<#type *object#> in _titleItem) {
 //        <#statements#>
 //    }
-   
+    if ([self.statusStr isEqualToString:@"homePush"]&&section==0) {
+        return _factoryArr.count;
+    }
     return _mainItem.count;
 }
 #pragma mark - <UICollectionViewDelegate>
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    
     UICollectionViewCell *gridcell = nil;
-    DCGoodsSortCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DCGoodsSortCellID forIndexPath:indexPath];
-    cell.mainItem = _mainItem[indexPath.row];
-    gridcell = cell;
-    return gridcell;
+    if ([self.statusStr isEqualToString:@"homePush"]&&indexPath.section==0) {
+       DRFactoryCell *cell =[collectionView dequeueReusableCellWithReuseIdentifier:DRFactoryCellID forIndexPath:indexPath];
+//        cell.mainItem = _mainItem[indexPath.row];
+//        NSArray *titleArr =@[@"宁波",@"宁波",@"宁波",@"宁波",@"宁波",@"宁波",@"宁波",@"宁波",@"宁波",@"上海"];
+        
+        cell.factoryModel =_factoryArr[indexPath.row];
+        gridcell = cell;
+        return gridcell;
+    }else
+    {
+        
+        DCGoodsSortCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:DCGoodsSortCellID forIndexPath:indexPath];
+        cell.mainItem = _mainItem[indexPath.row];
+        gridcell = cell;
+        return gridcell;
+    }
 }
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath {
     
@@ -325,10 +372,14 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 #pragma mark - item宽高
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if ([self.statusStr isEqualToString:@"homePush"]&&indexPath.section==0) {
+        return CGSizeMake((ScreenW - tableViewH  - DCMargin)/5, (ScreenW - tableViewH  - DCMargin)/5);
+    }
     return CGSizeMake(ScreenW - tableViewH  - DCMargin, HScale(80));
 }
 #pragma mark - head宽高
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
+    
    return CGSizeZero;
 }
 
@@ -340,11 +391,25 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"点击了个第%zd分组第%zd几个Item",indexPath.section,indexPath.row);
 //     [self.navigationController pushViewController:[CategoryDetailVC new] animated:YES];
-    CategoryDetailVC *goodSetVc = [[CategoryDetailVC alloc] init];
-    
-    goodSetVc.classListStr =_mainItem[indexPath.row].classList;
-    goodSetVc.czID =[_sendDataDictionary objectForKey:@"cz"];
-    [self.navigationController pushViewController:goodSetVc animated:YES];
+    if ([self.statusStr isEqualToString:@"homePush"]&&indexPath.section==0)
+    {
+        NSArray *advTypeArr =@[@"001",@"002",@"003",@"004",@"005",@"006",@"007",@"008",@"009",@"010"];
+        DRFactoryModel *factoryModel =_factoryArr[indexPath.row];
+        DRLocationVC *locationVC =[[DRLocationVC alloc]init];
+        locationVC.advType =advTypeArr[indexPath.row];
+        locationVC.factoryModel =_factoryArr[indexPath.row];
+        locationVC.title =factoryModel.name;
+        locationVC.isHome =@"0";
+        [self.navigationController pushViewController:locationVC animated:YES];
+        
+    }else
+    {
+        CategoryDetailVC *goodSetVc =[[CategoryDetailVC alloc] init];
+        goodSetVc.classListStr =_mainItem[indexPath.row].classList;
+        goodSetVc.czID =[_sendDataDictionary objectForKey:@"cz"];
+        goodSetVc.queryTypeStr =@"normel";
+        [self.navigationController pushViewController:goodSetVc animated:YES];
+    }
 }
 
 
@@ -352,12 +417,12 @@ static NSString *const DCBrandSortCellID = @"DCBrandSortCell";
 - (void)searchButtonClick
 {
     MLSearchViewController *vc = [[MLSearchViewController alloc] init];
-    NSMutableArray *titleArr=[NSMutableArray array];
-    for (NSDictionary *dic in self.hotSearchArr) {
-        [titleArr addObject:dic[@"keywords"]];
-    }
-    vc.tagsArray =titleArr;
-    vc.hotSearchArr =self.hotSearchArr;
+//    NSMutableArray *titleArr=[NSMutableArray array];
+//    for (NSDictionary *dic in self.hotSearchArr) {
+//        [titleArr addObject:dic[@"keywords"]];
+//    }
+//    vc.tagsArray =titleArr;
+    vc.hotSearchDic =self.hotSearchDic;
     //    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
     [self.navigationController pushViewController:vc animated:YES];
 }

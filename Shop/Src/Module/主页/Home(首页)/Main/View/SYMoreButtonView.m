@@ -34,11 +34,11 @@ static NSInteger const tagButton = 1000;
  
         _showline = NO;
         _showlineAnimation = NO;
-        _colorline = [UIColor redColor];
+        _colorline = REDCOLOR;
         
         _indexSelected = 0;
         _colorNormal = [UIColor blackColor];
-        _colorSelected = [UIColor redColor];
+        _colorSelected = REDCOLOR;
         
         [self setUI];
     }

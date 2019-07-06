@@ -18,8 +18,12 @@
 #import "LDYSelectivityAlertView.h"
 #import "StoreVC.h"
 #import "GoodsModel.h"
-#import "GoodsShareModel.h"
 #import "CustomAlertView.h"
+#import "DRNullShopModel.h"
+#import "DRFooterCell.h"
+#import "TestImageView.h"
+#import "ZWPhotoPreviewDataModel.h"
+#import "ZWPhotoPreview.h"
 #define DIC_EXPANDED @"expanded" //是否是展开 0收缩 1展开
 
 #define DIC_ARARRY @"array" //存放数组
@@ -42,6 +46,8 @@
 @property (strong , nonatomic)UIButton *selectBtn;
 /* 滚回顶部按钮 */
 @property (strong , nonatomic)UIButton *backTopButton;
+
+@property (strong , nonatomic)UIButton *shopCarButton;
 @property (nonatomic,retain)DCUpDownButton *bgTipButton;
 @end
 
@@ -94,7 +100,14 @@
     //    self.tableView.frame =CGRectMake(0, 120, SCREEN_WIDTH, self.tableView.height - 120);
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor =BACKGROUNDCOLOR;
-    self.title =@"产品列表";
+    if ([self.queryTypeStr isEqualToString:@"history"])
+    {
+        self.title =@"购买记录";
+    }else
+    {
+        self.title =@"产品列表";
+    }
+    
      [self setUpScrollToTopView];
     [self setUI];
     if (@available(iOS 11.0, *)) {
@@ -131,17 +144,47 @@
     if ([notification.name isEqualToString:@"select"]) {
         NSDictionary *dic =notification.userInfo;
         NSArray * sourceArr =dic[@"array"];
-        NSArray *IDArr =[_classListStr componentsSeparatedByString:@","];
-        NSLog(@"");
-        if (IDArr.count>=3) {
-            [GoodsShareModel sharedManager].level1Id =IDArr[0];
-            [GoodsShareModel sharedManager].level2Id =IDArr[1];
-            
-            NSDictionary *mudic  = @{@"sourceType":@"Wechat",@"queryType":@"normel",@"keyword":@"",@"level1Id":IDArr[0],@"level2Id":IDArr[1],@"cz":@"",@"subType":@"1",@"categoryId":sourceArr[0]?:@"",@"condition":@"",@"serviceType":@"",@"sellerType":@"",@"containzy":@"",@"districtid":[DRBuyerModel sharedManager].locationcode?:@"",@"orderBy":@"",@"onlyqty":@"",@"standardid":@"",@"levelid":sourceArr[5]?:@"",@"surfaceid":sourceArr[6]?:@"",@"lengthid":sourceArr[4]?:@"",@"materialid":sourceArr[2]?:@"",@"toothdistanceid":sourceArr[8]?:@"",@"toothformid":sourceArr[9]?:@"",@"brandid":sourceArr[7]?:@"",@"czid":sourceArr[1]?:@"",@"diameterid":sourceArr[3]?:@""};
-            [_sendDataDictionary addEntriesFromDictionary:mudic];
-            [self.tableView.mj_header beginRefreshing];
+        NSString *muIDStr=[NSString string];
+        NSMutableArray *muIDArr =[NSMutableArray array];
+        for (NSArray *IDArr in sourceArr)
+        {
+            if (IDArr.count>1) {
+                for (NSString *IDStr in IDArr) {
+                    muIDStr =[muIDStr stringByAppendingString:[IDStr stringByAppendingString:@","]];
+                }
+            }
+            else
+            {
+                if (IDArr.count!=0)
+                {
+                    muIDStr =IDArr[0]?:@"";
+                }else
+                {
+                    muIDStr =@"";
+                }
+            }
+            [muIDArr addObject:muIDStr];
         }
-
+        NSArray *keyArr =@[@"onlyqty",@"voucherType",@"categoryId",@"czid",@"materialid",@"diameterid",@"lengthid",@"levelid",@"surfaceid",@"brandid",@"toothdistanceid",@"toothformid"];
+        for (int i=0; i<muIDArr.count; i++) {
+            [_sendDataDictionary setObject:muIDArr[i] forKey:keyArr[i]];
+        }
+//        for (NSString *muIDStr in muIDArr) {
+//             [_sendDataDictionary setObject:muIDArr[0] forKey:@"onlyqty"];
+//        }
+//         [_sendDataDictionary setObject:muIDArr[0] forKey:@"onlyqty"];
+//         [_sendDataDictionary setObject:muIDArr[1] forKey:@"voucherType"];
+//         [_sendDataDictionary setObject:muIDArr[2] forKey:@"standardid"];
+//         [_sendDataDictionary setObject:muIDArr[3] forKey:@"czid"];
+//         [_sendDataDictionary setObject:muIDArr[4] forKey:@"materialid"];
+//         [_sendDataDictionary setObject:muIDArr[5] forKey:@"diameterid"];
+//         [_sendDataDictionary setObject:muIDArr[6] forKey:@"lengthid"];
+//         [_sendDataDictionary setObject:muIDArr[7] forKey:@"levelid"];
+//         [_sendDataDictionary setObject:muIDArr[8] forKey:@"surfaceid"];
+//         [_sendDataDictionary setObject:muIDArr[9] forKey:@"brandid"];
+//         [_sendDataDictionary setObject:muIDArr[10] forKey:@"toothdistanceid"];
+////         [_sendDataDictionary setObject:muIDArr[11] forKey:@"toothformid"];
+         [self.tableView.mj_header beginRefreshing];
     }
 }
 -(void)dealloc
@@ -153,11 +196,26 @@
     _backTopButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.view addSubview:_backTopButton];
     [_backTopButton addTarget:self action:@selector(ScrollToTop) forControlEvents:UIControlEventTouchUpInside];
+   
     [_backTopButton setImage:[UIImage imageNamed:@"btn_UpToTop"] forState:UIControlStateNormal];
     _backTopButton.hidden = YES;
-    _backTopButton.frame = CGRectMake(ScreenW - 50, ScreenH - 110 , 40, 40);
+    _backTopButton.frame = CGRectMake(ScreenW - 50, ScreenH - 180-DRTopHeight , 40, 40);
+    
+    _shopCarButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.view addSubview:_shopCarButton];
+    [_shopCarButton addTarget:self action:@selector(shopCarButtonClick) forControlEvents:UIControlEventTouchUpInside];
+//    [_shopCarButton setTitle:@"购物车" forState:UIControlStateNormal];
+//    [_shopCarButton setTitleColor:BLACKCOLOR forState:UIControlStateNormal];
+    [_shopCarButton setImage:[UIImage imageNamed:@"购物车"] forState:UIControlStateNormal];
+    
+//    _shopCarButton.hidden = YES;
+    _shopCarButton.frame = CGRectMake(ScreenW - 100, ScreenH - 110-DRTopHeight , 80, 40);
 }
-
+-(void)shopCarButtonClick
+{
+    self.tabBarController.selectedIndex =3;
+    [self.navigationController popToRootViewControllerAnimated:YES];
+}
 #pragma mark - <UIScrollViewDelegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
@@ -191,13 +249,29 @@
         //containzy   是否包含自营 默认包含 0不包含
         //districtid  区域ID
         //onlyqty  是否显示有货 0或者1
-        NSArray *IDArr =[_classListStr componentsSeparatedByString:@","];
-        NSLog(@"");
-        if (IDArr.count>=3) {
-            [GoodsShareModel sharedManager].level1Id =IDArr[0];
-            [GoodsShareModel sharedManager].level2Id =IDArr[1];
+        if ([self.queryTypeStr isEqualToString:@"history"]||[self.queryTypeStr isEqualToString:@"search"]||[self.queryTypeStr isEqualToString:@"searchbrand"]) {
+//            NSArray *IDArr =[_classListStr componentsSeparatedByString:@","];
+            NSLog(@"");
+          
+                _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[@"Wechat",self.queryTypeStr,@"",@"",@"",@"",@"1",@"",@"",@"",@"",@"",[DRBuyerModel sharedManager].locationcode?:@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@""] forKeys:@[@"sourceType",@"queryType",@"keyword",@"level1Id",@"level2Id",@"cz",@"subType",@"categoryId",@"condition",@"serviceType",@"sellerType",@"containzy",@"districtid",@"orderBy",@"onlyqty",@"standardid",@"levelid",@"surfaceid",@"lengthid",@"materialid",@"toothdistanceid",@"toothformid",@"brandid",@"czid",@"diameterid",@"voucherType"]];
+            if ([self.queryTypeStr isEqualToString:@"search"]||[self.queryTypeStr isEqualToString:@"searchbrand"]) {
+               [ _sendDataDictionary setObject:self.keyWordStr forKey:@"keyword"];
+            }
+        }
+        else if ([self.queryTypeStr isEqualToString:@"shopnull"])
+        {
+             _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[[DRBuyerModel sharedManager].locationcode?:@"",self.nullShopModel.sellerid,self.queryTypeStr,@"",@"",@"",@"",@"1",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@""] forKeys:@[@"districtId",@"sellerId",@"keyword",@"level1Id",@"level2Id",@"cz",@"subType",@"categoryId",@"condition",@"serviceType",@"sellerType",@"containzy",@"districtid",@"orderBy",@"onlyqty",@"standardid",@"levelid",@"surfaceid",@"lengthid",@"materialid",@"toothdistanceid",@"toothformid",@"brandid",@"czid",@"diameterid",@"voucherType"]];
+        }
+        else
+        {
+            NSArray *IDArr =[_classListStr componentsSeparatedByString:@","];
+            NSLog(@"");
+            if (IDArr.count>=3) {
+                [GoodsShareModel sharedManager].level1Id =IDArr[0];
+                [GoodsShareModel sharedManager].level2Id =IDArr[1];
+                _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[@"Wechat",self.queryTypeStr,@"",IDArr[0],IDArr[1],_czID?:@"",@"1",IDArr[2],@"",@"",@"",@"",[DRBuyerModel sharedManager].locationcode?:@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",_czID?:@"",@"",@""] forKeys:@[@"sourceType",@"queryType",@"keyword",@"level1Id",@"level2Id",@"cz",@"subType",@"categoryId",@"condition",@"serviceType",@"sellerType",@"containzy",@"districtid",@"orderBy",@"onlyqty",@"standardid",@"levelid",@"surfaceid",@"lengthid",@"materialid",@"toothdistanceid",@"toothformid",@"brandid",@"czid",@"diameterid",@"voucherType"]];
+            }
             
-            _sendDataDictionary = [NSMutableDictionary dictionaryWithObjects:@[@"Wechat",@"normel",@"",IDArr[0],IDArr[1],_czID,@"1",IDArr[2],@"",@"",@"",@"",[DRBuyerModel sharedManager].locationcode?:@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",@"",_czID,@""] forKeys:@[@"sourceType",@"queryType",@"keyword",@"level1Id",@"level2Id",@"cz",@"subType",@"categoryId",@"condition",@"serviceType",@"sellerType",@"containzy",@"districtid",@"orderBy",@"onlyqty",@"standardid",@"levelid",@"surfaceid",@"lengthid",@"materialid",@"toothdistanceid",@"toothformid",@"brandid",@"czid",@"diameterid"]];
         }
     }
     //    [MBProgressHUD showMessage:@""];
@@ -206,17 +280,16 @@
 -(void)loadDataSource:(NSMutableDictionary*)dictionary withpagecount:(NSString *)page
 {
     NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    
     if (page) {
         [dic setObject:page forKey:@"pageindex"];
-       
     }
     if (dictionary) {
         [dic addEntriesFromDictionary:dictionary];
     }
     DRWeakSelf;
     [MBProgressHUD showMessage:@""];
-    [SNIOTTool getWithURL:@"mainPage/getItem" parameters:dic success:^(SNResult *result) {
+    
+    [SNAPI getWithURL:@"mainPage/getItem" parameters:dic success:^(SNResult *result) {
         
         NSLog(@"data=%@",result.data[@"list"]);
         NSMutableArray*addArr=result.data[@"itemdata"];
@@ -244,11 +317,11 @@
     NSArray *selectedImageArr =@[@"accessoryArrow_downSelected",@"",@"accessoryArrow_downSelected"];
     for (int i=0; i<3; i++) {
         UIButton *button =[UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame =CGRectMake(i*ScreenW/3, DRTopHeight, ScreenW/3, 39);
+        button.frame =CGRectMake(i*ScreenW/3, 0, ScreenW/3, 39);
         [button setTitle:titleArr[i] forState:UIControlStateNormal];
         button.backgroundColor =[UIColor whiteColor];
         [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+        [button setTitleColor:REDCOLOR forState:UIControlStateSelected];
         [button setImage:[UIImage imageNamed:imageArr[i]] forState:UIControlStateNormal];
         [button setImage:[UIImage imageNamed:selectedImageArr[i]] forState:UIControlStateSelected];
         [button layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:4];
@@ -257,18 +330,14 @@
         [button addTarget:self action:@selector(selectClickWithTag:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:button];
     }
-    
-
 }
 -(void)selectClickWithTag:(UIButton *)sender
 {
     switch (sender.tag) {
         case 0:
         {
-           
-            NSArray *datas =@[@"本地云仓（三铁配送）",@"卖家库存（三铁配送）",@"卖家直发（价格便宜）"];
-            NSArray *contentDatas =@[@"说明：本地现货库存，及时配送、出货。",@"说明：卖家现货库存，通过三铁配送，到货方便。",@"说明：卖家现货库存，由卖家直接安排发货。"];
-            
+            NSArray *datas =@[@"本地云仓（三铁配送）",@"卖家直发（价格便宜）"];
+            NSArray *contentDatas =@[@"说明：本地现货库存，及时配送、出货。",@"说明：卖家现货库存，由卖家直接安排发货。"];
             LDYSelectivityAlertView *ldySAV = [[LDYSelectivityAlertView alloc]initWithdatas:datas contentDatas:contentDatas selectDatas:nil ifSupportMultiple:YES];
             ldySAV.delegate = self;
             [ldySAV show];
@@ -284,6 +353,28 @@
             break;
         case 2:
         {
+            if ([self.queryTypeStr isEqualToString:@"history"]) {
+                 [GoodsShareModel sharedManager].queryType =@"history";
+            }else if ([self.queryTypeStr isEqualToString:@"search"])
+            {
+                 [GoodsShareModel sharedManager].queryType =@"search";
+                [GoodsShareModel sharedManager].keyword =self.keyWordStr;
+            }
+            else if ([self.queryTypeStr isEqualToString:@"searchbrand"])
+            {
+                 [GoodsShareModel sharedManager].queryType =@"searchbrand";
+                [GoodsShareModel sharedManager].keyword =self.keyWordStr;
+            }
+            else if ([self.queryTypeStr isEqualToString:@"promotion"])
+            {
+                [GoodsShareModel sharedManager].queryType =@"promotion";
+                [GoodsShareModel sharedManager].keyword =self.keyWordStr;
+            }
+            else
+            {
+                 [GoodsShareModel sharedManager].queryType =@"";
+            }
+           
             [DCSildeBarView dc_showSildBarViewController];
             
         }
@@ -331,19 +422,11 @@
 #pragma mark 表的行数
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.selectYes) {
-        return 7;
-    }
     return 4;
 }
 #pragma mark 表的行高
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.selectYes) {
-        if (indexPath.row==4||indexPath.row==5||indexPath.row==6) {
-            return HScale(20);
-        }
-    }
     switch (indexPath.row) {
         case 0:
             return 120;
@@ -355,16 +438,16 @@
         case 2:
             if (self.MsgListArr.count!=0) {
                 self.goodsModel =self.MsgListArr[indexPath.section];
-                if ([self.goodsModel.qty intValue]==0) {
-                    return 0;
+                if ([self.goodsModel.qty isEqualToString:@"0"]) {
+                    return 40;
                 }
                 
             }
-            return 45;
+            return 80;
             break;
             
         case 3:
-            return 40;
+            return 0;
             break;
             
             
@@ -385,7 +468,11 @@
 //区尾的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 10;
+    if (self.selectYes) {
+            return HScale(70);
+    }
+    return 0.01;
+    
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -393,7 +480,6 @@
     if (self.MsgListArr.count!=0)
     {
         self.goodsModel =self.MsgListArr[indexPath.section];
-       
         if (indexPath.row==0)
         {
             GoodsCell *cell =[GoodsCell cellWithTableView:tableView];
@@ -413,138 +499,76 @@
         }
         else if (indexPath.row==2)
         {
-            if ([self.goodsModel.qty intValue]!=0)
+            if (![self.goodsModel.qty isEqualToString:@"0"])
             {
                 CatgoryDetailCell1 *cell =[CatgoryDetailCell1 cellWithTableView:tableView withIndexPath:indexPath];
-                [cell.danweiBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:5];
+              
                 cell.goodsModel =self.goodsModel;
                 cell.danweiBtn.tag =indexPath.section;
-               
                 cell.countTF.placeholder =@"0.00";
-
-                
                 return cell;
-            }
-        }
-        else if (indexPath.row==3)
-        {
-            CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
-            cell.goodsModel =self.goodsModel;
-            if (self.goodsModel.favariteId.length==0)
-            {
-                cell.shoucangBtn.selected =NO;
             }
             else
             {
-                cell.shoucangBtn.selected =YES;
+                CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
+                cell.goodsModel =self.goodsModel;
+                return cell;
             }
-            cell.shoucangBlock = ^(NSInteger shoucangtag) {
-                //                    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
-                //                    NSString *urlStr;
-                //                    if (cell.shoucangBtn.selected) {
-                //                        urlStr =@"buyer/cancelItemFavorite";
-                //
-                //                        mudic =[NSMutableDictionary dictionaryWithObject:self.goodsModel.favariteId forKey:@"id"];
-                //                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-                //                            if (result.state==200) {
-                //                                NSLog(@"result=%@",result.data);
-                //
-                //                                self.goodsModel.favariteId =@"";
-                //                                [MBProgressHUD showSuccess:result.data];
-                //                                //刷新当前行
-                //                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                ////                                [self.tableView reloadData];
-                //                            }
-                //                        } failure:^(NSError *error) {
-                //
-                //                        }];
-                //                    }
-                //                    else
-                //                    {
-                //                        urlStr =@"buyer/favoriteItem";
-                //                        NSDictionary *dic =@{@"itemId":self.goodsModel.goods_id,@"sellerId":self.goodsModel.sellerid,@"storeId":self.goodsModel.storeId,@"branchId":self.goodsModel.branchId,@"areaId":self.goodsModel.areaId};
-                //                        mudic =[NSMutableDictionary dictionaryWithObject:[SNTool convertToJsonData:dic] forKey:@"item"];
-                //                        [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-                //                            if (result.state==200) {
-                //                                NSLog(@"result=%@",result.data);
-                //
-                //
-                //                                self.goodsModel.favariteId =result.data;
-                //
-                //
-                //                                //刷新当前行
-                //                                [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                //
-                ////
-                //                            }
-                //                        } failure:^(NSError *error) {
-                //
-                //                        }];
-                //                    }
-                //
-                
-            };
-            cell.shopCarBlock = ^(NSInteger shopCartag) {
-                //                    [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-                //                        if (result.state==200) {
-                //                            NSLog(@"result=%@",result.data);
-                //
-                //
-                //                            //                                [self.tableView reloadData];
-                //                        }
-                //                    } failure:^(NSError *error) {
-                //
-                //                    }];
-                
-                
-            };
-            
-            cell.noticeBlock = ^(NSInteger noticeTag) {
-                
-                
-              
-            };
-            return cell;
         }
     }
-//        if (self.selectYes)
-//        {
-//            if (indexPath.row==4||indexPath.row==5||indexPath.row==6)
-//            {
-//                static NSString *SimpleTableIdentifier = @"selectCell";
-//                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-//                                         SimpleTableIdentifier];
-//                if (cell == nil)
-//                {
-//                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault                                              reuseIdentifier: SimpleTableIdentifier];
-//                }
-//                NSArray *titleArr =@[@"最小销售单位：箱",@"单规格起订量：1.000箱",@"预计发货时间：当日发货"];
-//                cell.textLabel.text = titleArr[indexPath.row-4];
-//                cell.textLabel.font =DR_FONT(12);
-//                return cell;
-//            }
-//        }
-  
-        
-        static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
+          static NSString *SimpleTableIdentifier = @"SimpleTableIdentifier";
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
                                  SimpleTableIdentifier];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
                                           reuseIdentifier: SimpleTableIdentifier];
         }
-        
         return cell;
-    
 }
-//-(void)saveWithTag:(NSInteger)tag
-//{
-//
-//}
 
+-(UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    if (self.selectYes)
+    {
+        DRFooterCell *cell =[DRFooterCell cellWithTableView:tableView];
+        NSString *timestr;
+        if ([self.goodsModel.deliveryDay doubleValue]>1) {
+            timestr =[NSString stringWithFormat:@"预计发货时间：%ld天",(long)self.goodsModel.deliveryDay];
+        }else{
+            timestr =@"预计发货时间：当天发货";
+        }
+        NSArray *titleArr =@[[NSString stringWithFormat:@"最小销售单位：%@",self.goodsModel.saleunitname],[NSString stringWithFormat:@"单规格起订量：%.3f%@",[self.goodsModel.minquantity floatValue],self.goodsModel.saleunitname],timestr];
+        cell.danweiLab.text = titleArr[0];
+        cell.qidingliangLab.text = titleArr[1];
+        cell.timeLAb.text = titleArr[2];
+        if (self.goodsModel.drawing.length==0) {
+            cell.lookIMGbTN.hidden =YES;
+        }
+        else
+        {
+            cell.lookIMGbTN.hidden =NO;
+        }
+        cell.lookIMGBtnBlock = ^{
+          
+            ZWPhotoPreviewDataModel *model1 = [[ZWPhotoPreviewDataModel alloc] init];
+            model1.zw_photoURL = self.goodsModel.drawing;
+            model1.zw_photoTitle =nil;
+            model1.zw_photoDesc = nil;
+            
+            ZWPhotoPreview *view = [ZWPhotoPreview zw_showPhotoPreview:@[model1]];
+            view.showIndex = 0;
+           
+            
+        };
+        //            [SNTool setTextColor:cell.textLabel FontNumber:DR_FONT(12) AndRange:NSMakeRange(7, cell.textLabel.text.length-7) AndColor:REDCOLOR];
+        return cell;
+        
+    }
+    return [UIView new];
+}
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.navigationController pushViewController:[StoreVC new] animated:YES];
+//    [self.navigationController pushViewController:[StoreVC new] animated:YES];
 }
 
 #pragma mark -- ShopTableViewCellSelectDelegate

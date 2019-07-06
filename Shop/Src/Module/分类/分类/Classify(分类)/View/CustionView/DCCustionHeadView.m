@@ -78,11 +78,11 @@
     }else{
         _selectBottomRedView.hidden = YES;
         [_selectBtn setTitleColor:[UIColor darkGrayColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [button setTitleColor:REDCOLOR forState:UIControlStateNormal];
         
         UIView *bottomRedView = [[UIView alloc] init];
         [self addSubview:bottomRedView];
-        bottomRedView.backgroundColor = [UIColor redColor];
+        bottomRedView.backgroundColor = REDCOLOR;
         bottomRedView.dc_width = button.dc_width;
         bottomRedView.dc_height = 3;
         bottomRedView.dc_y = button.dc_height - bottomRedView.dc_height;

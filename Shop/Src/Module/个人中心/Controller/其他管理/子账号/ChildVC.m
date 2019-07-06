@@ -35,11 +35,11 @@
         
         self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
+    self.tableView.frame = CGRectMake(0, 0, ScreenW, ScreenH-HScale(60)-DRTopHeight);
     self.tableView.separatorStyle=UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor =BACKGROUNDCOLOR;
     self.tableView.separatorInset = UIEdgeInsetsMake(0, -10, 0, 0);
-    [self addTableViewfooterView];
-    
+//    [self addTableViewfooterView];
     [self getChildList];
     [self.view addSubview:self.bgTipButton];
 //     [_tableView registerClass:[ChildCell class] forCellReuseIdentifier:@"ChildCell"];
@@ -47,10 +47,8 @@
 }
 -(void)getChildList
 {
- 
-    DRWeakSelf;
-    
-    [SNIOTTool getWithURL:@"buyer/childAccountList" parameters:nil success:^(SNResult *result) {
+    DRWeakSelf;    
+    [SNAPI getWithURL:@"buyer/childAccountList" parameters:nil success:^(SNResult *result) {
         
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             self.dataArray =[NSMutableArray array];
@@ -62,8 +60,7 @@
                 }
             }
             [self.tableView reloadData];
-        }
-        
+        }        
     } failure:^(NSError *error) {
         
     }];
@@ -77,7 +74,7 @@
     [self.view addSubview:headView];
     
     self.addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.addBtn.frame = CGRectMake(20, 10,SCREEN_WIDTH-40, HScale(40));
+    self.addBtn.frame = CGRectMake(20, HScale(10),SCREEN_WIDTH-40, HScale(40));
     [self.addBtn setTitle:@"新增" forState:UIControlStateNormal];
     
     
@@ -85,21 +82,21 @@
     self.addBtn.layer.cornerRadius =HScale(20);
     self.addBtn.layer.masksToBounds =HScale(20);
     self.addBtn.titleLabel.font = DR_FONT(15);
-    self.addBtn.backgroundColor =[UIColor redColor];
+    self.addBtn.backgroundColor =REDCOLOR;
     [self.addBtn addTarget:self action:@selector(addBtnClick) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.addBtn];
     
     
 }
--(void)addBtnClick
-{
-    ChildAddVC *addVC =[[ChildAddVC alloc]init];    
+- (IBAction)addBtnClick:(id)sender {
+    ChildAddVC *addVC =[[ChildAddVC alloc]init];
     addVC.selectType =NO;
     addVC.childBlock = ^{
         [self getChildList];
     };
     [self.navigationController pushViewController:addVC animated:YES];
 }
+
 #pragma mark 表的区数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
@@ -152,8 +149,9 @@
 //    cell.dataDict = @{};
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     cell.isEditBlock = ^{
+         self.childModel =self.dataArray[indexPath.row];
         NSDictionary *dic =@{@"id":self.childModel.child_id};
-        [SNIOTTool getWithURL:@"buyer/childAccountInfo" parameters:[dic mutableCopy] success:^(SNResult *result) {
+        [SNAPI getWithURL:@"buyer/childAccountInfo" parameters:[dic mutableCopy] success:^(SNResult *result) {
             
             if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
                 ChildAddVC *addVC =[[ChildAddVC alloc]init];
@@ -171,6 +169,7 @@
       
     };
     cell.isStartBlock = ^{
+         self.childModel =self.dataArray[indexPath.row];
         NSDictionary *dic =@{@"id":self.childModel.child_id,@"status":[NSString stringWithFormat:@"%d",cell.startBtn.selected]};
         [SNIOTTool postWithURL:@"buyer/updateChildAccountStatus" parameters:[dic mutableCopy] success:^(SNResult *result) {
             
@@ -192,7 +191,7 @@
                                                           style:UIAlertActionStyleDefault
                                                         handler:^(UIAlertAction * _Nonnull action)
                                   {
-                                      
+                                        self.childModel =self.dataArray[indexPath.row];
                                       NSDictionary *dic =@{@"id":self.childModel.child_id};
                                      
                                       [SNIOTTool deleteWithURL:@"buyer/deleteChildAccount" parameters:[dic mutableCopy] success:^(SNResult *result) {

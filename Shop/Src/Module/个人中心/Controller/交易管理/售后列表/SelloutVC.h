@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SelloutVC : UIViewController
+@interface SelloutVC : STBaseViewController
 @property(nonatomic,assign)NSInteger num;
 @end
 

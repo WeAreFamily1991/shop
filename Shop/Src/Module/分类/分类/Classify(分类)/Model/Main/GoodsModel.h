@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * authstatus;
 @property (nonatomic , copy) NSString              * toothformid;
 @property (nonatomic , copy) NSString              * imgurl;
+@property (nonatomic , copy) NSString              * imgUrlM;
 @property (nonatomic , copy) NSString              * diametercode;
 @property (nonatomic , copy) NSString              * toothdistanceid;
 @property (nonatomic , copy) NSString              * pmid;
@@ -130,6 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * payType;
 @property (nonatomic , copy) NSString              * recordid;
 @property (nonatomic , copy) NSString              * baseName;
+@property (nonatomic , copy) NSString               *hopeDay;
 @end
 
 NS_ASSUME_NONNULL_END

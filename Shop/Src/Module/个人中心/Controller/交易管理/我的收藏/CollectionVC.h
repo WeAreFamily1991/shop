@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface CollectionVC : UIViewController
+@interface CollectionVC : STBaseViewController
 @property(nonatomic,assign)NSInteger num;
 @end
 

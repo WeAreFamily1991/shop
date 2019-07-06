@@ -75,7 +75,7 @@
 {
     DRWeakSelf;
     NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[@"1",@"1000000"] forKeys:@[@"page",@"pageSize"]];
-    [SNIOTTool getWithURL:@"buyer/buyerMessageList" parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/buyerMessageList" parameters:dic success:^(SNResult *result) {
         
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             weakSelf.dataArray =[NSMutableArray array];
@@ -148,7 +148,7 @@
 {
     
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
-                                                                             message:@"此操作将永久删除该账户, 是否继续?"
+                                                                             message:@"此操作将永久删除该消息, 是否继续?"
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"

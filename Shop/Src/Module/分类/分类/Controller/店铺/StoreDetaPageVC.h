@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface StoreDetaPageVC : UIViewController
+@interface StoreDetaPageVC : STBaseViewController
 @property(nonatomic,assign)NSInteger status;
 @end
 

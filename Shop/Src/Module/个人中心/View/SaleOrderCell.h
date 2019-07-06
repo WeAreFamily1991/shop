@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *saleTimeLab;
 @property (weak, nonatomic) IBOutlet UILabel *saleCountLab;
 @property (weak, nonatomic) IBOutlet UILabel *typeLab;
+@property (weak, nonatomic) IBOutlet UILabel *yunfeiLab;
 @property (weak, nonatomic) IBOutlet UIButton *detailBtn;
 @property (weak, nonatomic) IBOutlet UILabel *moneyCountLab;
 @property (nonatomic, copy) dispatch_block_t detailClickBlock;

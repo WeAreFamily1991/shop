@@ -24,6 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * duringreconciliationId;
 @property (nonatomic , copy) NSString              * dzSdd;
 @property (nonatomic , copy) NSString              * qualityFeeOrderAmt;
+@property (nonatomic , copy) NSString              *returnOrderAmt;
+@property (nonatomic , copy) NSString              *expressFeeTotal;
 @end
 
 @interface ChargeOrderModel : NSObject
@@ -61,5 +63,9 @@ NS_ASSUME_NONNULL_END
 @property (nonatomic , copy) NSString              * payType;
 @property (nonatomic ,assign)NSInteger              orderCompleteTime;
 @property (nonatomic , copy) NSString              * sellerName;
+@property (nonatomic , copy) NSString              * returnOrderNo;
+@property (nonatomic , copy) NSString              * feeAmt;
+@property (nonatomic , copy) NSString              *feeRatio;
+@property (nonatomic , copy) NSString              *returnOrderId;
 
 @end

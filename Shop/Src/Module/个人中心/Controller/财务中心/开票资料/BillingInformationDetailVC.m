@@ -26,7 +26,7 @@
     
     NSString *urlStr =self.status?@"buyer/invoiceInfo":@"buyer/ticketInfo";
     
-    [SNIOTTool getWithURL:urlStr parameters:nil success:^(SNResult *result) {
+    [SNAPI getWithURL:urlStr parameters:nil success:^(SNResult *result) {
         
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             if (weakSelf.status==0) {
@@ -80,7 +80,7 @@
     [self.selectBtn setImage:[UIImage imageNamed:@"checked"] forState:UIControlStateSelected];
     [self.selectBtn setTitle:@"增值税专用发票" forState:UIControlStateNormal];
     [self.selectBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.selectBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+    [self.selectBtn setTitleColor:REDCOLOR forState:UIControlStateSelected];
     self.selectBtn.titleLabel.font =DR_FONT(13);
    
     [self.selectBtn addTarget:self action:@selector(selectBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -93,7 +93,7 @@
     [self.normelBtn setTitle:@"增值税普通发票" forState:UIControlStateNormal];
     
     [self.normelBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.normelBtn setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+    [self.normelBtn setTitleColor:REDCOLOR forState:UIControlStateSelected];
     self.normelBtn.titleLabel.font = DR_FONT(13);
     
     [self.normelBtn addTarget:self action:@selector(normelBtnClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -127,7 +127,7 @@
     self.saveBtn.layer.cornerRadius =HScale(20);
     self.saveBtn.layer.masksToBounds =HScale(20);
     self.saveBtn.titleLabel.font = DR_FONT(15);
-    self.saveBtn.backgroundColor =[UIColor redColor];
+    self.saveBtn.backgroundColor =REDCOLOR;
     [self.saveBtn addTarget:self action:@selector(saveBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.saveBtn];
    
@@ -283,6 +283,7 @@
                  [cell.photoBtn addTarget:self action:@selector(photoButton:) forControlEvents:UIControlEventTouchUpInside];
                  id imgStr1 = self.infoModel.imgUrl?:@"default_head";
 //                 cell.photoBtn sd_ba
+                 cell.titleLabel.text =@"营业执照";
                  [cell.photoBtn sd_setBackgroundImageWithURL:[NSURL URLWithString:imgStr1] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"default_head"] options:0];
                  cell.selectionStyle = UITableViewCellSelectionStyleNone;
                  return cell;
@@ -433,7 +434,7 @@
                           [self setHeadImageFromTakePhoto];
                       }]];
     ///按钮：从相册选择，类型：UIAlertActionStyleDefault
-    [alert addAction:[UIAlertAction actionWithTitle:@"从相册拍照" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    [alert addAction:[UIAlertAction actionWithTitle:@"相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         
         [self setHeadImageFromAlbum];
     }]];

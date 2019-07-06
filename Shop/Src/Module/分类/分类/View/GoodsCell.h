@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *jiesuanLab;
 @property (nonatomic, copy) dispatch_block_t selectlickBlock;
 @property (nonatomic,retain)GoodsModel *goodsModel;
+@property (nonatomic,retain)NSString *sellTypeCodeStr;
 @end
 
 NS_ASSUME_NONNULL_END

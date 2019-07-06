@@ -7,7 +7,7 @@
 //
 
 #import "SelectPhotoView.h"
-#import "EvaluateViewController.h"
+
 @implementation SelectPhotoView
 - (instancetype)init
 {
@@ -20,9 +20,7 @@
 }
 -(void)greatUI
 {
-    EvaluateViewController *vc = [[EvaluateViewController alloc] init];
-    vc.view.frame =self.bounds;
-    [self addSubview:vc.view];
+   
     
 }
 /*

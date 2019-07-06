@@ -68,7 +68,6 @@
     
     [self.navigationController.navigationBar setTitleTextAttributes:attr];
 }
-
 // 设置透明的 navigationBar
 - (void)setTransparentNavigationBar {
     // 由于使用了 RTNavigationController ，每个页面的 navigationBar 都是独立的，设置当前页面的导航栏不会影响其它页面

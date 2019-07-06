@@ -34,22 +34,29 @@
 -(void)setGoodsModel:(GoodsModel *)goodsModel
 {
     _goodsModel =goodsModel;
-    if ([goodsModel.serviceType isEqualToString:@"0"]) {
-        self.cangkuLab.text =@"本地云仓（三铁配送）";
-        
+//    if ([goodsModel.serviceType isEqualToString:@"0"]) {
+//        self.cangkuLab.text =@"本地云仓（三铁配送）";
+//
+//    }
+//    else if ([goodsModel.serviceType isEqualToString:@"st"])
+//    {
+//        self.cangkuLab.text =@"卖家库存（三铁配送）";
+//    }
+//    else if ([goodsModel.serviceType isEqualToString:@"zf"])
+//    {
+//        self.cangkuLab.text =@"卖家库存（卖家直发）";
+//    }
+    if ([goodsModel.serviceType isEqualToString:@"st"]) {
+         self.cangkuLab.text =@"本地云仓（三铁配送）";
     }
-    else if ([goodsModel.serviceType isEqualToString:@"st"])
+    else
     {
-        self.cangkuLab.text =@"卖家库存（三铁配送）";
-    }
-    else if ([goodsModel.serviceType isEqualToString:@"zf"])
-    {
-        self.cangkuLab.text =@"卖家库存（卖家直发）";
+        self.cangkuLab.text =@"本地云仓（三铁配送）您不在配送范围之内, 需要承担运费";
     }
     if ([goodsModel.sellerTypeCode intValue]==0) {
         [self.ziyingBtn setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
         [self.ziyingBtn setTitle:@"自营" forState:UIControlStateNormal];
-        self.ziyingpeisongLab.textColor =[UIColor redColor];
+        self.ziyingpeisongLab.textColor =REDCOLOR;
     }else if ([goodsModel.sellerTypeCode intValue]==1)
     {
         [self.ziyingBtn setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateNormal];
@@ -64,27 +71,26 @@
     }
     self.ziyingpeisongLab.text =goodsModel.compName;
     self.kaipiaoLab.text =[NSString stringWithFormat:@"开票方：%@",goodsModel.kpName];
-    NSString *sellTypeCodeStr;
+    
     if (![goodsModel.sellerTypeCode isEqualToString:@"0"]) {
-        sellTypeCodeStr =@"";
         
         if ([goodsModel.priceType isEqualToString:@"0"]) {
-            sellTypeCodeStr =@"含税";
+            self.sellTypeCodeStr=@"含税";
         }
         else if ([goodsModel.priceType isEqualToString:@"1"]) {
-            sellTypeCodeStr =@"未税";
+             self.sellTypeCodeStr =@"未税";
         }
-        
+        NSString *str ;
         if ([goodsModel.isHy isEqualToString:@"0"]) {
-            sellTypeCodeStr =[NSString stringWithFormat:@"%@含运",sellTypeCodeStr];
+            str =@"含运";
         }
         else if ([goodsModel.isHy isEqualToString:@"1"]) {
-            sellTypeCodeStr =[NSString stringWithFormat:@"%@不含运",sellTypeCodeStr];
+             str =@"不含运";
         }
-    }
-    self.jiesuanLab.text =[NSString stringWithFormat:@"%@ |%@",[goodsModel.payType boolValue]?@"月结":@"现金",sellTypeCodeStr];//未完待续
-    
-    
+        self.sellTypeCodeStr =[NSString stringWithFormat:@"%@%@",self.sellTypeCodeStr,str];
+    }    
+    self.jiesuanLab.text =[NSString stringWithFormat:@"%@ %@",[goodsModel.payType boolValue]?@"月结":@"现金",self.sellTypeCodeStr?:@""];
+    //未完待续
 }
 - (IBAction)callBtnClick:(id)sender {
      !_selectlickBlock?:_selectlickBlock();

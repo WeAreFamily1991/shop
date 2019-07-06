@@ -11,7 +11,6 @@
 #import "CategoryMeunModel.h"
 #import "MultilevelMenu.h"
 #import "AppDelegate.h"
-#import "CommodityTableViewController.h"
 #import "REFrostedViewController.h"
 #import "RightMenuTableViewController.h"
 #import "MLSearchViewController.h"
@@ -79,9 +78,9 @@
 ////        [searchViewController.navigationController pushViewController:[[PYTempViewController alloc] init] animated:YES];
 //    }];
 //    // 3. 设置风格
-//    // 选择搜索历史
+//    // 选择历史搜索
 //        searchViewController.hotSearchStyle = PYHotSearchStyleDefault; // 热门搜索风格为默认
-//        searchViewController.searchHistoryStyle = 1; // 搜索历史风格根据选择
+//        searchViewController.searchHistoryStyle = 1; // 历史搜索风格根据选择
 //
 //    // 4. 设置代理
 //    searchViewController.delegate = self;
@@ -140,7 +139,7 @@
 -(void)addSelectedBtn:(UIView *)backView
 {
     DRWeakSelf;
-    [SNIOTTool getWithURL:@"mainPage/getCzList" parameters:nil success:^(SNResult *result) {
+    [SNAPI getWithURL:@"mainPage/getCzList" parameters:nil success:^(SNResult *result) {
         NSDictionary *dic =@{@"id":@"",@"name":@"全部"};
         weakSelf.nameArr=[NSMutableArray arrayWithObject:@"全部"];
         for (NSDictionary *dic in result.data) {
@@ -160,7 +159,7 @@
         weakSelf.bottomBtnView.showlineAnimation = NO;
         weakSelf.bottomBtnView.font = 14;
         weakSelf.bottomBtnView.indexSelected = 0;
-        weakSelf.bottomBtnView.colorSelected = [UIColor redColor];
+        weakSelf.bottomBtnView.colorSelected = REDCOLOR;
         weakSelf.bottomBtnView.delegate = self;
         weakSelf.bottomBtnView.buttonClick = ^(NSInteger index) {
             NSLog(@"block click index = %@", @(index));
@@ -204,14 +203,13 @@
     } else{
         
 //        sender.backgroundColor = [UIColor orangeColor];
-        [sender setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        [sender setTitleColor:REDCOLOR forState:UIControlStateNormal];
         
 //        _fBtn.backgroundColor = [UIColor blackColor];
         [_fBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     }
     
-    _fBtn = sender;
-    
+    _fBtn = sender;    
 }
 - (void)initCategoryMenu{
     UIView *backView =[[UIView alloc]initWithFrame:CGRectMake(0, DRTopHeight, self.view.width,50)];
@@ -220,7 +218,6 @@
     [self addSelectedBtn:backView];
     
     MultilevelMenu * view=[[MultilevelMenu alloc] initWithFrame:CGRectMake(0, DRTopHeight+50, self.view.width, self.view.height-DRTopHeight-50) WithData:_list withSelectIndex:^(NSInteger left, NSInteger right,CategoryMeunModel * info) {
-        
         NSLog(@"点击的 菜单%@",info.menuName);
         [self.navigationController pushViewController:[CategoryDetailVC new] animated:YES];
 //         JDNavigationController *navigationController = [[JDNavigationController alloc] initWithRootViewController:[[CommodityTableViewController alloc] init]];
@@ -236,7 +233,7 @@
     }];
     
    view.needToScorllerIndex=0; //默认是 选中第一行
-    view.leftSelectColor=[UIColor redColor];//选中文字颜色
+    view.leftSelectColor=REDCOLOR;//选中文字颜色
     view.leftSelectBgColor=[UIColor whiteColor];//选中背景颜色
     view.isRecordLastScroll=NO;//是否记住当前位置
     [self.view addSubview:view];

@@ -27,10 +27,10 @@
 {
     _listModel =listModel;
     self.orderLab.text =[NSString stringWithFormat:@"订单号：%@",listModel.orderNo];
-    self.companyNameLab.text =[NSString stringWithFormat:@"店铺名称：%@",listModel.compName];
-    self.orderCountLab.text =[NSString stringWithFormat:@"订单金额：%.2f",listModel.totalAmt];
-    self.returnBackLab.text =[NSString stringWithFormat:@"退货金额：%.2f",listModel.returnedAmt];
-    self.realCountLab.text =[NSString stringWithFormat:@"可开票金额：%.2f",listModel.realAmt];
+    self.companyNameLab.text =[NSString stringWithFormat:@"店铺名称：%@",listModel.storeTitle];
+    self.orderCountLab.text =[NSString stringWithFormat:@"订单金额：￥%.2f",listModel.realAmt];
+    self.returnBackLab.text =[NSString stringWithFormat:@"退货金额：￥%.2f",listModel.returnedAmt];
+    self.realCountLab.text =[NSString stringWithFormat:@"可开票金额：￥%.2f",listModel.totalAmt];
     self.orderTimeLab.text =[NSString stringWithFormat:@"订单时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",(long)listModel.billDate]]];
 }
 - (IBAction)detailBtnClick:(id)sender {

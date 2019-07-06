@@ -29,6 +29,7 @@
 #define USER_UNBIND_QQ               @"/user/unbind_qq"
 #define USER_FORGOTPWD_EMAIL         @"/user/forgotpwd_email"
 #define USER_FORGOTPWD_MOBILE        @"/user/forgotpwd_mobile"
+#define USER_BUYAVATAR               @"buyer/headPhoto"
 #define USER_AVATAR                  @"openStResouces/appFileUpload"
 #define USER_iOS_TOKEN               @"/user/ios_token"
 #define USER_iOS_TOKEN_CLEAR         @"/user/ios_token_clear"

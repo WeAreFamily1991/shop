@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "STBaseViewController.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LoginVC : UIViewController
+@interface LoginVC : STBaseViewController
 
 @end
 

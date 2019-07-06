@@ -263,15 +263,16 @@
 
 //// 检查是否登录，如果已经登录，加载用户信息；如果没有登录，生成一个 UUID 并保存本地，以这个 UUID 直接登录得到 token
 - (void)checkIsLogin {
-    [SNAPI getToken];
-//    if ([User currentUser].isLogin) {
-//        // 获取用户信息
-//
-//    } else {
-//        // 以游客模式登录
-//
-//        [Utility loginWithGuestMode];
-//    }
+  
+    if ([User currentUser].isLogin) {
+        // 获取用户信息
+
+    } else {
+        // 以游客模式登录
+ 
+        [SNAPI getToken];
+        
+    }
 }
 
 @end

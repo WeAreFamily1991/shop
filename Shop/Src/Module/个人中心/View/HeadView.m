@@ -40,9 +40,9 @@
         fooBtn.titleLabel.font =DR_FONT(14);
         [fooBtn setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
         [fooBtn setTitle:@"查看全部" forState:UIControlStateNormal];
-        [fooBtn setImage:[UIImage imageNamed:@"arrow_down_grey"] forState:UIControlStateNormal];
+        [fooBtn setImage:[UIImage imageNamed:@"arrow_right_grey"] forState:UIControlStateNormal];
         [fooBtn setTitle:@"收起全部" forState:UIControlStateSelected];
-        [fooBtn setImage:[UIImage imageNamed:@"arrow_right_grey"] forState:UIControlStateSelected];
+        [fooBtn setImage:[UIImage imageNamed:@"arrow_down_grey"] forState:UIControlStateSelected];
         [fooBtn layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:15];
         [fooBtn addTarget:self action:@selector(headBtnClick) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:fooBtn];

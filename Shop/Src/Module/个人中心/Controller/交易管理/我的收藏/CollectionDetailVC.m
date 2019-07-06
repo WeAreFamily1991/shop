@@ -8,10 +8,12 @@
 
 #import "CollectionDetailVC.h"
 #import "CollectionCell.h"
-#import "FirstTableViewCell.h"
+#import "SixCell.h"
 #import "GoodsModel.h"
 #import "CatgoryDetailCell.h"
 #import "DRAddShopModel.h"
+#import "CRDetailController.h"
+#import "DRNullGoodModel.h"
 @interface CollectionDetailVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
@@ -55,7 +57,7 @@
         self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
     }
     self.tableView.separatorInset = UIEdgeInsetsMake(0, -10, 0, 0);
-    [_tableView registerClass:[FirstTableViewCell class] forCellReuseIdentifier:@"FirstTableViewCell"];
+    [_tableView registerClass:[SixCell class] forCellReuseIdentifier:@"SixCell"];
      __weak typeof(self) weakSelf = self;
     self.tableView.mj_header = [MJRefreshNormalHeader headerWithRefreshingBlock:^{
         if (weakSelf.MsgListArr.count) {
@@ -78,7 +80,7 @@
 -(void)getSingleItem
 {
     NSMutableDictionary *mudic =[NSMutableDictionary dictionaryWithObjects:@[self.goodsModel.sellerid,self.goodsModel.goods_id,self.goodsModel.storeId] forKeys:@[@"sellerId",@"id",@"storeId"]];
-    [SNIOTTool getWithURL:@"mainPage/getSingleItem" parameters:mudic success:^(SNResult *result) {
+    [SNAPI getWithURL:@"mainPage/getSingleItem" parameters:mudic success:^(SNResult *result) {
         
     } failure:^(NSError *error) {
         
@@ -121,7 +123,7 @@
     }
     DRWeakSelf;
     [MBProgressHUD showMessage:@""];
-    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         if (self.status==0) {
             NSLog(@"data=%@",result.data[@"itemdata"]);
             NSMutableArray*addArr=result.data[@"itemdata"];
@@ -196,10 +198,17 @@
     }
     switch (indexPath.row) {
         case 0:
-            return 30;
+            if ([self.goodsModel.sellerTypeCode intValue]==0)
+            {
+                 return 60;
+            }else
+            {
+                return 90;
+            }
+           
             break;
         case 1:
-            return 30;
+            return 0;
             break;
             
         case 2:
@@ -224,12 +233,12 @@
 //区头的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 0.01;
+    return 5;
 }
 //区尾的高度
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 10;
+    return 5;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -248,11 +257,10 @@
             CollectionCell *cell =[CollectionCell cellWithTableView:tableView];
             cell.favoriModel =self.favoriModel;
             cell.collectionSelectBlock = ^(NSInteger collectionSelectag) {
+                 self.favoriModel=self.MsgListArr[indexPath.section];
                 NSDictionary *dic =@{@"id":self.favoriModel.favorite_id};
-                
                 [SNIOTTool deleteWithURL:@"buyer/cancelSellerFavorite" parameters:[dic mutableCopy] success:^(SNResult *result) {
-                    [self.tableView.mj_header beginRefreshing];
-                    
+                    [self.tableView.mj_header beginRefreshing];                    
                 } failure:^(NSError *error) {
                     
                 }];
@@ -261,40 +269,30 @@
         }
         self.goodsModel=self.MsgListArr[indexPath.section];
         switch (indexPath.row) {
-            case 0:
-                
+            case 0:                
             {
-                CollectionCell5 *cell =[CollectionCell5 cellWithTableView:tableView];
-                cell.goodsModel =self.goodsModel;
-                return cell;
+                 if ([self.goodsModel.sellerTypeCode intValue]==0)
+                 {
+                     CollectionCell3 *cell =[CollectionCell3 cellWithTableView:tableView];
+                     cell.goodsModel =self.goodsModel;
+                     return cell;
+                 }else
+                 {
+                     CollectionCell7 *cell =[CollectionCell7 cellWithTableView:tableView];
+                     cell.goodsModel =self.goodsModel;
+                     return cell;
+                 }
+               
             }
                 break;
-            case 1:
-                
-            {
-                static NSString *SimpleTableIdentifier = @"cell";
-                UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:
-                                         SimpleTableIdentifier];
-                if (cell == nil) {
-                    cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
-                                                  reuseIdentifier: SimpleTableIdentifier];
-                }
-                cell.textLabel.text =[NSString stringWithFormat:@"开票方：%@",_goodsModel.kpName];
-                cell.textLabel.textColor =[UIColor redColor];
-                cell.textLabel.font =DR_FONT(13);
-                
-                return cell;
-                
-            }
-                break;
+          
             case 2:
                 
             {
-                FirstTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"FirstTableViewCell"];
+                SixCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SixCell"];
                 cell.goodsModel =self.goodsModel;
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 return cell;
-                
             }
                 break;
             case 3:
@@ -302,6 +300,7 @@
             {
                 CatgoryDetailCell *cell =[CatgoryDetailCell cellWithTableView:tableView];
                 cell.goodsModel =self.goodsModel;
+                cell.shoucangStr =@"1";
                 if (self.goodsModel.favariteId.length==0)
                 {
                     cell.shoucangBtn.selected =NO;
@@ -311,30 +310,13 @@
                     cell.shoucangBtn.selected =YES;
                 }
                 cell.shoucangBlock = ^(NSInteger shoucangtag) {
-                    NSDictionary *dic =@{@"id":self.goodsModel.favariteId};
-                    //111   @"favariteId" : @"2338F0C13F834B14831F9E17E4A605F5"
-                   // [105]    (null)    @"favariteId" : @"7AEF5F58A01448428BE5B066C065BD6F"
-                    //[105]    (null)    @"favariteId" : @"A87394C2156F4987A5C6A90940986850"    
-                    [SNIOTTool deleteWithURL:@"buyer/cancelItemFavorite" parameters:[dic mutableCopy] success:^(SNResult *result) {
-                        [MBProgressHUD showSuccess:result.data];
+                  
                         [self.tableView.mj_header beginRefreshing];
-                        
-                    } failure:^(NSError *error) {
-                        
-                    }];
+                    
                     
                 };
                 cell.shopCarBlock = ^(NSInteger shopCartag) {
-                    //                    [SNAPI postWithURL:urlStr parameters:mudic success:^(SNResult *result) {
-                    //                        if (result.state==200) {
-                    //                            NSLog(@"result=%@",result.data);
-                    //
-                    //
-                    //                            //                                [self.tableView reloadData];
-                    //                        }
-                    //                    } failure:^(NSError *error) {
-                    //
-                    //                    }];
+              
                 };
                 return cell;
             }
@@ -356,4 +338,24 @@
     return cell;
     
 }
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%ld",(long)indexPath.section);
+    if (self.status==1) {
+        CRDetailController *detailVC = [CRDetailController new];
+        self.favoriModel=self.MsgListArr[indexPath.section];
+        detailVC.sellerid=self.favoriModel.sellerId;
+        [self.navigationController pushViewController:detailVC animated:YES];
+    }else
+    {
+        if (indexPath.row==0) {
+            CRDetailController *detailVC = [CRDetailController new];
+            self.goodsModel=self.MsgListArr[indexPath.section];
+            detailVC.sellerid=self.goodsModel.sellerid;
+            [self.navigationController pushViewController:detailVC animated:YES];
+        }
+    }
+   
+}
+
 @end

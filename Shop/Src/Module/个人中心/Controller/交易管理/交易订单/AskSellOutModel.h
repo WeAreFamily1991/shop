@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface GoodModel : DRBaseModel
-@property (nonatomic , assign) CGFloat              unitConversion3;
+@property (nonatomic , copy) NSString              * unitConversion3;
 @property (nonatomic , copy) NSString              * standardname;
 @property (nonatomic , copy) NSString              * unitName4;
 @property (nonatomic , assign) CGFloat              realAmt;
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * unitName1;
 @property (nonatomic , copy) NSString              * standardcode;
 @property (nonatomic , assign) CGFloat              canReturnQty;
-@property (nonatomic , assign) CGFloat              unitConversion2;
+@property (nonatomic , copy) NSString              *unitConversion2;
 @property (nonatomic , copy) NSString              * priceSource;
 @property (nonatomic , copy) NSString              * materialName;
 @property (nonatomic , copy) NSString              * unitConversion4;
@@ -67,6 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * toothDistanceName;
 @property (nonatomic , copy) NSString              * diameterName;
 @property (nonatomic , copy) NSString              * imgUrl;
+@property (nonatomic , copy) NSString              * imgurl;
 @property (nonatomic , copy) NSString              * itemName;
 @property (nonatomic , copy) NSString              * unitName3;
 @property (nonatomic , copy) NSString              * levelName;
@@ -75,5 +76,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , copy) NSString              * orderGoodsId;
 @property (nonatomic , copy) NSString              * unitConversion1;
 @property (nonatomic , copy) NSString              * modelCount;
+@property (nonatomic , copy) NSString              * numModelStr;
 @end
 NS_ASSUME_NONNULL_END

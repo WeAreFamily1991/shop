@@ -7,7 +7,7 @@
 - (UIImageView *)imageView {
     if (!_imageView) {
         _imageView = [UIImageView new];
-        _imageView.layer.borderColor = [[UIColor redColor] CGColor];
+        _imageView.layer.borderColor = [REDCOLOR CGColor];
         _imageView.layer.borderWidth = 0;
         _imageView.hidden = YES;
     }
@@ -17,14 +17,14 @@
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc]init];
         _titleLabel.text = @"新闻";
-        _titleLabel.textColor = [UIColor redColor];
+        _titleLabel.textColor = REDCOLOR;
         _titleLabel.numberOfLines = 0;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
         _titleLabel.font = [UIFont systemFontOfSize:12];
         _titleLabel.backgroundColor = [UIColor yellowColor];
         _titleLabel.layer.masksToBounds = YES;
         _titleLabel.layer.cornerRadius = 5;
-        _titleLabel.layer.borderColor = [UIColor redColor].CGColor;
+        _titleLabel.layer.borderColor = REDCOLOR.CGColor;
         _titleLabel.layer.borderWidth = 1.f;
     }
     return _titleLabel;

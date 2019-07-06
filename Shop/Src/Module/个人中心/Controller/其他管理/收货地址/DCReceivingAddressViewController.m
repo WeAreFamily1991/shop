@@ -19,6 +19,7 @@
 #import <SVProgressHUD.h>
 #import "UIView+Toast.h"
 #import "DRAdressListModel.h"
+#import "DRSettlementVC.h"
 // Categories
 
 // Others
@@ -45,7 +46,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
 - (UITableView *)tableView
 {
     if (!_tableView) {
-        _tableView = [[UITableView alloc] initWithFrame:CGRectZero];
+        _tableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, ScreenW, ScreenH-HScale(60)-DRTopHeight)];
         _tableView.delegate = self;
         _tableView.dataSource = self;
 //        _tableView.backgroundColor =[UIColor clearColor];
@@ -53,9 +54,6 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
         [self.view addSubview:_tableView];
         
         [_tableView registerNib:[UINib nibWithNibName:NSStringFromClass([DCUserAdressCell class]) bundle:nil] forCellReuseIdentifier:DCUserAdressCellID];
-        
-        _tableView.frame = CGRectMake(0, 0, ScreenW, ScreenH -HScale(60));
-        
         [self.view addSubview:_tableView];
         
     }
@@ -102,7 +100,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
    
 //    NSMutableDictionary *paramers =[NSMutableDictionary dictionary];
    
-    [SNIOTTool getWithURL:@"buyer/addressList" parameters:nil success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/addressList" parameters:nil success:^(SNResult *result) {
         
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             self.dataArray =[NSMutableArray array];
@@ -165,13 +163,9 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
     
     cell.deleteClickBlock = ^{  //删除地址
         
-       
+        self.addressListModel =self.dataArray[indexPath.row];
         NSDictionary *dic =@{@"id":self.addressListModel.address_id};
-//        [SNAPI postWithURL:@"buyer/deleteAddress" parameters:dic success:^(SNResult *result) {
-//           
-//        } failure:^(NSError *error) {
-//            
-//        }];
+
         [SNIOTTool deleteWithURL:@"buyer/deleteAddress" parameters:[dic mutableCopy] success:^(SNResult *result) {
              [self setUpAccNote];
         } failure:^(NSError *error) {
@@ -194,26 +188,28 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
     };
     
     cell.selectBtnClickBlock = ^(BOOL isSelected) { //默认选择点击
-       
+        self.addressListModel =self.dataArray[indexPath.row];
         NSDictionary *dic =@{@"id":self.addressListModel.address_id};
         [SNAPI postWithURL:@"buyer/setAddressDefault" parameters:dic success:^(SNResult *result) {
             [self setUpAccNote];
         } failure:^(NSError *error) {
             
         }];
-    
     };
-    
     return cell;
 }
-
 
 #pragma mark - <UITableViewDelegate>
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if ([self.selectStr isEqualToString:@"1"]) {
+        if (_changeURLBLOCK) {
+            self.addressListModel =self.dataArray[indexPath.row];
+            _changeURLBLOCK(self.addressListModel.address_id);
+        }
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return self.addressListModel.cellHeight;
@@ -240,7 +236,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
     [self.view addSubview:headView];
     
     self.addBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.addBtn.frame = CGRectMake(20, 10,SCREEN_WIDTH-40, HScale(40));
+    self.addBtn.frame = CGRectMake(20, HScale(10),SCREEN_WIDTH-40, HScale(40));
     [self.addBtn setTitle:@"新增地址" forState:UIControlStateNormal];
     
    
@@ -248,7 +244,7 @@ static NSString *const DCUserAdressCellID = @"DCUserAdressCell";
     self.addBtn.layer.cornerRadius =HScale(20);
     self.addBtn.layer.masksToBounds =HScale(20);
     self.addBtn.titleLabel.font = DR_FONT(15);
-    self.addBtn.backgroundColor =[UIColor redColor];
+    self.addBtn.backgroundColor =REDCOLOR;
     [self.addBtn addTarget:self action:@selector(addBtnClick) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.addBtn];
     

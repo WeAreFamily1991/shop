@@ -10,7 +10,7 @@
 #import "CartModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MessageDetailVC : UIViewController
+@interface MessageDetailVC : STBaseViewController
 
 @property (strong,nonatomic)CartModel *model;
 @end

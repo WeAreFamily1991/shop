@@ -72,7 +72,7 @@
     
     _priceLabel = [[UILabel alloc] init];
     _priceLabel.font = DR_FONT(15);
-    _priceLabel.textColor = [UIColor redColor];
+    _priceLabel.textColor = REDCOLOR;
     [self addSubview:_priceLabel];
     
     _commentNumLabel = [[UILabel alloc] init];

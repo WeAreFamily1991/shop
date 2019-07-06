@@ -11,11 +11,13 @@
 #import "CustomHeadView.h"
 #import "ChildCustomHeadView.h"
 #import "SalesOrderModel.h"
-@interface SaleDetailChildVC ()
+#import "DetailOrdervc.h"
+#import "DRDetailSelloutVC.h"
+@interface SaleDetailChildVC ()<UITableViewDelegate,UITableViewDataSource>
 {
     int pageCount;
 }
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic)UITableView *tableView;
 @property (strong, nonatomic) NSMutableDictionary *sendDataDictionary;
 @property (nonatomic, copy) NSString *titleStr;
 @property (nonatomic,assign)NSInteger selectIndex;
@@ -63,7 +65,7 @@
 //        [weakSelf getMsgList];
 //    }];
 //    [self.tableView.mj_footer endRefreshing];
-    
+    [self loadTableView];
     if (self.fatherStatus==1) {
         [self addCustomChildHeadView];
     }
@@ -75,9 +77,39 @@
     [self orderDzInfo];
 // Do any additional setup after loading the view.
 }
+-(void)loadTableView
+{
+    self.tableView=[[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH,SCREEN_HEIGHT-DRTopHeight) style:UITableViewStylePlain];
+    self.tableView.separatorStyle=UITableViewCellSeparatorStyleSingleLine;
+    self.tableView.backgroundColor =CLEARCOLOR;
+    if (@available(iOS 11.0, *)) {
+        
+        _tableView.estimatedRowHeight = 0;
+        
+        _tableView.estimatedSectionHeaderHeight = 0;
+        
+        _tableView.estimatedSectionFooterHeight = 0;
+        self.tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
+ 
+    self.tableView.delegate=self;
+    self.tableView.dataSource=self;
+    [self.view addSubview:self.tableView];
+}
 -(void)orderDzInfo
 {
 //    DRWeakSelf;
+    NSString *urlStr;
+  
+    if (self.fatherStatus ==0) {
+        urlStr =@"buyer/orderDzInfo";
+       
+    }
+    else
+    {
+        urlStr =@"buyer/feeInfo";
+        
+    }
     NSString * stateStr;
     if (self.status==0) {
         stateStr =@"";
@@ -89,8 +121,8 @@
     {
         stateStr =@"0";
     }
-    NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.saleModel.sale_id,stateStr] forKeys:@[@"dzId",@"type"]];
-    [SNIOTTool getWithURL:@"buyer/orderDzInfo" parameters:dic success:^(SNResult *result) {
+     NSMutableDictionary *dic=[NSMutableDictionary dictionaryWithObjects:@[self.saleModel.sale_id,stateStr] forKeys:@[@"dzId",@"type"]];
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             self.MsgListArr =[NSMutableArray array];
@@ -110,9 +142,9 @@
                 }
                 else
                 {
-                    self.childheadView.allCountMoneyLab.text =[NSString stringWithFormat:@"账单总金额:￥%@",result.data[@"totalAmt"]]?:@"0.00";
-                    self.childheadView.payCountMoneyLab.text =[NSString stringWithFormat:@"您需支付金额:￥%@",result.data[@"payAmt"]]?:@"0.00";
-                    self.childheadView.backCountLab.text =[NSString stringWithFormat:@"在线支付退款：￥%@",result.data[@"onlineReturnAmt"]]?:@"0.00";
+                    self.childheadView.allCountMoneyLab.text =[NSString stringWithFormat:@"您需支付金额:￥%@",result.data[@"totalAmt"]]?:@"0.00";
+                    self.childheadView.payCountMoneyLab.text =[NSString stringWithFormat:@"在线支付金额:￥%@",result.data[@"onlineAmt"]]?:@"0.00";
+                    self.childheadView.backCountLab.text =[NSString stringWithFormat:@"额度支付金额：￥%@",result.data[@"lineAmt"]]?:@"0.00";
                 }
             }
             [self.tableView reloadData];
@@ -161,7 +193,7 @@
     if (self.fatherStatus==0) {
         return HScale(100) ;
     }
-    return HScale(120);
+    return HScale(110);
 }
 #pragma mark 表的区数
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -193,44 +225,72 @@
             cell.orderLab.text =@"单据类型：退货订单";
         }
        
-        cell.getTimeLab.text =[NSString stringWithFormat:@"生成时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",self.listMOdel.orderCompleteTime]]];
+        cell.getTimeLab.text =[NSString stringWithFormat:@"生成时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",self.listMOdel.orderDate]]];
          cell.getTimeLab.textColor =[UIColor blackColor];
         cell.saleTimeLab.text =[NSString stringWithFormat:@"对账数量：%.3f",self.listMOdel.qty];
        
-        cell.saleCountLab.text =[NSString stringWithFormat:@"对账金额：%.3f",self.listMOdel.orderAmt];
-        cell.saleCountLab.textColor =[UIColor redColor];
+        cell.saleCountLab.text =[NSString stringWithFormat:@"对账金额：￥%.2f",self.listMOdel.orderAmt];
+        cell.saleCountLab.textColor =REDCOLOR;
+        cell.typeLab.text =[self.listMOdel.payType boolValue]?@"在线支付":@"额度支付";
+        cell.detailClickBlock = ^{
+            self.detailModel = self.MsgListArr[indexPath.section];
+            self.listMOdel =[ListModel mj_objectWithKeyValues:self.detailModel.list[indexPath.row]];
+            if ([self.listMOdel.billType intValue]==1) {
+               
+                DetailOrdervc *detailVC =[[DetailOrdervc alloc]init];
+                detailVC.orderID =self.listMOdel.orderId;
+                [self.navigationController pushViewController:detailVC animated:YES];
+            }else
+            {
+                DRDetailSelloutVC *sellOutVc =[[DRDetailSelloutVC alloc]init];
+               
+                sellOutVc.returnId =self.listMOdel.orderId;
+                [self.navigationController pushViewController:sellOutVc animated:YES];
+            }
+           
+        };
         return cell;
     }
     SaleOrderCell *cell =[SaleOrderCell cellWithTableView:tableView];
-    if ([self.listMOdel.billType intValue]==1) {
-        cell.orderLab.text =@"单据类型：销售订单";
-    }else
-    {
-        cell.orderLab.text =@"单据类型：退货订单";
-    }
+   
+        cell.orderLab.text =[NSString stringWithFormat:@"订单号：%@",self.listMOdel.orderNo];
+    cell.getTimeLab.text =[NSString stringWithFormat:@"退货单号：%@",self.listMOdel.returnOrderNo];
     
-    cell.getTimeLab.text =[NSString stringWithFormat:@"生成时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",self.listMOdel.orderCompleteTime]]];
     cell.getTimeLab.textColor =[UIColor blackColor];
-    cell.saleTimeLab.text =[NSString stringWithFormat:@"对账数量：%.3f",self.listMOdel.qty];
-    cell.saleCountLab.text =[NSString stringWithFormat:@"对账金额：%.3f",self.listMOdel.orderAmt];
-    cell.saleCountLab.textColor =[UIColor redColor];
+    cell.saleTimeLab.text =[NSString stringWithFormat:@"生成时间：%@",[SNTool StringTimeFormat:[NSString stringWithFormat:@"%ld",self.listMOdel.orderDate]]];
+    cell.saleCountLab.text =[NSString stringWithFormat:@"退货金额：￥%.2f  费率：%.0f",self.listMOdel.orderAmt,[self.listMOdel.feeRatio doubleValue]];
+    cell.moneyCountLab.text =[NSString stringWithFormat:@"费用金额：￥%.2f",[self.listMOdel.feeAmt doubleValue]];
+//    cell.saleCountLab.textColor =REDCOLOR;
+    cell.typeLab.text =self.listMOdel.payType?@"在线支付":@"额度支付";
+    cell.yunfeiLab.hidden =YES;
+    cell.detailClickBlock = ^{
+        self.detailModel = self.MsgListArr[indexPath.section];
+        self.listMOdel =[ListModel mj_objectWithKeyValues:self.detailModel.list[indexPath.row]];
+       
+        DRDetailSelloutVC *sellOutVc =[[DRDetailSelloutVC alloc]init];
+        
+        sellOutVc.returnId =self.listMOdel.returnOrderId;
+        [self.navigationController pushViewController:sellOutVc animated:YES];
+    
+        
+    };
     return cell;
 }
 -(UIView*)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     self.detailModel =self.MsgListArr[section];
     
-    UIView*  headView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, HScale(30))];
+    UIView*  headView=[[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, HScale(30))];
     headView.backgroundColor=[UIColor whiteColor];
     UIButton*  button=[UIButton buttonWithType:UIButtonTypeCustom];
     [button setFrame:CGRectMake(15, HScale(5), WScale(50), HScale(20))];
-    button.titleLabel.font =DR_FONT(14);
+    button.titleLabel.font =DR_FONT(12);
     [button setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
   
     [button setTitle:@"自营" forState:UIControlStateNormal];
     [button setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateNormal];
-    [button setTitle:@"非自营" forState:UIControlStateSelected];
-    [button setBackgroundImage:[UIImage imageNamed:@"bg"] forState:UIControlStateSelected];
+    [button setTitle:@"厂家" forState:UIControlStateSelected];
+    [button setBackgroundImage:[UIImage imageNamed:@"分类购买_08"] forState:UIControlStateSelected];
     button.selected =[self.detailModel.compType boolValue];
     [headView addSubview:button];
     UILabel *headLab =[[UILabel alloc]initWithFrame:CGRectMake(button.dc_right+15, 0, 2*ScreenW/3, HScale(30))];
@@ -251,7 +311,7 @@
 //    button.tag=100+section;
 //    button.titleLabel.font =[UIFont systemFontOfSize:14];
 //    [button setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-//    [button setTitleColor:[UIColor redColor] forState:UIControlStateSelected];
+//    [button setTitleColor:REDCOLOR forState:UIControlStateSelected];
 //
 //    [button layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:10];
 //    [button addTarget:self action:@selector(ClickSection:) forControlEvents:UIControlEventTouchUpInside];
@@ -273,7 +333,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
 {
-    return 0.01;
+    return 10.01;
 }
 
 @end

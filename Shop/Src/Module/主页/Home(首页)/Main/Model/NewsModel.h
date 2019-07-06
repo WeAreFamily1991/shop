@@ -24,6 +24,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic , assign) NSInteger              sort;
 @property (nonatomic , assign) NSInteger              status;
 @property (nonatomic , copy) NSString              * content;
+
+@property (nonatomic , copy) NSString              * urlm;
+
+@property (nonatomic , copy) NSString              * typecode;
+
+@property (nonatomic , copy) NSString              * sellerid;
+
+@property (nonatomic , copy) NSString              * img;
+@property (nonatomic , copy) NSString              * imgm;
+@property (nonatomic , copy) NSString              * imgM;
 @end
 
 NS_ASSUME_NONNULL_END

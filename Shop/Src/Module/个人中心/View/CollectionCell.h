@@ -9,8 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "GoodsModel.h"
 #import "OrderModel.h"
+#import "DRSellAfterModel.h"
 #import "AskSellOutModel.h"
 @class VoucherModel;
+@class BillApplicationModel;
 NS_ASSUME_NONNULL_BEGIN
 
 @interface CollectionCell : UITableViewCell
@@ -40,6 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *titleLab;
 @property (weak, nonatomic) IBOutlet UILabel *conditionLab;
 @property (weak, nonatomic) IBOutlet UILabel *timeLab;
+@property (weak, nonatomic) IBOutlet UILabel *companyLab;
 @property (weak, nonatomic) IBOutlet UIButton *hidenBtn;
 @property (weak, nonatomic) IBOutlet UIButton *statusBtn;
 @property (nonatomic, copy) dispatch_block_t selectlickBlock;
@@ -53,17 +56,26 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *timeLab;
 @property (weak, nonatomic) IBOutlet UILabel *statusLAb;
 @property (weak, nonatomic) IBOutlet UIButton *santieBtn;
-@property (weak, nonatomic) IBOutlet UILabel *cangkeLab;
+@property (weak, nonatomic) IBOutlet UIButton *typeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *companyBtn;
 @property (weak, nonatomic) IBOutlet UIButton *tellBtn;
 @property (weak, nonatomic) IBOutlet UILabel *companyLab;
 @property (weak, nonatomic) IBOutlet UILabel *peisongLab;
 @property (nonatomic,retain)OrderModel *orderModel;
+@property (nonatomic,retain)DRSellAfterModel *selloutModel;
+@property (nonatomic, copy) dispatch_block_t companyClickBlock;
 
 @end
 
 
 @interface CollectionCell3 : UITableViewCell
 +(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UILabel *companyLab;
+@property (weak, nonatomic) IBOutlet UILabel *contentLab;
+@property (weak, nonatomic) IBOutlet UIButton *typeBtn;
+@property (weak, nonatomic) IBOutlet UIButton *kefuBtn;
+@property (nonatomic,retain)BillApplicationModel *applicationModel;
+@property (nonatomic,retain)GoodsModel *goodsModel;
 @end
 
 
@@ -74,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *againBuyBtn;
 @property (weak, nonatomic) IBOutlet UIButton *detailOrderBtn;
 @property (weak, nonatomic) IBOutlet UILabel *allPriceCountLab;
-@property (copy,nonatomic) void (^BtnBlock) (NSInteger btnag);
+@property (copy,nonatomic) void (^BtnBlock) (NSInteger btnag,NSString *titleStr);
 @property(nonatomic,assign)NSInteger status;
 @property (nonatomic,retain)OrderModel *orderModel;
 @end
@@ -99,7 +111,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *tellBtn;
 @property (weak, nonatomic) IBOutlet UILabel *companyLab;
 @property (weak, nonatomic) IBOutlet UILabel *peisongLab;
+@property (weak, nonatomic) IBOutlet UIButton *typeBtn;
 @property (nonatomic,retain)OrderModel *orderModel;
+@property (nonatomic,retain)OrderModel *detailOrderModel;
+@property (nonatomic,retain)GoodsModel *goodsModel;
 @end
 
 @interface CollectionCell8 : UITableViewCell
@@ -107,6 +122,28 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *santieBtn;
 @property (weak, nonatomic) IBOutlet UILabel *cangkeLab;
 @property (weak, nonatomic) IBOutlet UIButton *tellBtn;
+@property (nonatomic,retain)AskSellOutModel *sellOutModel;
+@end
+
+
+@interface CollectionCell9 : UITableViewCell
++(instancetype)cellWithTableView:(UITableView *)tableView;
+@property (weak, nonatomic) IBOutlet UIButton *firstBtn;
+@property (weak, nonatomic) IBOutlet UIButton *secondBtn;
+@property (weak, nonatomic) IBOutlet UIButton *thirdBtn;
+
+@property (nonatomic,retain)AskSellOutModel *sellOutModel;
+@end
+
+@interface CollectionCell10: UITableViewCell
++(instancetype)cellWithTableView:(UITableView *)tableView;
+
+@property (weak, nonatomic) IBOutlet UIButton *sellAfterBtn;
+@property (weak, nonatomic) IBOutlet UIButton *cancelBtn;
+@property (copy,nonatomic) void (^BtnBlock) (NSInteger btnag,NSString *titleStr);
+@property(nonatomic,assign)NSInteger status;
+@property (nonatomic,retain)OrderModel *orderModel;
+@property (nonatomic,retain)DRSellAfterModel *selloutModel;
 @property (nonatomic,retain)AskSellOutModel *sellOutModel;
 @end
 NS_ASSUME_NONNULL_END

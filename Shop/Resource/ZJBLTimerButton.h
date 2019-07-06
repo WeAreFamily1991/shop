@@ -15,5 +15,7 @@ typedef void (^ClickCountDownButtonBlock)();
 
 @property(nonatomic , assign) int second; //开始时间数
 @property(nonatomic , copy) ClickCountDownButtonBlock countDownButtonBlock; //点击按钮
+@property(nonatomic,retain)NSString *phoneStr;
+@property(nonatomic,retain)NSString *imgCodeStr;
 
 @end

@@ -9,6 +9,7 @@
 #import "VoucherDetailVC.h"
 #import "CollectionCell.h"
 #import "VoucherModel.h"
+#import "CRDetailController.h"
 @interface VoucherDetailVC ()
 {
     int pageCount;
@@ -88,7 +89,7 @@
 //        [dic setObject:@"" forKey:@"status"];
 //    }
     DRWeakSelf;
-    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         NSLog(@"data=%@",result.data[@"list"]);
         NSMutableArray*addArr=result.data[@"list"];
         NSMutableArray *modelArray =[VoucherModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
@@ -133,7 +134,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
    
-    return SCREEN_HEIGHT/8;
+    return SCREEN_HEIGHT/7;
 }
 - (DCUpDownButton *)bgTipButton
 {
@@ -163,6 +164,7 @@
         self.VouchModel =self.MsgListArr[indexPath.row];
         cell.vouchModel =self.VouchModel;
         if (self.status==0) {
+            
             if (self.VouchModel.topicType==0) {
                 cell.iconBackIMG.image =[UIImage imageNamed:@"平台抵用券"];
                 cell.statusBtn.selected =NO;
@@ -173,9 +175,13 @@
             }
             [cell.statusBtn setTitle:@"去使用" forState:UIControlStateNormal];
             cell.selectlickBlock = ^{
-                
+                CRDetailController *detailVC = [CRDetailController new];
+                self.VouchModel =self.MsgListArr[indexPath.row];
+                detailVC.sellerid=self.VouchModel.sellerId;
+                [self.navigationController pushViewController:detailVC animated:YES];
             };
             cell.hidenBtn.hidden =YES;
+            cell.timeLab.hidden =NO;
         }
         else if (self.status==1)
         {
@@ -184,6 +190,8 @@
             [cell.statusBtn setTitle:@"已使用" forState:UIControlStateNormal];
             cell.hidenBtn.selected =NO;
             cell.hidenBtn.hidden =NO;
+            cell.timeLab.hidden =YES;
+            
         }
         else
         {
@@ -192,6 +200,7 @@
             [cell.statusBtn setTitle:@"已过期" forState:UIControlStateNormal];
             cell.hidenBtn.selected =YES;
             cell.hidenBtn.hidden =NO;
+            cell.timeLab.hidden =YES;
         }
     }
     if (self.status!=0) {
@@ -200,7 +209,6 @@
         cell.conditionLab.textColor =[UIColor lightGrayColor];
     }
     return cell;
-    
     
 }
 @end

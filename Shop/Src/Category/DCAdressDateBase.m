@@ -160,7 +160,7 @@ static DCAdressDateBase *_DBCtl = nil;
 //
 //    while ([res next]) {
    NSMutableDictionary *paramers =[NSMutableDictionary dictionary];
-    [SNIOTTool getWithURL:@"buyer/addressList" parameters:paramers success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/addressList" parameters:paramers success:^(SNResult *result) {
         if ([[NSString stringWithFormat:@"%ld",result.state] isEqualToString:@"200"]) {
             DCAdressItem *adressItem = [[DCAdressItem alloc] init];
             adressItem.ID = result.data[@"id"];

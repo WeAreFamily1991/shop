@@ -27,7 +27,7 @@
     
     NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.model.message_id] forKeys:@[@"id"]];
     
-    [SNIOTTool getWithURL:@"buyer/buyerMessageInfo" parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:@"buyer/buyerMessageInfo" parameters:dic success:^(SNResult *result) {
         
     } failure:^(NSError *error) {
         

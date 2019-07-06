@@ -10,6 +10,7 @@
 
 @interface DCTopLineFootView : UICollectionReusableView
 /* 轮播图数组 */
-@property (copy , nonatomic)NSArray *titleGroupArray;
+@property (copy , nonatomic)NSMutableArray *titleGroupArray;
 @property (copy,nonatomic) void (^ManageIndexBlock) (NSInteger ManageIndexBlock);
+@property (copy,nonatomic) void (^allBlock) (NSInteger allDex);
 @end

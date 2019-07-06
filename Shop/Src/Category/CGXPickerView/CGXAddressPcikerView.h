@@ -56,4 +56,5 @@ typedef void(^CGXAddressResultBlock)(NSArray *selectAddressArr,NSArray *selectAd
                            Manager:(CGXPickerViewManager *)manager
                        ResultBlock:(CGXAddressResultBlock)resultBlock;
 
+- (void)dismissWithAnimation:(BOOL)animation;
 @end

@@ -9,7 +9,7 @@
 #import "SegmentViewController.h"
 
 #define HEADBTN_TAG                 10000
-#define Default_BottomLineColor     [UIColor redColor]
+#define Default_BottomLineColor     REDCOLOR
 #define Default_BottomLineHeight    2
 #define Default_ButtonHeight        45
 #define Default_TitleColor          [UIColor blackColor]

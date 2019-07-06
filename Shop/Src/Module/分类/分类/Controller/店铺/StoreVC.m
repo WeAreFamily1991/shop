@@ -58,7 +58,7 @@
     self.backView =[[UIView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     
     self.customheadView = [[[NSBundle mainBundle] loadNibNamed:@"ShopHeaderView" owner:self options:nil] lastObject];
-    self.customheadView.height =HScale(200);
+    self.customheadView.dc_height =HScale(200);
     [self.backView addSubview:self.customheadView];
     [self addsegentView];
     self.tableView.tableHeaderView =self.backView;
@@ -74,9 +74,9 @@
     self.titleView.button_Width = WScale(60);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.backView addSubview:_titleView];
     
     ///线

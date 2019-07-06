@@ -52,7 +52,7 @@
     
     _indicatorView = [[UIView alloc] init];
     _indicatorView.hidden = NO;
-    _indicatorView.backgroundColor = [UIColor redColor];
+    _indicatorView.backgroundColor = REDCOLOR;
     [self addSubview:_indicatorView];
 }
 
@@ -77,7 +77,7 @@
     [super setSelected:selected animated:animated];
     if (selected) {
         _indicatorView.hidden = NO;
-        _titleLabel.textColor = [UIColor redColor];
+        _titleLabel.textColor = REDCOLOR;
         self.backgroundColor = [UIColor whiteColor];
     }else{
         _indicatorView.hidden = YES;

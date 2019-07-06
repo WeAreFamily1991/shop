@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DCGoodsSetViewController : UIViewController
+@interface DCGoodsSetViewController : STBaseViewController
 
 /* plist数据 */
 @property (strong , nonatomic)NSString *goodPlisName;

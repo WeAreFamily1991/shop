@@ -19,6 +19,7 @@ static CGFloat const ButtonHeight = 40;
 @property (nonatomic,strong)SelloutDetailVC *detailVC;
 @property (nonatomic,strong)SYTypeButtonView *buttonView;
 @property (nonatomic,strong)UITextField *orderTF;
+@property (nonatomic,retain)NSMutableDictionary *mudic;
 @end
 
 @implementation SelloutVC
@@ -26,7 +27,7 @@ static CGFloat const ButtonHeight = 40;
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title =@"售后列表";
-    
+    self.mudic=[NSMutableDictionary dictionary];
     [self addsegentView];
     [self setUI];
     //
@@ -51,19 +52,17 @@ static CGFloat const ButtonHeight = 40;
             case 1:
                 
                 [weakSelf selectDatePickViewWithIndex:1];
-                break;
-           
-                
+                break;               
             default:
                 break;
         }
     };
     self.buttonView.titleColorNormal = [UIColor blackColor];
-    self.buttonView.titleColorSelected = [UIColor redColor];
+    self.buttonView.titleColorSelected = REDCOLOR;
     self.buttonView.titles = @[@"起始时间", @"截止时间"];
     self.buttonView.enableTitles =  @[@"起始时间", @"截止时间"];
-    NSDictionary *dict01 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
-    NSDictionary *dict02 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
+    NSDictionary *dict01 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_down"], keyImageSelected, nil];
+    NSDictionary *dict02 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_down"], keyImageSelected, nil];
    
     self.buttonView.imageTypeArray = @[dict01, dict02];
     self.buttonView.selectedIndex = -1;
@@ -84,7 +83,7 @@ static CGFloat const ButtonHeight = 40;
     UIButton *searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     searchBtn.layer.cornerRadius =15;
     searchBtn.layer.masksToBounds =15;
-    searchBtn.backgroundColor =[UIColor redColor];
+    searchBtn.backgroundColor =REDCOLOR;
     searchBtn.titleLabel.font =DR_FONT(14);
     [searchBtn setTitle:@"查询" forState:UIControlStateNormal];
     searchBtn.frame =CGRectMake(3*SCREEN_WIDTH/5+30, 4, SCREEN_WIDTH-3*SCREEN_WIDTH/5-45, 30);
@@ -94,6 +93,10 @@ static CGFloat const ButtonHeight = 40;
 -(void)searchBtnClick:(UIButton *)sender
 {
     NSLog(@"textField==%@",self.orderTF.text);
+    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
+    [mudic setValue:self.orderTF.text forKey:@"dzNo"];
+    [mudic setValue:@"3" forKey:@"index"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SelloutVC" object:nil userInfo:mudic];
 }
 -(void)selectDatePickViewWithIndex:(NSInteger)selectIndex
 {
@@ -105,6 +108,19 @@ static CGFloat const ButtonHeight = 40;
     //    NSString *titleStr ;
     
     [CGXPickerView showDatePickerWithTitle:selectIndex?@"截止时间":@"起始时间" DateType:UIDatePickerModeDate DefaultSelValue:nil MinDateStr:@"1900-01-01 00:00:00" MaxDateStr:nowStr IsAutoSelect:YES Manager:nil ResultBlock:^(NSString *selectValue) {
+        if (selectIndex==0) {
+            [self.mudic setValue:selectValue forKey:@"startTime"];
+            
+        }else
+        {
+            [self.mudic setValue:selectValue forKey:@"endTime"];
+            
+        }
+        
+        NSArray *allKeyArr =[self.mudic allKeys];
+        if (allKeyArr.count==2) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"SelloutVC" object:nil userInfo:self.mudic ];
+        }
         NSLog(@"%@",selectValue);
         [weakSelf.buttonView setTitleButton:selectValue index:selectIndex];
     }];
@@ -113,15 +129,15 @@ static CGFloat const ButtonHeight = 40;
 {
    
     self.automaticallyAdjustsScrollViewInsets = NO;//,@"周三",@"周四",@"周五",@"周六",@"周日",
-    NSMutableArray *titleArray = [[NSMutableArray alloc] initWithObjects:@"全部", @"待审核", @"待回寄", @"已回寄", @"已收货", @"待退款",@"已完成",@"不通过",@"待取件",@"已取件",@"已取消" ,nil];
+    NSMutableArray *titleArray = [[NSMutableArray alloc] initWithObjects:@"全部", @"待审核", @"处理中" ,nil];
     self.titleView = [[FSSegmentTitleView2 alloc]initWithFrame:CGRectMake(0,0,SCREEN_WIDTH,40) delegate:self indicatorType:0];
     self.titleView.backgroundColor = [UIColor whiteColor];
     self.titleView.button_Width = WScale(45);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.view addSubview:_titleView];
     
     ///线

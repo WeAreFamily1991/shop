@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AddressVC : UIViewController
+@interface AddressVC : STBaseViewController
 
 @end
 

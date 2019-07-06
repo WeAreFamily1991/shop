@@ -49,4 +49,16 @@ NS_ASSUME_NONNULL_BEGIN
 +(instancetype)cellWithTableView:(UITableView *)tableView;
 @end
 
+@interface MineCell4 : UITableViewCell
+@property (weak, nonatomic) IBOutlet UIView *groundView;
+@property (weak, nonatomic) IBOutlet UIButton *kefuBtn;
+@property (weak, nonatomic) IBOutlet UIButton *messageBtn;
+@property (weak, nonatomic) IBOutlet UIButton *personBtn;
+@property (weak, nonatomic) IBOutlet UIButton *changePWBtn;
+@property (weak, nonatomic) IBOutlet UIButton *shouhuoBtn;
+@property (weak, nonatomic) IBOutlet UIButton *guanlianBtn;
+@property (weak, nonatomic) IBOutlet UIButton *loginOutBtn;
+@property (copy,nonatomic) void (^BtnOthertagBlock) (NSInteger otherBtntag);
++(instancetype)cellWithTableView:(UITableView *)tableView;
+@end
 NS_ASSUME_NONNULL_END

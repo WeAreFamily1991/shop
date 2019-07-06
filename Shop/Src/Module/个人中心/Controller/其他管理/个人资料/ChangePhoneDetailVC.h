@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChangePhoneDetailVC : UIViewController
+@interface ChangePhoneDetailVC : STBaseViewController
 
 @end
 

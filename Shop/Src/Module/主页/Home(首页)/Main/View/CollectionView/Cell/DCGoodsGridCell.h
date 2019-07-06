@@ -8,11 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class DCGridItem;
-
+//@class DCGridItem;
+@class DCRecommendItem;
 @interface DCGoodsGridCell : UICollectionViewCell
 
 /* 10个属性数据 */
 //@property (strong , nonatomic)DCGridItem *gridItem;
-
+@property (strong , nonatomic)DCRecommendItem *youLikeItem;
 @end

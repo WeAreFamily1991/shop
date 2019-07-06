@@ -45,7 +45,7 @@
 + (void)setUpBase
 {
     UINavigationBar *bar = [UINavigationBar appearance];
-    bar.barTintColor = BACKGROUNDCOLOR;
+    bar.barTintColor = WHITECOLOR;
 //    [bar setTintColor:[UIColor darkGrayColor]];
     bar.translucent = YES;
     [bar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];

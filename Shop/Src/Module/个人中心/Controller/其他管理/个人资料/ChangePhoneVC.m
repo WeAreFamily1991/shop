@@ -46,6 +46,8 @@
     ZJBLTimerButton *TimerBtn = [[ZJBLTimerButton alloc] initWithFrame:self.codeView.bounds];
     __weak typeof(self) WeakSelf = self;
     TimerBtn.countDownButtonBlock = ^{
+        TimerBtn.phoneStr =WeakSelf.phoneTF.text;
+        TimerBtn.imgCodeStr =WeakSelf.imgCodeTF.text;
         [WeakSelf qurestCode]; //开始获取验证码
     };
     [self.codeView addSubview:TimerBtn];

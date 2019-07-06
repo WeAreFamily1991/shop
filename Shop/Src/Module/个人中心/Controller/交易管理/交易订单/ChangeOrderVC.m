@@ -8,7 +8,7 @@
 
 #import "ChangeOrderVC.h"
 #import "SegmentViewController.h"
-#import "OrderDetailVC.h"
+#import "DROrderDetailVC.h"
 #import "SYTypeButtonView.h"
 #import "CGXPickerView.h"
 
@@ -130,7 +130,7 @@
     UIButton *searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     searchBtn.layer.cornerRadius =15;
     searchBtn.layer.masksToBounds =15;
-    searchBtn.backgroundColor =[UIColor redColor];
+    searchBtn.backgroundColor =REDCOLOR;
     searchBtn.titleLabel.font =DR_FONT(14);
     [searchBtn setTitle:@"查询" forState:UIControlStateNormal];
     searchBtn.frame =CGRectMake(3*SCREEN_WIDTH/5+30, 4, SCREEN_WIDTH-3*SCREEN_WIDTH/5-45, 30);
@@ -180,9 +180,9 @@
     self.titleView.button_Width = SCREEN_WIDTH/6;
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.view addSubview:_titleView];
     
     ///线
@@ -194,7 +194,7 @@
     
     for (int i = 0; i<titleArray.count; i++)
     {
-        OrderDetailVC *VC = [[OrderDetailVC alloc] init];
+        DROrderDetailVC *VC = [[DROrderDetailVC alloc] init];
         VC.status = i;
         [self.chileVCS addObject:VC];
     }
@@ -208,7 +208,7 @@
 //********************************  分段选择  **************************************
 - (void)FSSegmentTitleView:(FSSegmentTitleView2 *)titleView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
 {
-    OrderDetailVC *VC = self.chileVCS[endIndex];
+    DROrderDetailVC *VC = self.chileVCS[endIndex];
     VC.sendDataDictionary =self.mudic;
     self.pageContentView.contentViewCurrentIndex = endIndex;
 }

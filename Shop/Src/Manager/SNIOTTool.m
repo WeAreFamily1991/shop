@@ -70,7 +70,7 @@
     }
     else
     {
-        [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+        [paramers setObject:[DEFAULTS objectForKey:@"visitetoken"] forKey:@"santieJwt"];
     }
     NSRange range = [url rangeOfString:@"http"];
     if (!range.length) {
@@ -83,7 +83,8 @@
         [weakSelf handleSuccessResponse:response success:success failure:failure];
         
     } failure:^(NSError *error) {
-        [MBProgressHUD showError:error.domain];
+        
+        
         [weakSelf handleFailureError:error failure:failure];
     }];
 }
@@ -107,9 +108,12 @@
     }
     else
     {
-        if ([User currentUser].visitetoken) {
-            
-            [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+        if ([DEFAULTS objectForKey:@"visitetoken"]) {
+            [paramers setObject:[DEFAULTS objectForKey:@"visitetoken"] forKey:@"santieJwt"];
+        }
+        else
+        {
+            [SNAPI getToken];
         }
     }
    
@@ -124,10 +128,11 @@
         [weakSelf handleSuccessResponse:response success:success failure:failure];
         
     } failure:^(NSError *error) {
-        [MBProgressHUD showError:error.domain];
+       
         [weakSelf handleFailureError:error failure:failure];
     }];
 }
+
 // GET
 + (void)getWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
     
@@ -144,18 +149,15 @@
     if (!range.length) {
         url = [NSString stringWithFormat:@"%@%@", [SNAPIManager shareAPIManager].baseURL, url];
     }
-    if ([User currentUser].isLogin)
-    {
+    if ([User currentUser].isLogin){
         if ([User currentUser].token) {
-            
             [dic setObject:[User currentUser].token forKey:@"santieJwt"];
         }
     }
     else
     {
-        if ([User currentUser].visitetoken) {
-            
-            [dic setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
+        if ([DEFAULTS objectForKey:@"visitetoken"]) {
+            [dic setObject:[DEFAULTS objectForKey:@"visitetoken"] forKey:@"santieJwt"];
         }
     }
     NSLog(@"baseUrl==%@url==%@===dic===%@",[SNAPIManager shareAPIManager].baseURL,url,dic);
@@ -165,13 +167,13 @@
         [weakSelf handleSuccessResponse:response success:success failure:failure];
         
     } failure:^(NSError *error) {
-        
+       
         [weakSelf handleFailureError:error failure:failure];
     }];
 }
 
 // 上传
-+ (void)postWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers formDataArray:(NSArray<SNFormData *> *)formDataArray success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
++ (void)postWithURL:(NSString *)url parameters:(NSMutableDictionary *)paramers formDataArray:(NSArray *)formDataArray success:(void (^)(SNResult *))success failure:(void (^)(NSError *))failure {
     
 //    BOOL isCheckToken = ![url isEqualToString:USER_REFRESH_TOKEN];
 //
@@ -194,18 +196,16 @@
     }
     else
     {
-        tokenStr = [User currentUser].visitetoken;
+        tokenStr = [DEFAULTS objectForKey:@"visitetoken"];
 //        [paramers setObject:[User currentUser].visitetoken forKey:@"santieJwt"];
     }
-    url =[NSString stringWithFormat:@"%@?santieJwt=%@",url,tokenStr];
-    
+    url =[NSString stringWithFormat:@"%@?santieJwt=%@",url,tokenStr];    
     __weak typeof(self) weakSelf = self;
     [SNNetworking postURL:url parameters:paramers formDataArray:formDataArray success:^(id response) {
-        
         [weakSelf handleSuccessResponse:response success:success failure:failure];
-        
+
     } failure:^(NSError *error) {
-        
+       
         [weakSelf handleFailureError:error failure:failure];
     }];
 }
@@ -263,11 +263,16 @@
         if (failure) {
             failure(error);
         }
-        if (error.code == 10002 || error.code == 10012 || error.code == 10013) { // token不可换，重新登录
-            if ([SNAPIManager shareAPIManager].tokenErrorHanlder) {
-                [SNAPIManager shareAPIManager].tokenErrorHanlder(error);
-            }
-        }
+//        if (error.code==401) {
+//            [MBProgressHUD showError:@"请先去登录"];
+//            DELAY(1);
+//            [DRAppManager showLoginView];
+//        }
+//        if (error.code == 10002 || error.code == 10012 || error.code == 10013) { // token不可换，重新登录
+//            if ([SNAPIManager shareAPIManager].tokenErrorHanlder) {
+//                [SNAPIManager shareAPIManager].tokenErrorHanlder(error);
+//            }
+//        }
     }
 }
 
@@ -285,7 +290,6 @@
         }
     }
 }
-
 + (NSDictionary *)processParamers:(NSMutableDictionary *)paramers checkToken:(BOOL)isCheck {
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];

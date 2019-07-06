@@ -89,7 +89,7 @@ static const CGFloat ORIGIN_TOP = 40.f;
 {
     UIButton *lastBT = (UIButton *)[_evluateItemView viewWithTag:_evluateLastIndex];
     lastBT.backgroundColor = [UIColor lightGrayColor];
-    btn.backgroundColor = [UIColor redColor];
+    btn.backgroundColor = REDCOLOR;
     if (_evluateLastIndex != btn.tag) {
         //切换菜单的时候，删除所有手势，禁止滑动
         [[NSNotificationCenter defaultCenter] postNotificationName:@"removeAllBehaviors" object:self];
@@ -230,7 +230,7 @@ static const CGFloat ORIGIN_TOP = 40.f;
     EvaluateModel *model = _dataArray[indexPath.row];
     [model calculateReserveCellHeight];
     cell.model = model;
-    cell.frame = CGRectMake(0, 0, kScreenWidth, model.cellHeight);
+    cell.frame = CGRectMake(0, 0, SCREEN_WIDTH, model.cellHeight);
     return cell;
 }
 
@@ -369,11 +369,13 @@ static const CGFloat ORIGIN_TOP = 40.f;
     return url;
 }
 
-- (UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index { //返回占位图片
-    EvaluateModel *model = _dataArray[_selectedIndex];
-    NSArray *picList = model.picList;
-    return [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:picList[index][@"picUrl"]];
-}
+//- (UIImage *)photoBrowser:(SDPhotoBrowser *)browser placeholderImageForIndex:(NSInteger)index { //返回占位图片
+//    EvaluateModel *model = _dataArray[_selectedIndex];
+//    NSArray *picList = model.picList;
+//
+////    [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:picList[index][@"picUrl"]
+//    return [[SDImageCache sharedImageCache] imageFromMemoryCacheForKey:picList[index][@"picUrl"]];
+//}
 
 /*
 #pragma mark - Navigation

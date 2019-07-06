@@ -277,7 +277,7 @@
                 UILabel *tagLabel = [UILabel new];
                 [middleView addSubview:tagLabel];
                 tagLabel.font = [UIFont systemFontOfSize:self.titleFont - 1.5];
-                tagLabel.textColor = [UIColor redColor];
+                tagLabel.textColor = REDCOLOR;
                 tagLabel.textAlignment = NSTextAlignmentCenter;
                 
                 tagLabel.text = self.rolTags[i];

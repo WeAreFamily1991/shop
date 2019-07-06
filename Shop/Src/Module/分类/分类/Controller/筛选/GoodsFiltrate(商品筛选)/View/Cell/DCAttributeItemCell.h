@@ -14,6 +14,8 @@
 @property (strong , nonatomic)UIButton *contentButton;
 /* 内容 */
 @property (strong , nonatomic)DCContentItem *contentItem;
+/* 内容 */
+@property (strong , nonatomic)DCContentItem *titleItem;
 
 
 

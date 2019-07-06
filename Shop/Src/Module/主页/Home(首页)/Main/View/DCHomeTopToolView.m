@@ -34,6 +34,8 @@
 /* 划线 */
 @property (strong , nonatomic)UIView *lineView;
 
+/* 划线 */
+@property (strong , nonatomic)UIImageView *rightIMG;
 /* 通知 */
 @property (weak ,nonatomic) id dcObserve;
 @end
@@ -115,12 +117,15 @@
     [_voiceButton setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     _voiceButton.titleLabel.font =DR_FONT(12);
     [_voiceButton setTitle:@"请选择" forState:UIControlStateNormal];
-    [_voiceButton setImage:[UIImage imageNamed:@"down_ico"] forState:0];
-    [_voiceButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:8];
+//    [_voiceButton setImage:[UIImage imageNamed:@"down_ico"] forState:0];
+//    [_voiceButton layoutButtonWithEdgeInsetsStyle:MKButtonEdgeInsetsStyleRight imageTitleSpace:8];
     [_topSearchView addSubview:_voiceButton];
     self.lineView =[[UIView alloc]init];
     self.lineView.backgroundColor =BACKGROUNDCOLOR;
     [_topSearchView addSubview: self.lineView];
+    
+    self.rightIMG =[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"down_ico"]];
+     [_topSearchView addSubview: self.rightIMG];
 //     [_topSearchView addSubview:_rightItemButton];
     
     
@@ -153,17 +158,23 @@
 {
     [super layoutSubviews];
     [_leftItemButton mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.mas_top).offset(20+kDefaultNavBar_SubView_MinY);
+        make.top.equalTo(self.mas_top).offset(DRStatusBarHeight);
         make.left.equalTo(self.mas_left).offset(0);
         make.height.equalTo(@44);
         make.width.equalTo(@10);
     }];
-    
-    [_voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
+    [_rightIMG mas_makeConstraints:^(MASConstraintMaker *make) {
         make.right.equalTo(self.mas_right).offset(-20);
-        [make.top.mas_equalTo(self.mas_top)setOffset:kDefaultNavBar_SubView_MinY+20];
+        [make.top.mas_equalTo(self.mas_top)setOffset:DRStatusBarHeight+(35-WScale(10))/2];
+        make.height.mas_equalTo(WScale(10));
+        
+        make.width.mas_equalTo(WScale(10));
+    }];
+    [_voiceButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.right.equalTo(self.mas_right).offset(-15-WScale(20));
+        [make.top.mas_equalTo(self.mas_top)setOffset:DRStatusBarHeight];
         make.height.equalTo(@(35));
-        make.width.equalTo(@(88));
+        make.width.mas_equalTo(WScale(80));
     }];
     
 //    [_rightRItemButton mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -176,7 +187,7 @@
     [_topSearchView mas_makeConstraints:^(MASConstraintMaker *make) {
         [make.left.mas_equalTo(_leftItemButton.mas_right)setOffset:5];
         [make.right.mas_equalTo(self.mas_right)setOffset:-15];
-        [make.top.mas_equalTo(self.mas_top)setOffset:kDefaultNavBar_SubView_MinY+20];
+        [make.top.mas_equalTo(self.mas_top)setOffset:DRStatusBarHeight];
         make.height.mas_equalTo(@(35));
         make.centerY.mas_equalTo(_voiceButton);
         

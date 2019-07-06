@@ -17,7 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong)UIButton *buttonBtn;
 @property (nonatomic,strong)SYMoreButtonView *bottomBtnView;
 
+@property (nonatomic,retain)NSArray *bigCartporyArr;
+@property (nonatomic,assign)NSInteger selectTag;
 @property (nonatomic,assign)NSInteger selectIndex;
+@property (nonatomic,assign)NSInteger selectbullIndex;
+@property (nonatomic, copy) void (^SelectbuttonClickBlock)(NSInteger index);
 @end
 
 NS_ASSUME_NONNULL_END

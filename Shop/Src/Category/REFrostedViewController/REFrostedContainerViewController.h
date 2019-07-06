@@ -27,7 +27,7 @@
 
 @class REFrostedViewController;
 
-@interface REFrostedContainerViewController : UIViewController
+@interface REFrostedContainerViewController : STBaseViewController
 
 @property (strong, readwrite, nonatomic) UIImage *screenshotImage;
 @property (weak, readwrite, nonatomic) REFrostedViewController *frostedViewController;

@@ -51,7 +51,7 @@
 {
     self.backgroundColor = [UIColor whiteColor];
     //    _redView = [[UIView alloc] init];
-    //    _redView.backgroundColor = [UIColor redColor];
+    //    _redView.backgroundColor = REDCOLOR;
     //    [self addSubview:_redView];
     
     _timeLabel = [[UILabel alloc] init];
@@ -63,7 +63,7 @@
     _lineView.backgroundColor =BACKGROUNDCOLOR;
     [self addSubview:_lineView];
     //    _countDownLabel = [[UILabel alloc] init];
-    //    _countDownLabel.textColor = [UIColor redColor];
+    //    _countDownLabel.textColor = REDCOLOR;
     //    _countDownLabel.text = @"05 : 58 : 33";
     //    _countDownLabel.font = DR_FONT(14);
     //    [self addSubview:_countDownLabel];

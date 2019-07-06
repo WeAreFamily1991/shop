@@ -47,7 +47,6 @@
     return self;
 }
 
-
 #pragma mark - Setter/Getter
 - (void)setIsLogin:(BOOL)isLogin {
     _isLogin = isLogin;

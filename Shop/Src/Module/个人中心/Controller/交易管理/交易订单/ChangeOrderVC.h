@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ChangeOrderVC : UIViewController
+@interface ChangeOrderVC : STBaseViewController
 @property(nonatomic,assign)NSInteger num;
 @end
 

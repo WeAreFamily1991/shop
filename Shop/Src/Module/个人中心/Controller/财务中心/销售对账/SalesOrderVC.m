@@ -21,6 +21,7 @@ static CGFloat const ButtonHeight = 38;
 @property (nonatomic,strong)UITextField *orderTF;
 @property (nonatomic,strong)SalesOrderDetailVC  *VC;
 @property (nonatomic,strong)NSMutableArray *childVCs;
+@property (nonatomic,strong)NSMutableDictionary *muDic;
 @end
 
 @implementation SalesOrderVC
@@ -46,7 +47,7 @@ static CGFloat const ButtonHeight = 38;
                 [weakSelf selectDatePickViewWithIndex:0];
     };
     self.buttonView.titleColorNormal = [UIColor blackColor];
-    self.buttonView.titleColorSelected = [UIColor redColor];
+    self.buttonView.titleColorSelected = REDCOLOR;
     self.buttonView.titles = @[@"对账时间"];
     self.buttonView.enableTitles =  @[@"对账时间"];
     NSDictionary *dict01 = [NSDictionary dictionaryWithObjectsAndKeys:[UIImage imageNamed:@"accessoryArrow_down"], keyImageNormal, [UIImage imageNamed:@"accessoryArrow_downSelected"], keyImageSelected, nil];
@@ -70,7 +71,7 @@ static CGFloat const ButtonHeight = 38;
     UIButton *searchBtn =[UIButton buttonWithType:UIButtonTypeCustom];
     searchBtn.layer.cornerRadius =15;
     searchBtn.layer.masksToBounds =15;
-    searchBtn.backgroundColor =[UIColor redColor];
+    searchBtn.backgroundColor =REDCOLOR;
     searchBtn.titleLabel.font =DR_FONT(14);
     [searchBtn setTitle:@"查询" forState:UIControlStateNormal];
     searchBtn.frame =CGRectMake(SCREEN_WIDTH/2+15, 4,SCREEN_WIDTH/4-25, 30);
@@ -82,10 +83,10 @@ static CGFloat const ButtonHeight = 38;
     NSLog(@"textField==%@",self.orderTF.text);
     
 //    [self.VC.sourceDic setValue:self.orderTF.text forKey:@"dzNo"];
-    NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
-    [mudic setValue:self.orderTF.text forKey:@"dzNo"];
-    [mudic setValue:@"2" forKey:@"index"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:mudic];
+   self.muDic =[NSMutableDictionary dictionary];
+    [self.muDic setValue:self.orderTF.text forKey:@"dzNo"];
+    [self.muDic setValue:@"2" forKey:@"index"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:self.muDic];
 //    [self.VC setSourceWithDic:mudic withIndex:2];
 }
 -(void)selectDatePickViewWithIndex:(NSInteger)selectIndex
@@ -97,10 +98,10 @@ static CGFloat const ButtonHeight = 38;
 //        self.selectedDateLabel.text = [formatter stringFromDate:date];
         [weakSelf.buttonView setTitleButton:[formatter stringFromDate:date] index:selectIndex];
 
-        NSMutableDictionary *mudic =[NSMutableDictionary dictionary];
-        [mudic setValue:[formatter stringFromDate:date] forKey:@"time"];
-        [mudic setValue:@"1" forKey:@"index"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:mudic];
+        self.muDic =[NSMutableDictionary dictionary];
+        [self.muDic setValue:[formatter stringFromDate:date] forKey:@"time"];
+        [self.muDic setValue:@"1" forKey:@"index"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"sale" object:nil userInfo:self.muDic];
 //        [self.VC setSourceWithDic:mudic withIndex:1];
 //        [weakSelf.VC.sourceDic setValue:[formatter stringFromDate:date] forKey:@"time"];
     }];
@@ -117,9 +118,9 @@ static CGFloat const ButtonHeight = 38;
     self.titleView.button_Width = WScale(50);
     self.titleView.titlesArr = titleArray;
     _titleView.titleNormalColor = [UIColor darkGrayColor];
-    _titleView.titleSelectColor = [UIColor redColor];
+    _titleView.titleSelectColor = REDCOLOR;
     self.titleView.titleFont = DR_FONT(14);
-    self.titleView.indicatorView.image = [UIImage imageWithColor:[UIColor redColor]];
+    self.titleView.indicatorView.image = [UIImage ImageWithColor:REDCOLOR frame:self.titleView.bounds];
     [self.view addSubview:_titleView];
     ///线
     UILabel *lineLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 40-1,SCREEN_WIDTH,0.8)];
@@ -142,6 +143,7 @@ static CGFloat const ButtonHeight = 38;
 - (void)FSSegmentTitleView:(FSSegmentTitleView2 *)titleView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex
 {
     SalesOrderDetailVC *detailVC= self.childVCs[endIndex];
+    detailVC.sourceDic =self.muDic;
     self.pageContentView.contentViewCurrentIndex = endIndex;
 }
 - (void)FSContenViewDidEndDecelerating:(FSPageContentView2 *)contentView startIndex:(NSInteger)startIndex endIndex:(NSInteger)endIndex

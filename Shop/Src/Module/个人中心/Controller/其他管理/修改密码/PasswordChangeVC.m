@@ -55,7 +55,7 @@
     self.saveBtn.layer.cornerRadius =HScale(20);
     self.saveBtn.layer.masksToBounds =HScale(20);
     self.saveBtn.titleLabel.font = DR_FONT(15);
-    self.saveBtn.backgroundColor =[UIColor redColor];
+    self.saveBtn.backgroundColor =REDCOLOR;
     [self.saveBtn addTarget:self action:@selector(saveBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     [headView addSubview:self.saveBtn];
     
@@ -94,6 +94,7 @@
         _tableView.dataSource = self;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         _tableView.showsVerticalScrollIndicator = NO;
+        _tableView.scrollEnabled =NO;
         if (@available(iOS 11.0, *)) {
             
             _tableView.estimatedRowHeight = 0;
@@ -274,27 +275,24 @@
             [self performSelector:@selector(showLogin) withObject:self afterDelay:1];
         }
     } failure:^(NSError *error) {
-        
+        [MBProgressHUD showError:error.domain];
     }];
     
 }
 -(void)showLogin
 {
-    [self logOut];
+     [DRAppManager showLoginView];
 }
 -(void)logOut
 {
     NSMutableDictionary *dic =[NSMutableDictionary dictionary];
     [SNIOTTool postWithURL:USER_LOGOUT parameters:dic success:^(SNResult *result) {
         if ([[NSString stringWithFormat:@"%ld",(long)result.state] isEqualToString:@"200"]) {
-            [[User currentUser] loginOut];
-            LoginVC *dcLoginVc = [LoginVC new];
-            DCNavigationController *nav =  [[DCNavigationController alloc] initWithRootViewController:dcLoginVc];
-            [self presentViewController:nav animated:YES completion:nil];
+            [DRAppManager showLoginView];
         }
         
     } failure:^(NSError *error) {
-        
+        [MBProgressHUD showError:error.domain];
     }];
     
     

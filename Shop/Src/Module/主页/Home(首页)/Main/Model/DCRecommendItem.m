@@ -10,5 +10,9 @@
 
 @implementation DCRecommendItem
 
-
++ (NSDictionary *)mj_replacedKeyFromPropertyName {
+    return @{
+             @"sortID" : @"id"
+             };
+}
 @end

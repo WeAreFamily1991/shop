@@ -5,7 +5,7 @@
 //  Created by tom.sun on 16/5/27.
 //  Copyright © 2016年 tom.sun. All rights reserved.
 //
-#import "BackVC.h"
+#import "DRMessageDetailView.h"
 #import "BillMessageDetailVC.h"
 #import "FirstTableViewCell.h"
 #import "SaleOrderCell.h"
@@ -101,12 +101,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"yinCanZheGai" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"message" object:nil];
 }
--(void)CustomView
-{
-    BackVC *vc = [[BackVC alloc]init];
-//    self.backView.hidden = !self.backView.hidden;
-    [vc show];
-}
+
 //通知回调
 //- (void)hideZheGaiBtn{
 ////    self.backView.hidden = !self.backView.hidden;
@@ -134,7 +129,7 @@
         [dic setObject:@"" forKey:@"status"];
     }
     DRWeakSelf;
-    [SNIOTTool getWithURL:urlStr parameters:dic success:^(SNResult *result) {
+    [SNAPI getWithURL:urlStr parameters:dic success:^(SNResult *result) {
         NSLog(@"data=%@",result.data[@"list"]);
         NSMutableArray*addArr=result.data[@"list"];
         NSMutableArray *modelArray =[BillMessageModel mj_objectArrayWithKeyValuesArray:result.data[@"list"]];
@@ -225,7 +220,6 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (self.MsgListArr.count!=0) {
-        
         self.MessageModel =self.MsgListArr[indexPath.section];
         NSArray *titleArr =@[[NSString stringWithFormat:@"申请单号：%@",self.MessageModel.applyNo],[NSString stringWithFormat:@"开票方：%@",self.MessageModel.fpPartyName],[NSString stringWithFormat:@"金额：%.2f",self.MessageModel.invoiceAmt]];
         switch (indexPath.row) {
@@ -243,7 +237,7 @@
                 cell.selectionStyle =UITableViewCellSelectionStyleNone;
                 }
                 cell.textLabel.text =titleArr[indexPath.row];
-                cell.textLabel.textColor =[UIColor redColor];
+                cell.textLabel.textColor =REDCOLOR;
                 cell.textLabel.font =DR_BoldFONT(14);
                 return cell;
             }
@@ -262,9 +256,12 @@
                 cell.textLabel.text =titleArr[indexPath.row];
                 cell.textLabel.textColor =[UIColor blackColor];
                 cell.textLabel.font =DR_BoldFONT(12);
-                
-                cell.detailTextLabel.text =@"待审核";
-                cell.detailTextLabel.textColor =[UIColor redColor];
+                NSArray *titleArr =@[@"待审核", @"已通过", @"未通过" ,@"已开票",@"已作废",@"已撤回"];
+                if (self.MessageModel.status<=5) {
+                    
+                    cell.detailTextLabel.text = titleArr[self.MessageModel.status];
+                }
+                cell.detailTextLabel.textColor =REDCOLOR;
                 cell.detailTextLabel.font =DR_FONT(12);
                 
                 return cell;
@@ -298,15 +295,24 @@
                 
             {
                 SaleOrderCell2 *cell =[SaleOrderCell2 cellWithTableView:tableView];
-                if (self.MessageModel.status==0) {
-                    
+                
+                if (self.MessageModel.status==0||self.MessageModel.status==1||self.MessageModel.status==2||self.MessageModel.status==3||self.MessageModel.status==5) {
+                    if (self.MessageModel.status==0) {
+                        cell.returnBackBtn.selected =NO;
+                    }
+                    else
+                    {
+                        cell.returnBackBtn.selected =YES;
+                    }
                     cell.returnBackBtn.hidden =NO;
+                    
                 }else
                 {
                     cell.returnBackBtn.hidden =YES;
                 }
                 cell.BtntagBlock = ^(NSInteger Btntag) {
-                    [self BtnClickWithTag:Btntag withIndexPath:indexPath];
+                    
+                    [self BtnClickWithTag:Btntag withIndexPath:indexPath withBtn:cell.returnBackBtn];
                 };
                 return cell;
             }
@@ -326,39 +332,71 @@
     cell.textLabel.text = [_titleStr stringByAppendingString:[NSString stringWithFormat:@"-%d",(int)indexPath.row]];
     return cell;
 }
--(void)BtnClickWithTag:(NSInteger)tag withIndexPath:(NSIndexPath *)indexPath
+-(void)BtnClickWithTag:(NSInteger)tag withIndexPath:(NSIndexPath *)indexPath withBtn:(UIButton *)button
 {
     self.MessageModel =self.MsgListArr[indexPath.section];
     switch (tag) {
         case 100:
         {
-            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
-                                                                                     message:@"确定撤回开票申请吗？"
-                                                                              preferredStyle:UIAlertControllerStyleAlert];
-            
-            UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:^(UIAlertAction * _Nonnull action)
-                                      {
-                                          
-                                          NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
-                                          [SNAPI postWithURL:@"buyer/recall" parameters:dic success:^(SNResult *result) {
-                                              [self.tableView.mj_header beginRefreshing];
-                                          } failure:^(NSError *error) {
+            if (button.selected==YES) {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                         message:@"确定作废改发票吗？"
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:^(UIAlertAction * _Nonnull action)
+                                          {
                                               
+                                              NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
+                                              [SNAPI postWithURL:@"buyer/cancelInvoice" parameters:dic success:^(SNResult *result) {
+                                                  [self.tableView.mj_header beginRefreshing];
+                                              } failure:^(NSError *error) {
+                                                  [MBProgressHUD showError:error.domain];
+                                              }];
                                           }];
-                                      }];
-            [alertController addAction:action1];
-            
-            UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
-                                                              style:UIAlertActionStyleCancel
-                                                            handler:nil];
-            //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
-            [alertController addAction:action2];
-            
-            dispatch_async(dispatch_get_main_queue(),^{
-                [self presentViewController:alertController animated:YES completion:nil];
-            });
+                [alertController addAction:action1];
+                
+                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:nil];
+                //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
+                [alertController addAction:action2];
+                
+                dispatch_async(dispatch_get_main_queue(),^{
+                    [self presentViewController:alertController animated:YES completion:nil];
+                });
+            }else
+            {
+                UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                         message:@"确定撤回开票申请吗？"
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+                
+                UIAlertAction *action1 = [UIAlertAction actionWithTitle:@"确定"
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:^(UIAlertAction * _Nonnull action)
+                                          {
+                                              
+                                              NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
+                                              [SNAPI postWithURL:@"buyer/recall" parameters:dic success:^(SNResult *result) {
+                                                  [self.tableView.mj_header beginRefreshing];
+                                              } failure:^(NSError *error) {
+                                                  
+                                              }];
+                                          }];
+                [alertController addAction:action1];
+                
+                UIAlertAction *action2 = [UIAlertAction actionWithTitle:@"取消"
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:nil];
+                //            [action2 setValue:HQColorRGB(0xFF8010) forKey:@"titleTextColor"];
+                [alertController addAction:action2];
+                
+                dispatch_async(dispatch_get_main_queue(),^{
+                    [self presentViewController:alertController animated:YES completion:nil];
+                });
+            }
+           
           
            
         }
@@ -366,13 +404,21 @@
         case 200:
         {
             NSMutableDictionary *dic =[NSMutableDictionary dictionaryWithObjects:@[self.MessageModel.message_id] forKeys:@[@"id"]];
-            [SNIOTTool getWithURL:@"buyer/invoiceApplyDetail" parameters:dic success:^(SNResult *result) {
+            [SNAPI getWithURL:@"buyer/invoiceApplyDetail" parameters:dic success:^(SNResult *result) {
                 if (result.state==200) {
                     
-                    BackVC *vc = [[BackVC alloc]init];
-                    vc.MessageModel =[BillMessageModel mj_objectWithKeyValues:result.data];
-//                    self.backView.hidden = !self.backView.hidden;
-                    [vc show];
+                    DRMessageDetailView *detailVC = [[[NSBundle mainBundle] loadNibNamed:@"DRMessageDetailView" owner:self options:nil] lastObject];
+                    detailVC.frame =CGRectMake(0, 0, ScreenW, ScreenH);
+                 detailVC.MessageModel =[BillMessageModel mj_objectWithKeyValues:result.data];
+                    detailVC.closeBtnBlock = ^{
+                        [detailVC removeFromSuperview];
+                    };
+                    detailVC.backBtnBlock = ^{
+                        [detailVC removeFromSuperview];
+                        
+                    };
+                    [[[UIApplication  sharedApplication ]keyWindow ] addSubview : detailVC ] ;
+
                 }
 
             } failure:^(NSError *error) {
@@ -385,6 +431,9 @@
            
             BillMessageDetailChildVC *childVC =[[BillMessageDetailChildVC alloc]init];
             childVC.MessageModel =self.MsgListArr[indexPath.section];
+            childVC.changeInfo = ^{
+                [self.tableView.mj_header beginRefreshing];
+            };
             [self.navigationController pushViewController:childVC animated:YES];
             
         }

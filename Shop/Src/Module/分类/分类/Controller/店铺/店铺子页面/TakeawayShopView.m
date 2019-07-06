@@ -174,7 +174,7 @@
     headerView.userInteractionEnabled = YES;
     [self addSubview:headerView];
     self.customheadView = [[[NSBundle mainBundle] loadNibNamed:@"ShopHeaderView" owner:self options:nil] lastObject];
-    self.customheadView.height =HScale(160);
+    self.customheadView.dc_height =HScale(160);
     [headerView addSubview:self.customheadView];
     _headerView = headerView;
     //背景封面
@@ -199,7 +199,7 @@
 //    [faceImgView.layer addSublayer:gradientLayer];
     //店铺图片
 //    UIImageView *shopImgView = [[UIImageView alloc]initWithFrame:CGRectMake(10, _IMG_HEIGHT - 78, 90, 90)];
-//    shopImgView.backgroundColor = [UIColor redColor];
+//    shopImgView.backgroundColor = REDCOLOR;
 //    shopImgView.layer.cornerRadius = 4;
 //    //    shopImgView.layer.masksToBounds = YES;
 //    shopImgView.layer.shadowColor = [UIColor grayColor].CGColor;//shadowColor阴影颜色
@@ -225,7 +225,7 @@
     [infoView addSubview:shopIcon];
     shopIcon.frame = CGRectMake(0, 2, shopIcon.image.size.width, 16);
     //店铺名称
-    UILabel *shopNameLab = [UITool createLabelWithTextColor:[UIColor whiteColor] textSize:kScreenWidth<375?Size(18):18 alignment:NSTextAlignmentLeft];
+    UILabel *shopNameLab = [UITool createLabelWithTextColor:[UIColor whiteColor] textSize:SCREEN_WIDTH<375?Size(18):18 alignment:NSTextAlignmentLeft];
     shopNameLab.frame = CGRectMake(shopIcon.maxX+5, 0, infoView.width-(shopIcon.maxX+15), 20);
     shopNameLab.text = _shopModel.shopName; //店铺名称
     [infoView addSubview:shopNameLab];
@@ -469,7 +469,7 @@
     bottomView.alpha = 0.0;
     _bottomView = bottomView;
     //店铺名称
-    UILabel *shopNameLab = [UITool createLabelWithTextColor:[UIColor darkGrayColor] textSize:kScreenWidth<375?Size(18):18 alignment:NSTextAlignmentCenter];
+    UILabel *shopNameLab = [UITool createLabelWithTextColor:[UIColor darkGrayColor] textSize:SCREEN_WIDTH<375?Size(18):18 alignment:NSTextAlignmentCenter];
     shopNameLab.text = _shopModel.shopName;
     [bottomView addSubview:shopNameLab];
     [shopNameLab mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -505,7 +505,7 @@
     UIView *cerView = [[UIView alloc]init];
     //店铺评价
     //分数
-    UILabel *gradeLab = [UITool createLabelWithTextColor:RGBHex(0xFFCD20) textSize:kScreenWidth<375?Size(18):18 alignment:NSTextAlignmentLeft];
+    UILabel *gradeLab = [UITool createLabelWithTextColor:RGBHex(0xFFCD20) textSize:SCREEN_WIDTH<375?Size(18):18 alignment:NSTextAlignmentLeft];
     NSString *grade = [NSString stringWithFormat:@"%@分",@"4.9"];
     NSMutableAttributedString *str = [AppDefaultUtil returnStringSize:grade rang:NSMakeRange(grade.length - 1,1) size:12];
     gradeLab.attributedText = str;
@@ -714,7 +714,7 @@
         }
         if (i == 3) {
             //            UILabel *redLab = [[UILabel alloc]init];
-            //            redLab.backgroundColor = [UIColor redColor];
+            //            redLab.backgroundColor = REDCOLOR;
             //            redLab.layer.cornerRadius = 2;
             //            redLab.layer.masksToBounds = YES;
             //            redLab.frame = CGRectMake(31, 8, 4, 4);
